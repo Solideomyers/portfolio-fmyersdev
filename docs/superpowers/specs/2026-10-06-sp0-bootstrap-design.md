@@ -70,10 +70,10 @@ Valid: `feat(ui): add Button component` · `chore: bump astro`. Invalid: `feat: 
 
 ### Hooks (Husky 9)
 
-- `pre-commit`: `npx lint-staged`, then `npm run check` (astro check), then `gitleaks protect --staged --redact` when `gitleaks` is on PATH; otherwise print a warning and continue (CI is the enforcing layer).
+- `pre-commit`: `npx lint-staged`, then `npm run check` (astro check), then `gitleaks git --pre-commit --staged --redact` when `gitleaks` is on PATH; otherwise print a warning and continue (CI is the enforcing layer).
 - `commit-msg`: `npx --no -- commitlint --edit "$1"`.
 - `pre-push`: `npm test`.
-- `prepare`: `husky` without `|| true` (Vercel builds run `npm install`; Husky 9 exits cleanly when `.git` is missing. Verified in the plan, fallback is `husky || true` only if Vercel's build fails).
+- `prepare`: `husky && git config commit.template .gitmessage`, without `|| true` (CI and Vercel builds have `.git`; verified in the Vercel build log).
 
 lint-staged: `*.{astro,ts,js,mjs,cjs}` → `eslint --fix` + `prettier --write`; `*.{css,json,md,yml,yaml}` → `prettier --write`. `docs/handoff/**` is excluded from Prettier/ESLint (reference material, kept byte-identical).
 
@@ -82,9 +82,14 @@ lint-staged: `*.{astro,ts,js,mjs,cjs}` → `eslint --fix` + `prettier --write`; 
 Triggers: `pull_request` to `develop` and to `main` (release PRs), `push` to `main`. Node 24, `npm ci`.
 Jobs (names are the required status checks): `lint` (`npm run lint:check`, no fix), `check` (`npm run check`), `build`, `test` (Playwright chromium, after `build`), `secrets` (`gitleaks/gitleaks-action@v2`, full history). The `commitlint` job lives in `pr-title.yml` (PR events incl. `edited`): the title is passed via `env:` and piped to the local commitlint config. `wagoid/commitlint-github-action` is not used because it lints branch commits, not the title.
 
-### Auto-tag (`tag.yml`)
+### Auto-tag (`tag.yml`) and canonical tags
 
-On push to `develop`: next `v0.N.0` (minor bump), `permissions: contents: write`. Tags are immutable; a missed tag is not backfilled.
+On push to `develop`: next **annotated** `v0.N.0` (minor bump), message `v0.N.0 — <squash subject>`, tagger `github-actions[bot]`, `permissions: contents: write`. Runs are serialised (`concurrency: auto-tag`), and a commit that already has a `v0.*` tag is skipped. No tags on `main`; release PRs (`chore: release v0.N.0`) promote an existing tag. `v1.0.0` is reserved for launch (SP7). Tags are immutable; a missed tag is not backfilled.
+
+### Templates
+
+- `.gitmessage`: commit template (types, scopes, examples), set by `prepare`: `husky && git config commit.template .gitmessage`.
+- `.github/pull_request_template.md`: title rule, what/why, SP links, verification, checklist (lint/check/test, tokens untouched, screenshots 1280/768/375 light+dark for UI, dependencies justified, roadmap updated), optional release block.
 
 ### Branch protection (`main` and `develop`)
 

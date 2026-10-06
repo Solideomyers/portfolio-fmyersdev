@@ -14,7 +14,7 @@
     "test": "playwright test",
     "lint": "eslint . --fix && prettier --write .",
     "lint:check": "eslint . && prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky && git config commit.template .gitmessage"
   },
   "dependencies": {
     "astro": "^7.3.6"

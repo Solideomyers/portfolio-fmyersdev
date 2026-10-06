@@ -9,13 +9,13 @@
 
 ## Branches
 
-| Branch                  | Purpose                                              |
-| ----------------------- | ---------------------------------------------------- |
-| `main`                  | Production (Vercel). Only `release/*` PRs reach it.  |
-| `develop`               | Integration and default branch. Every PR targets it. |
-| `feature/sp<N>-<topic>` | One sub-project from `docs/superpowers/roadmap.md`.  |
-| `fix/<desc>`            | A focused fix.                                       |
-| `release/<version>`     | Promotes `develop` to `main`.                        |
+| Branch                  | Purpose                                                          |
+| ----------------------- | ---------------------------------------------------------------- |
+| `main`                  | Production (Vercel). Only `release/*` PRs reach it.              |
+| `develop`               | Integration and default branch. Every feature/fix PR targets it. |
+| `feature/sp<N>-<topic>` | One sub-project from `docs/superpowers/roadmap.md`.              |
+| `fix/<desc>`            | A focused fix.                                                   |
+| `release/<version>`     | Promotes `develop` to `main`.                                    |
 
 `main` and `develop` are protected: PR required, all checks green, branch up to date, no force-push.
 
@@ -55,9 +55,27 @@ Hooks are the fast layer. CI repeats lint, typecheck, build, tests, secrets scan
 ## Pull requests and releases
 
 - One sub-project = one PR to `develop`. Spec and plan go in the first commit.
-- Squash merge only. The PR title becomes the commit, so keep it a valid Conventional Commit.
-- Merging to `develop` creates the next `v0.N.0` tag automatically.
+- Squash merge only. The squash commit takes the **PR title** as subject and the PR body as message (repo setting), so the title must be a valid Conventional Commit.
 - Update the sub-project row in `docs/superpowers/roadmap.md` in the same PR.
+- Release PRs go from `release/v0.N.0` to `main`, titled `chore: release v0.N.0`, where `v0.N.0` is the `develop` tag being promoted.
+
+## Templates
+
+- **Commit:** `.gitmessage`, set as `commit.template` by `npm install` (`prepare`). `git commit` without `-m` opens it with types, scopes and examples. Leaving it untouched aborts the commit.
+- **Pull request:** `.github/pull_request_template.md`, filled automatically when you open a PR on GitHub. Fill every section; delete the release block unless it's a release PR.
+
+## Tags (canonical)
+
+| Rule             | Value                                                                                   |
+| ---------------- | --------------------------------------------------------------------------------------- |
+| Format           | `vMAJOR.MINOR.PATCH`, always **annotated**                                              |
+| Who creates them | Only `.github/workflows/tag.yml`. Never tag by hand.                                    |
+| When             | Every merge to `develop` → next `v0.N.0` (minor bump)                                   |
+| Message          | `v0.N.0 — <squash commit subject>`, tagger `github-actions[bot]`                        |
+| Re-runs          | A commit that already has a `v0.*` tag is skipped (idempotent)                          |
+| `main`           | No new tags. A release PR promotes an existing `develop` tag and names it in its title. |
+| `v1.0.0`         | Reserved for the public launch (SP7)                                                    |
+| Missed tag       | Never backfilled. The sequence continues forward.                                       |
 
 ## Design rules
 
