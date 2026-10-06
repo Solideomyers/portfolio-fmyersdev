@@ -2,12 +2,29 @@
 import '../styles/global.css';
 
 const colors = [
-  'bg', 'surface', 'hatch', 'line', 'line-strong', 'text', 'text-muted',
-  'accent', 'accent-fg', 'ok', 'danger', 'invert-bg', 'invert-fg',
+  'bg',
+  'surface',
+  'hatch',
+  'line',
+  'line-strong',
+  'text',
+  'text-muted',
+  'accent',
+  'accent-fg',
+  'ok',
+  'danger',
+  'invert-bg',
+  'invert-fg',
 ];
 const sizes = [
-  ['display-xl', 'Display XL'], ['display-l', 'Display L'], ['h2', 'H2'], ['h3', 'H3'],
-  ['h4', 'H4'], ['body-l', 'Body L'], ['body', 'Body'], ['body-s', 'Body S'],
+  ['display-xl', 'Display XL'],
+  ['display-l', 'Display L'],
+  ['h2', 'H2'],
+  ['h3', 'H3'],
+  ['h4', 'H4'],
+  ['body-l', 'Body L'],
+  ['body', 'Body'],
+  ['body-s', 'Body S'],
 ];
 ---
 
@@ -33,17 +50,17 @@ const sizes = [
       </picture>
       <p class="label">SHEET 00 — TOKEN CHECK · SP0</p>
       <ul class="swatches">
-        {
-          colors.map((c) => (
-            <li>
-              <span class="swatch" style={`background: var(--${c})`} />
-              <code>--{c}</code>
-            </li>
-          ))
-        }
+        {colors.map((c) => (
+          <li>
+            <span class="swatch" style={`background: var(--${c})`} />
+            <code>--{c}</code>
+          </li>
+        ))}
       </ul>
       <div class="type">
-        {sizes.map(([t, name]) => <p style={`font-size: var(--fs-${t})`}>{name}</p>)}
+        {sizes.map(([t, name]) => (
+          <p style={`font-size: var(--fs-${t})`}>{name}</p>
+        ))}
         <p class="label">Label — JetBrains Mono 500</p>
       </div>
     </main>
