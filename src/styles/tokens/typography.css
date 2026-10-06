@@ -1,0 +1,23 @@
+/* fmyers.dev — typography tokens */
+:root {
+  --font-sans: "Archivo", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --stretch-display: 110%;
+
+  --fs-display-xl: clamp(46px, 7vw, 84px);   /* hero h1 · 700 · lh .95 · ls -0.035em */
+  --fs-display-l: clamp(36px, 5vw, 52px);    /* sheet h2 · 700 · lh 1 · ls -0.03em */
+  --fs-h2: 34px;                             /* card titles · 700 · ls -1px */
+  --fs-h3: 28px;                             /* row titles · 700 · ls -0.5px */
+  --fs-h4: 22px;
+  --fs-body-l: 19px;                         /* lead · lh 1.45 */
+  --fs-body: 17px;                           /* default · lh 1.5 */
+  --fs-body-s: 15px;
+  --fs-label: 13px;                          /* mono · 500 · ls 1px · UPPERCASE */
+  --fs-label-s: 11px;                        /* mono spec keys */
+
+  --lh-display: 0.95;
+  --lh-tight: 1.1;
+  --lh-body: 1.5;
+  --ls-display: -0.035em;
+  --ls-label: 1px;
+}

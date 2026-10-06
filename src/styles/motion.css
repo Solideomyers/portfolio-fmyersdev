@@ -1,0 +1,46 @@
+/* fmyers.dev — production motion rules (Astro). Requires tokens/motion.css. */
+
+/* Press feedback: every pressable */
+.btn, .chip, [data-press] { transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-hover) var(--ease), border-color var(--dur-hover) var(--ease); }
+.btn:active, .chip:active, [data-press]:active { transform: scale(var(--press-scale)); }
+
+/* Hover — fine pointers only */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover { border-color: var(--accent); }
+  .link-arrow .arrow { display: inline-block; transition: transform var(--dur-hover) var(--ease-out); }
+  .link-arrow:hover .arrow { transform: translateX(4px); }
+  .link:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .btn-secondary:hover { background: repeating-linear-gradient(135deg, var(--hatch) 0 1px, transparent 1px 6px); }
+  .spec-row { transition: background-color var(--dur-hover) var(--ease); }
+  .spec-row:hover { background-color: var(--hatch); }
+}
+
+/* Scroll reveal — only when JS is on, once per element (Motion inView adds .is-in) */
+.js [data-reveal] { opacity: 0; transform: translateY(var(--rise)); }
+.js [data-reveal].is-in { opacity: 1; transform: none; transition: opacity var(--dur-enter) var(--ease-out), transform var(--dur-enter) var(--ease-out); transition-delay: calc(var(--i, 0) * var(--stagger)); }
+
+/* Page morph: card → case study (Astro <ClientRouter />, transition:name="fm-01") */
+::view-transition-group(*) { animation-duration: var(--dur-sheet); animation-timing-function: var(--ease-in-out); }
+::view-transition-old(root) { animation: var(--dur-exit) var(--ease-out) both fm-fade-out; }
+::view-transition-new(root) { animation: var(--dur-enter) var(--ease-out) both fm-fade-in; }
+
+/* Theme: circular reveal from the toggle (html.theme-reveal set during the swap) */
+html.theme-reveal::view-transition-old(root), html.theme-reveal::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+/* Language swap */
+[data-lang-swap] { animation: fm-fade-in var(--dur-fade) var(--ease) both; }
+
+/* Form */
+.field.is-error { animation: fm-shake 300ms var(--ease-out); }
+.btn .label { transition: filter 200ms var(--ease), opacity 200ms var(--ease); }
+.btn.is-sending .label { filter: blur(2px); opacity: .7; }
+
+@keyframes fm-fade-in { from { opacity: 0; } }
+@keyframes fm-fade-out { to { opacity: 0; } }
+@keyframes fm-shake { 20% { transform: translateX(calc(var(--shake) * -1)); } 40% { transform: translateX(var(--shake)); } 60% { transform: translateX(calc(var(--shake) * -.66)); } 80% { transform: translateX(calc(var(--shake) * .66)); } }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*) { animation-duration: var(--dur-fade); }
+  .field.is-error { animation: none; box-shadow: inset 3px 0 0 var(--danger); }
+  .js [data-reveal] { transform: none; }
+}

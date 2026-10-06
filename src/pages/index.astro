@@ -1,0 +1,103 @@
+---
+import '../styles/global.css';
+
+const colors = [
+  'bg', 'surface', 'hatch', 'line', 'line-strong', 'text', 'text-muted',
+  'accent', 'accent-fg', 'ok', 'danger', 'invert-bg', 'invert-fg',
+];
+const sizes = [
+  ['display-xl', 'Display XL'], ['display-l', 'Display L'], ['h2', 'H2'], ['h3', 'H3'],
+  ['h4', 'H4'], ['body-l', 'Body L'], ['body', 'Body'], ['body-s', 'Body S'],
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>fmyers.dev — token check</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=JetBrains+Mono:wght@500&display=swap"
+    />
+  </head>
+  <body>
+    <main>
+      <picture>
+        <source srcset="/wordmark-dark.svg" media="(prefers-color-scheme: dark)" />
+        <img src="/wordmark-light.svg" alt="fmyers.dev" height="32" />
+      </picture>
+      <p class="label">SHEET 00 — TOKEN CHECK · SP0</p>
+      <ul class="swatches">
+        {
+          colors.map((c) => (
+            <li>
+              <span class="swatch" style={`background: var(--${c})`} />
+              <code>--{c}</code>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="type">
+        {sizes.map(([t, name]) => <p style={`font-size: var(--fs-${t})`}>{name}</p>)}
+        <p class="label">Label — JetBrains Mono 500</p>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  main {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: var(--space-12) var(--gutter);
+  }
+  img {
+    display: block;
+    height: 32px;
+    width: auto;
+  }
+  .label {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: var(--fs-label);
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .swatches {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: var(--border-ink);
+  }
+  .swatches li {
+    background: var(--surface);
+    padding: var(--space-3);
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: var(--fs-label-s);
+  }
+  .swatch {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    border: var(--border-rule);
+  }
+  .type p:not(.label) {
+    margin: var(--space-2) 0;
+    font-weight: 700;
+    font-stretch: var(--stretch-display);
+    line-height: var(--lh-display);
+    letter-spacing: var(--ls-display);
+  }
+</style>

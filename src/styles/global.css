@@ -1,0 +1,23 @@
+/* Mirrors docs/handoff/design/design-system/styles.css.
+   tokens/fonts.css is intentionally NOT imported: fonts load through <link> in the page head
+   (a CSS @import of Google Fonts is a render-blocking request chain). Same families, axes and weights. */
+@import './tokens/colors.css';
+@import './tokens/typography.css';
+@import './tokens/spacing.css';
+@import './tokens/motion.css';
+@import './motion.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
