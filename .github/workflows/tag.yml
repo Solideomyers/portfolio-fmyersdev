@@ -1,0 +1,23 @@
+name: Auto-tag
+
+on:
+  push:
+    branches: [develop]
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Tag next v0.N.0
+        run: |
+          LAST=$(git tag --list 'v0.*.0' --sort=-v:refname | head -n1)
+          LAST=${LAST:-v0.0.0}
+          MINOR=$(echo "$LAST" | sed -E 's/^v0\.([0-9]+)\.0$/\1/')
+          NEXT="v0.$((MINOR + 1)).0"
+          git tag "$NEXT"
+          git push origin "$NEXT"
