@@ -1,0 +1,7 @@
+npx lint-staged
+npm run check
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks git --pre-commit --staged --redact
+else
+  echo "warning: gitleaks not installed, local secrets scan skipped (CI enforces it). Install: winget install gitleaks"
+fi
