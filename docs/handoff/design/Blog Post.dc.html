@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="design-system/styles.css" rel="stylesheet"></link><style>a{color:var(--accent);text-decoration:none}a:hover{color:var(--text);text-decoration:underline}button{font:inherit}</style></helmet>
+<div data-theme="{{ theme }}" style="container-type:inline-size;background:var(--bg);color:var(--text);font-family:var(--font-sans);width:100%">
+
+<header style="position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:var(--border-ink)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px clamp(20px,4cqi,48px)">
+<a href="#" aria-label="fmyers.dev home" style="display:flex;flex:none"><sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}"><img src="assets/wordmark-light.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if><sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><img src="assets/wordmark-dark.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if></a>
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><nav style="display:flex;gap:20px;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap"><sc-for list="{{ nav }}" as="n" hint-placeholder-count="6"><a href="#" aria-current="{{ n.cur }}" style="display:flex;gap:6px;color:{{ n.c }};text-decoration:none;padding:4px 0 2px;border-bottom:{{ n.bd }}"><span style="color:var(--text-muted)">{{ n.id }}</span>{{ n.label }}</a></sc-for></nav></sc-if>
+<div style="display:flex;gap:10px;align-items:center;flex:none">
+<sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}"><div style="display:flex;border:var(--border-ink)"><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ enBg }};color:{{ enFg }}">EN</span><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ esBg }};color:{{ esFg }}">ES</span></div><button aria-label="Toggle theme" style="font-family:var(--font-mono);font-size:14px;width:34px;height:34px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">◐</button></sc-if>
+<sc-if value="{{ notDesk }}" hint-placeholder-val="{{ false }}"><button style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;min-height:44px;padding:0 14px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">{{ c.menu }}</button></sc-if>
+</div>
+</div>
+</header>
+
+<main style="max-width:1280px;margin:0 auto;padding:clamp(20px,3cqi,32px) clamp(20px,4cqi,48px) clamp(56px,8cqi,96px);display:flex;flex-direction:column;gap:clamp(32px,5cqi,56px)">
+<section data-screen-label="Post · Header" style="display:flex;flex-direction:column;gap:16px;max-width:984px">
+<a href="#" style="align-self:flex-start;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;color:var(--accent);min-height:32px;display:flex;align-items:center">← {{ c.allNotes }}</a>
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>N-02 — {{ c.cat }}</span><span style="color:var(--text-muted)">2026.11 · 6 MIN</span></div>
+<h1 style="margin:0;font-stretch:110%;font-weight:700;font-size:clamp(36px,5cqi,64px);letter-spacing:-0.03em;line-height:1;text-wrap:balance">{{ c.title }}</h1>
+<p style="margin:0;font-size:clamp(17px,1.6cqi,20px);line-height:1.45;color:var(--text-muted);max-width:680px;text-wrap:pretty">{{ c.dek }}</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ c.tags }}" as="t" hint-placeholder-count="3"><span style="font-family:var(--font-mono);font-size:12px;border:var(--border-ink);padding:6px 10px">{{ t }}</span></sc-for></div>
+</section>
+
+<div style="display:flex;gap:64px;align-items:flex-start;flex-direction:{{ bodyDir }}">
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><nav aria-label="{{ c.contents }}" style="position:sticky;top:88px;flex:0 0 240px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px">{{ c.contents }}</span>
+<div style="position:relative;border-left:var(--border-rule)">
+<div aria-hidden="true" style="position:absolute;left:-1px;top:0;width:2px;height:36px;background:var(--accent);transform:{{ tocY }};transition:transform 200ms var(--ease-in-out)"></div>
+<sc-for list="{{ toc }}" as="h" hint-placeholder-count="4"><a href="#" onClick="{{ h.go }}" style="display:flex;gap:10px;align-items:center;min-height:36px;padding-left:14px;font-size:15px;line-height:1.25;color:{{ h.c }};font-weight:{{ h.w }};text-decoration:none"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">{{ h.n }}</span>{{ h.label }}</a></sc-for>
+</div>
+</nav></sc-if>
+<sc-if value="{{ notDesk }}" hint-placeholder-val="{{ false }}"><div style="width:100%;border:var(--border-ink)">
+<button onClick="{{ tocToggle }}" aria-expanded="{{ tocOpenS }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px;padding:0 14px;border:0;background:transparent;color:var(--text);cursor:pointer;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;text-align:left"><span>{{ c.contents }} · {{ tocNow }}</span><span aria-hidden="true" style="font-size:18px;transform:{{ tocRot }};transition:transform 200ms var(--ease-out)">+</span></button>
+<sc-if value="{{ tocOpen }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;border-top:var(--border-rule)"><sc-for list="{{ toc }}" as="h" hint-placeholder-count="4"><a href="#" onClick="{{ h.goClose }}" style="display:flex;gap:10px;align-items:center;min-height:44px;padding:0 14px;border-bottom:var(--border-rule);font-size:15px;color:{{ h.c }};font-weight:{{ h.w }};text-decoration:none"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">{{ h.n }}</span>{{ h.label }}</a></sc-for></div></sc-if>
+</div></sc-if>
+
+<article style="flex:1 1 auto;min-width:0;width:100%;max-width:680px;display:flex;flex-direction:column;gap:20px">
+<p style="margin:0;font-size:17px;line-height:1.65;text-wrap:pretty">{{ c.intro }}</p>
+<h2 style="margin:20px 0 0;font-stretch:110%;font-weight:700;font-size:clamp(24px,2.2cqi,28px);letter-spacing:-0.5px">{{ c.h2a }}</h2>
+<p style="margin:0;font-size:17px;line-height:1.65;text-wrap:pretty">{{ c.pa }}</p>
+<blockquote style="margin:4px 0;padding:4px 0 4px 16px;border-left:2px solid var(--line-strong);font-size:clamp(19px,1.8cqi,22px);line-height:1.45;text-wrap:pretty">{{ c.quote }}</blockquote>
+<h2 style="margin:20px 0 0;font-stretch:110%;font-weight:700;font-size:clamp(24px,2.2cqi,28px);letter-spacing:-0.5px">{{ c.h2b }}</h2>
+<p style="margin:0;font-size:17px;line-height:1.65;text-wrap:pretty">{{ c.pb }}</p>
+<pre style="margin:0;font-family:var(--font-mono);font-size:14px;line-height:1.6;background:var(--surface);border:var(--border-rule);padding:14px 16px;overflow-x:auto;color:var(--text)">{{ c.code }}</pre>
+<h3 style="margin:8px 0 0;font-stretch:110%;font-weight:700;font-size:21px">{{ c.h3 }}</h3>
+<div style="display:flex;flex-direction:column;gap:10px"><sc-for list="{{ c.list }}" as="li" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:20px minmax(0,1fr);gap:6px;font-size:17px;line-height:1.55"><span style="font-family:var(--font-mono);color:var(--text-muted)">—</span><span style="text-wrap:pretty">{{ li }}</span></div></sc-for></div>
+<h2 style="margin:20px 0 0;font-stretch:110%;font-weight:700;font-size:clamp(24px,2.2cqi,28px);letter-spacing:-0.5px">{{ c.h2c }}</h2>
+<p style="margin:0;font-size:17px;line-height:1.65;text-wrap:pretty">{{ c.pc }} <a href="#">{{ c.pcLink }}</a>.</p>
+<figure style="margin:4px 0;display:flex;flex-direction:column;gap:8px"><div style="aspect-ratio:16/10;border:var(--border-ink);background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 10px);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ c.shot }} · 1600×1000</div><figcaption style="display:flex;gap:12px;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)"><span style="color:var(--accent);flex:none">FIG. 1</span><span>{{ c.fig }}</span></figcaption></figure>
+<h2 style="margin:20px 0 0;font-stretch:110%;font-weight:700;font-size:clamp(24px,2.2cqi,28px);letter-spacing:-0.5px">{{ c.h2d }}</h2>
+<p style="margin:0;font-size:17px;line-height:1.65;text-wrap:pretty">{{ c.pd }}</p>
+
+<div style="margin-top:24px;border:var(--border-ink);background:var(--surface);display:flex;flex-wrap:wrap;gap:16px;align-items:center;padding:20px">
+<div style="width:56px;height:70px;flex:none;border:var(--border-ink);background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 6px)"></div>
+<div style="flex:1 1 240px;display:flex;flex-direction:column;gap:4px"><span style="font-weight:700;font-size:17px">Francisco Myers</span><span style="font-size:15px;line-height:1.45;color:var(--text-muted);text-wrap:pretty">{{ c.author }}</span></div>
+<a href="#" style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;min-height:44px;display:flex;align-items:center;background:var(--accent);color:var(--accent-fg);padding:0 16px;text-decoration:none;white-space:nowrap">{{ c.write }} →</a>
+</div>
+</article>
+</div>
+
+<section data-screen-label="Post · Related" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>{{ c.related }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));border-top:var(--border-ink)">
+<a href="#" style="display:flex;flex-direction:column;gap:6px;padding:14px 12px 14px 0;border-bottom:var(--border-rule);color:var(--text);text-decoration:none;transition:color 200ms ease" style-hover="color:var(--accent)"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">← {{ c.prev }} · N-01</span><span style="font-stretch:110%;font-weight:700;font-size:19px;text-wrap:pretty">{{ c.prevTitle }}</span></a>
+<div style="display:flex;flex-direction:column;gap:6px;padding:14px 0 14px 12px;border-bottom:var(--border-rule);text-align:right;opacity:0.4" aria-disabled="true"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ c.next }} →</span><span style="font-size:15px;color:var(--text-muted)">{{ c.latest }}</span></div>
+</div>
+</section>
+</main>
+
+<footer style="border-top:var(--border-ink);padding:20px clamp(20px,4cqi,48px);display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)"><span>FMYERS.DEV · REV 2026.10</span><span style="display:flex;gap:20px;flex-wrap:wrap"><a href="https://github.com/Solideomyers">GITHUB ↗</a><a href="https://linkedin.com/in/franciscomyers">LINKEDIN ↗</a><a href="#">RSS ↗</a><a href="#">{{ c.privacy }}</a></span><span>© 2026 · {{ c.langName }}</span></footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;es&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en'|'es'&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;},&quot;bp&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;tablet&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop'|'tablet'|'mobile'&quot;}}">
+const COPY = {
+  en: {
+    menu: 'MENU', allNotes: 'ALL NOTES', cat: 'PROCESS', contents: 'CONTENTS', shot: 'SCREENSHOT', privacy: 'PRIVACY', langName: 'ENGLISH',
+    title: 'Why every project starts with a one-page spec', dek: 'A day of writing saves weeks of rework. What goes on the page, and what I leave out.', tags: ['Process', 'Pricing', 'Specs'],
+    intro: 'Before I write a line of code, I write one page. The client reads it, we fix what is wrong, and they sign it. Only then do I send a fixed price.',
+    h2a: 'One page, not a document', pa: 'Long specs get skimmed. A single page forces both of us to decide what matters. If something does not fit, it is probably not part of the first version.',
+    quote: 'The spec is the contract with whoever maintains the code — usually me.',
+    h2b: 'What goes on it', pb: 'Every spec has the same five blocks, in the same order, so clients learn to read them fast.',
+    code: 'SPEC FM-NN\n01 PROBLEM   one sentence\n02 USERS     roles, and what each can do\n03 MODULES   max 6, each with one verb\n04 DATA      the tables that matter\n05 METRIC    the one number that says it worked',
+    h3: 'What I leave out', list: ['Screens and pixels. Those come in week one, on a live link.', 'Nice-to-haves. They go in a "later" list at the bottom.', 'Technology choices the client does not need to approve.'],
+    h2c: 'What it saves', pc: 'On ChurchApp the spec took one afternoon. It named seven modules and one metric. The first public release shipped ten days later, with no module added or dropped. The full story is in the', pcLink: 'case study',
+    fig: 'The ChurchApp spec, page one of one',
+    h2d: 'When I skip it', pd: 'For a contract month on an existing product, there is nothing to spec up front. I still write one page per larger task, so the team can say no before I start.',
+    author: 'Fullstack developer in Venezuela. I build SaaS products and Google Workspace automations.', write: 'WRITE TO ME',
+    related: 'MORE NOTES', prev: 'PREVIOUS', next: 'NEXT', prevTitle: 'Apps Script as a backend for small teams', latest: 'This is the latest note'
+  },
+  es: {
+    menu: 'MENÚ', allNotes: 'TODAS LAS NOTAS', cat: 'PROCESO', contents: 'CONTENIDO', shot: 'CAPTURA', privacy: 'PRIVACIDAD', langName: 'ESPAÑOL',
+    title: 'Por qué todo proyecto empieza con una especificación de una página', dek: 'Un día escribiendo ahorra semanas de retrabajo. Qué va en la página y qué dejo fuera.', tags: ['Proceso', 'Precios', 'Especificación'],
+    intro: 'Antes de escribir una línea de código, escribo una página. El cliente la lee, corregimos lo que esté mal y la firma. Solo entonces envío un precio fijo.',
+    h2a: 'Una página, no un documento', pa: 'Las especificaciones largas se leen por encima. Una sola página nos obliga a los dos a decidir qué importa. Si algo no cabe, probablemente no es parte de la primera versión.',
+    quote: 'La especificación es el contrato con quien mantendrá el código — normalmente yo.',
+    h2b: 'Qué lleva', pb: 'Cada especificación tiene los mismos cinco bloques, en el mismo orden, para que el cliente aprenda a leerla rápido.',
+    code: 'ESPEC FM-NN\n01 PROBLEMA  una frase\n02 USUARIOS  roles, y qué puede hacer cada uno\n03 MÓDULOS   máx. 6, cada uno con un verbo\n04 DATOS     las tablas que importan\n05 MÉTRICA   el número que dice que funcionó',
+    h3: 'Qué dejo fuera', list: ['Pantallas y píxeles. Llegan en la primera semana, en un enlace en vivo.', 'Lo deseable. Va a una lista de "después" al final.', 'Decisiones técnicas que el cliente no necesita aprobar.'],
+    h2c: 'Qué ahorra', pc: 'En ChurchApp la especificación tomó una tarde. Nombró siete módulos y una métrica. La primera versión pública salió diez días después, sin agregar ni quitar ningún módulo. La historia completa está en el', pcLink: 'caso de estudio',
+    fig: 'La especificación de ChurchApp, página uno de una',
+    h2d: 'Cuándo no la hago', pd: 'En un mes de contrato sobre un producto existente no hay nada que especificar de antemano. Igual escribo una página por cada tarea grande, para que el equipo pueda decir que no antes de empezar.',
+    author: 'Desarrollador fullstack en Venezuela. Construyo productos SaaS y automatizaciones en Google Workspace.', write: 'ESCRÍBEME',
+    related: 'MÁS NOTAS', prev: 'ANTERIOR', next: 'SIGUIENTE', prevTitle: 'Apps Script como backend para equipos pequeños', latest: 'Esta es la nota más reciente'
+  }
+};
+class Component extends DCLogic {
+  state = { toc: 0, tocOpen: false };
+  renderVals() {
+    const lang = this.props.lang === 'es' ? 'es' : 'en', es = lang === 'es', c = COPY[lang], s = this.state;
+    const theme = this.props.theme === 'dark' ? 'dark' : 'light';
+    const bp = this.props.bp || 'desktop', isDesk = bp === 'desktop';
+    const on = { bg: 'var(--invert-bg)', fg: 'var(--invert-fg)' }, off = { bg: 'transparent', fg: 'var(--text)' };
+    const navL = es ? ['SERVICIOS', 'PROYECTOS', 'SOBRE MÍ', 'PRECIOS', 'CONTACTO', 'NOTAS'] : ['SERVICES', 'WORK', 'ABOUT', 'PRICING', 'CONTACT', 'NOTES'];
+    const heads = isDesk ? [c.h2a, c.h2b, '↳ ' + c.h3, c.h2c, c.h2d] : [c.h2a, c.h2b, c.h2c, c.h2d];
+    return {
+      c, theme, isLight: theme === 'light', isDark: theme === 'dark', isDesk, notDesk: !isDesk, notMobile: bp !== 'mobile', bodyDir: isDesk ? 'row' : 'column',
+      enBg: es ? off.bg : on.bg, enFg: es ? off.fg : on.fg, esBg: es ? on.bg : off.bg, esFg: es ? on.fg : off.fg,
+      nav: navL.map((label, i) => ({ id: '0' + (i + 1), label, cur: i === 5 ? 'page' : 'false', c: i === 5 ? 'var(--accent)' : 'var(--text)', bd: i === 5 ? '2px solid var(--accent)' : '2px solid transparent' })),
+      toc: heads.map((label, i) => {
+        const cur = i === s.toc, sub = label.startsWith('↳');
+        return { n: sub ? '' : '0' + (heads.slice(0, i + 1).filter(h => !h.startsWith('↳')).length), label, c: cur ? 'var(--text)' : 'var(--text-muted)', w: cur ? '600' : '400',
+          go: e => { e.preventDefault(); this.setState({ toc: i }); }, goClose: e => { e.preventDefault(); this.setState({ toc: i, tocOpen: false }); } };
+      }),
+      tocY: `translateY(${s.toc * 36}px)`, tocNow: `0${Math.min(s.toc, heads.length - 1) + 1}/0${heads.length} ${heads[Math.min(s.toc, heads.length - 1)]}`,
+      tocOpen: s.tocOpen, tocOpenS: String(s.tocOpen), tocRot: s.tocOpen ? 'rotate(45deg)' : 'none', tocToggle: () => this.setState({ tocOpen: !s.tocOpen })
+    };
+  }
+}
+</script>
+</body>
+</html>

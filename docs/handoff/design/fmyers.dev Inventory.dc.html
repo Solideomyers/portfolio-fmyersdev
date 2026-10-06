@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="design-system/styles.css" rel="stylesheet"></link><script src="./doc-page.js"></script><style>doc-page:not(:defined){visibility:hidden}a{color:#2B55C8;text-decoration:none}a:hover{color:#15181C;text-decoration:underline}</style></helmet>
+<doc-page size="letter" orientation="landscape" margin="0.6in">
+<div style="font-family:'Archivo',sans-serif;color:#15181C;font-size:13px;line-height:1.5">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#2B55C8;margin-bottom:8px">FMYERS.DEV · SHEET E · INVENTORY · REV 2026.10</div>
+<h1 style="margin:0 0 8px;font-stretch:110%;font-weight:700;font-size:32px;letter-spacing:-0.03em;line-height:1.05">Screens and components</h1>
+<p style="margin:0 0 16px;font-size:15px;color:#5B626A;max-width:760px;text-wrap:pretty">Everything to design and build for fmyers.dev. 12 screens × 3 breakpoints (1280 · 768 · 375) = 36 frames, plus the states listed per screen. Every screen exists in EN and ES, light and dark.</p>
+
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#15181C;border:1px solid #15181C;margin-bottom:20px">
+<sc-for list="{{ totals }}" as="k" hint-placeholder-count="4"><div style="background:#F4F2EE;padding:10px 12px"><div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">{{ k.label }}</div><div style="font-stretch:110%;font-weight:700;font-size:26px">{{ k.value }}</div></div></sc-for>
+</div>
+
+<h2 style="margin:20px 0 8px;font-stretch:110%;font-size:19px;border-bottom:2px solid #15181C;padding-bottom:4px">1. Screens</h2>
+<table style="width:100%;border-collapse:collapse;font-size:12px">
+<thead><tr><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A;width:44px">ID</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A;width:120px">SCREEN</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A;width:190px">ROUTE (EN · ES)</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">SECTIONS (TOP → BOTTOM)</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A;width:200px">EXTRA STATES</th></tr></thead>
+<tbody><sc-for list="{{ screens }}" as="s" hint-placeholder-count="10"><tr style="break-inside:avoid"><td style="border-bottom:1px solid #D5D1CA;padding:6px 4px;vertical-align:top;font-family:'JetBrains Mono',monospace;font-size:11px;color:#2B55C8">{{ s.id }}</td><td style="border-bottom:1px solid #D5D1CA;padding:6px 4px;vertical-align:top;font-weight:700">{{ s.name }}</td><td style="border-bottom:1px solid #D5D1CA;padding:6px 4px;vertical-align:top;font-family:'JetBrains Mono',monospace;font-size:11px">{{ s.route }}</td><td style="border-bottom:1px solid #D5D1CA;padding:6px 4px;vertical-align:top;text-wrap:pretty">{{ s.sections }}</td><td style="border-bottom:1px solid #D5D1CA;padding:6px 4px;vertical-align:top;color:#5B626A;text-wrap:pretty">{{ s.states }}</td></tr></sc-for></tbody>
+</table>
+<p style="margin:8px 0 0;font-size:12px;color:#5B626A">Global on every screen: SiteNav (sticky; mobile menu open/closed), SiteFooter, LangSwitch, ThemeToggle.</p>
+
+<h2 style="margin:24px 0 8px;font-stretch:110%;font-size:19px;border-bottom:2px solid #15181C;padding-bottom:4px;break-before:page">2. Components</h2>
+<table style="width:100%;border-collapse:collapse;font-size:12px">
+<thead><tr><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A;width:44px">ID</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A;width:140px">COMPONENT</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">VARIANTS</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">STATES</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A;width:150px">MOTION</th><th style="text-align:right;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A;width:60px">SCREENS</th></tr></thead>
+<tbody><sc-for list="{{ comps }}" as="c" hint-placeholder-count="12"><tr style="break-inside:avoid"><td style="border-bottom:1px solid #D5D1CA;padding:6px 4px;vertical-align:top;font-family:'JetBrains Mono',monospace;font-size:11px;color:#2B55C8">{{ c.id }}</td><td style="border-bottom:1px solid #D5D1CA;padding:6px 4px;vertical-align:top;font-weight:700">{{ c.name }}</td><td style="border-bottom:1px solid #D5D1CA;padding:6px 4px;vertical-align:top;text-wrap:pretty">{{ c.variants }}</td><td style="border-bottom:1px solid #D5D1CA;padding:6px 4px;vertical-align:top;text-wrap:pretty">{{ c.states }}</td><td style="border-bottom:1px solid #D5D1CA;padding:6px 4px;vertical-align:top;color:#5B626A">{{ c.motion }}</td><td style="border-bottom:1px solid #D5D1CA;padding:6px 4px;vertical-align:top;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px">{{ c.count }}</td></tr></sc-for></tbody>
+</table>
+
+<h2 style="margin:24px 0 8px;font-stretch:110%;font-size:19px;border-bottom:2px solid #15181C;padding-bottom:4px;break-before:page">3. Usage matrix</h2>
+<table style="width:100%;border-collapse:collapse;font-size:12px">
+<thead><tr><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">COMPONENT</th><sc-for list="{{ screenIds }}" as="h" hint-placeholder-count="10"><th style="text-align:center;border-bottom:1px solid #15181C;padding:6px 2px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.5px;color:#5B626A">{{ h }}</th></sc-for></tr></thead>
+<tbody><sc-for list="{{ matrix }}" as="r" hint-placeholder-count="12"><tr><td style="border-bottom:1px solid #D5D1CA;padding:5px 4px;font-weight:700">{{ r.name }}</td><sc-for list="{{ r.cells }}" as="x" hint-placeholder-count="10"><td style="border-bottom:1px solid #D5D1CA;padding:5px 2px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:#2B55C8">{{ x }}</td></sc-for></tr></sc-for></tbody>
+</table>
+<p style="margin:8px 0 0;font-size:12px;color:#5B626A">■ used · — not used. Screen keys: P01 Home · P02 Case study · P03 Services · P04 Pricing · P05 Contact · P05b Confirmation · P06 About · P07 404 · P08 Blog index · P09 Blog post · P10 Work index · P11 Privacy.</p>
+
+<h2 style="margin:24px 0 8px;font-stretch:110%;font-size:19px;border-bottom:2px solid #15181C;padding-bottom:4px;break-before:page">4. Project content model</h2>
+<p style="margin:0 0 10px;max-width:820px;text-wrap:pretty">Source: <code>Solideomyers/Solideomyers</code> (<code>case-studies/*.md</code>, <code>assets/shots/</code>). That repo is content only; the site will live in a new Astro repo. Projects are an Astro content collection, so adding one means adding one Markdown file per language plus its screenshots. No component or page changes.</p>
+<div style="display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;align-items:start">
+<table style="width:100%;border-collapse:collapse;font-size:12px">
+<thead><tr><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">FIELD</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">TYPE</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">FEEDS</th></tr></thead>
+<tbody><sc-for list="{{ fields }}" as="f" hint-placeholder-count="12"><tr><td style="border-bottom:1px solid #D5D1CA;padding:5px 4px;font-family:'JetBrains Mono',monospace;font-size:11px">{{ f.k }}</td><td style="border-bottom:1px solid #D5D1CA;padding:5px 4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#5B626A">{{ f.t }}</td><td style="border-bottom:1px solid #D5D1CA;padding:5px 4px">{{ f.u }}</td></tr></sc-for></tbody>
+</table>
+<div style="display:flex;flex-direction:column;gap:12px">
+<pre style="margin:0;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.55;background:#ECE9E3;border:1px solid #D5D1CA;padding:12px 14px;overflow-x:auto">src/content/work/
+  en/fm-01-churchapp.md
+  es/fm-01-churchapp.md
+  en/fm-02-chapel.md
+  es/fm-02-chapel.md
+  en/fm-03-aquapro.md   ← draft: true
+public/work/fm-01/churchapp.png
+public/work/fm-01/churchapp-panel.jpg
+public/work/fm-02/chapel.png</pre>
+<table style="width:100%;border-collapse:collapse;font-size:12px">
+<thead><tr><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">ID</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">PROJECT</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">READY</th></tr></thead>
+<tbody><sc-for list="{{ projects }}" as="p" hint-placeholder-count="3"><tr><td style="border-bottom:1px solid #D5D1CA;padding:5px 4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#2B55C8">{{ p.id }}</td><td style="border-bottom:1px solid #D5D1CA;padding:5px 4px;font-weight:700">{{ p.name }}</td><td style="border-bottom:1px solid #D5D1CA;padding:5px 4px;color:#5B626A">{{ p.ready }}</td></tr></sc-for></tbody>
+</table>
+</div>
+</div>
+<p style="margin:10px 0 0;font-size:12px;color:#5B626A;max-width:820px;text-wrap:pretty">Rules: the next project takes the next FM-ID. A project missing in one language falls back to the other with a “Only in English / Solo en español” tag. <code>draft: true</code> hides it from P01 and P10 but keeps its URL buildable for preview.</p>
+
+<h2 style="margin:24px 0 8px;font-stretch:110%;font-size:19px;border-bottom:2px solid #15181C;padding-bottom:4px">5. Placeholders to replace in development</h2>
+<p style="margin:0 0 8px;max-width:820px;text-wrap:pretty">Designs use these values. Each one lives in a single config or content field, so replacing it updates every screen at once.</p>
+<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:8px">
+<thead><tr><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A;width:180px">ITEM</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">REFERENCE VALUE</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A;width:230px">SOURCE FIELD</th></tr></thead>
+<tbody><sc-for list="{{ placeholders }}" as="p" hint-placeholder-count="8"><tr style="break-inside:avoid"><td style="border-bottom:1px solid #D5D1CA;padding:5px 4px;font-weight:700;vertical-align:top">{{ p.k }}</td><td style="border-bottom:1px solid #D5D1CA;padding:5px 4px;vertical-align:top;text-wrap:pretty">{{ p.v }}</td><td style="border-bottom:1px solid #D5D1CA;padding:5px 4px;vertical-align:top;font-family:'JetBrains Mono',monospace;font-size:11px;color:#5B626A">{{ p.f }}</td></tr></sc-for></tbody>
+</table>
+<p style="margin:0 0 4px;font-size:12px;color:#5B626A;max-width:820px;text-wrap:pretty">Price rationale: senior LatAm freelancer selling to US/EU clients and local SMBs. An MVP is ~4–6 weeks, automation is 1–2 weeks, contract work is part-time (~20 h/week ≈ $35/h).</p>
+
+<h3 style="margin:16px 0 6px;font-stretch:110%;font-size:15px">P06 timeline (from CV, Oct 2026)</h3>
+<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:6px">
+<thead><tr><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A;width:90px">YEAR</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A;width:220px">MILESTONE</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">ONE LINE</th></tr></thead>
+<tbody><sc-for list="{{ timeline }}" as="t" hint-placeholder-count="5"><tr style="break-inside:avoid"><td style="border-bottom:1px solid #D5D1CA;padding:5px 4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#2B55C8;vertical-align:top">{{ t.y }}</td><td style="border-bottom:1px solid #D5D1CA;padding:5px 4px;font-weight:700;vertical-align:top">{{ t.m }}</td><td style="border-bottom:1px solid #D5D1CA;padding:5px 4px;vertical-align:top;text-wrap:pretty">{{ t.d }}</td></tr></sc-for></tbody>
+</table>
+<p style="margin:0 0 4px;font-size:12px;color:#5B626A;max-width:820px;text-wrap:pretty">Order: newest first. Facts table: Ciudad Guayana, VE · VET (UTC−4) · Spanish native, English B1. The unfinished systems engineering degree is left out of the timeline. Field: <code>src/content/about/timeline.json</code>.</p>
+
+<h2 style="margin:24px 0 8px;font-stretch:110%;font-size:19px;border-bottom:2px solid #15181C;padding-bottom:4px">6. Gaps before design</h2>
+<ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px">
+<li><b>Content review (Francisco).</b> Drafts in <code>content/</code>: ES case studies, 10 FAQ items, privacy page, Other work. Confirm FM-02 metrics date.</li>
+<li><b>Infra (build).</b> Vercel hosting; DNS on Cloudflare for Email Routing (hola@fmyers.dev → fmyersdev@gmail.com; the CV still lists franciscomyers@gmail.com), Turnstile and cookieless analytics; Apps Script endpoint + Sheet.</li>
+</ol>
+</div>
+</doc-page>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const screens = [
+      { id: 'P01', name: 'Home', route: '/en · /es', sections: 'Hero (name, pitch, Status, 2 Buttons) → Selected work (ProjectCards with featured: true, max 3) + "All work →" → Services teaser (3 PackageCards, compact) → Process (SpecTable) → Latest note (1 PostRow, hidden while blog is off) → Contact CTA', states: 'Reveal on scroll; Status with next-slot date' },
+      { id: 'P02', name: 'Case study', route: '/en/work/[slug] · /es/proyectos/[slug]', sections: 'SheetHeader (FM-ID, title, client line) → SpecTable (sector, modules, stack, status) → TOC → Context · Problem · Constraints · Solution · Outcome (Prose) → Screens (Figures) → Next project (ProjectCard) → CTA', states: 'View Transition from card; no screenshots yet (hatch); outcome without metrics' },
+      { id: 'P10', name: 'Work index', route: '/en/work · /es/proyectos', sections: 'SheetHeader → Sector filter (ChipGroup, hidden until 6 projects) → ProjectCard grid, ordered by FM-ID desc → Other work (PostRows linking to repos) → Pagination (from 10 projects)', states: 'Filter hidden; 2 projects only' },
+      { id: 'P11', name: 'Privacy', route: '/en/privacy · /es/privacidad', sections: 'SheetHeader → Prose (data collected by the form, Apps Script/Sheet storage, cookieless analytics, contact)', states: '—' },
+      { id: 'P03', name: 'Services', route: '/en/services · /es/servicios', sections: 'SheetHeader → One sheet per service (scope, deliverables, stack Tags, typical timeline) → Process steps → CTA to Pricing/Contact', states: '—' },
+      { id: 'P04', name: 'Pricing', route: '/en/pricing · /es/precios', sections: 'SheetHeader → 3 PackageCards in USD (SaaS MVP from $4,500 per project, featured · Automation from $900 per project · Fullstack from $2,800/month) → Church/NGO note → Comparison SpecTable (+ maintenance plan from $150/month) → FAQ (6) → CTA', states: 'Featured package; FAQ first open' },
+      { id: 'P05', name: 'Contact', route: '/en/contact · /es/contacto', sections: 'SheetHeader → Status → ContactForm (name, email, ChipGroup project type, ChipGroup budget optional incl. “Not sure yet”, message, honeypot + Turnstile) → privacy link → WhatsApp + hola@fmyers.dev as secondary links', states: 'Empty, focus, error (shake), sending (~2s Apps Script), network error' },
+      { id: 'P05b', name: 'Confirmation', route: '/en/contact/sent · /es/contacto/enviado', sections: 'Drawn checkmark → message + “reply within 2 business days (VET, UTC−4)” → Button back home', states: 'No-JS fallback' },
+      { id: 'P06', name: 'About', route: '/en/about · /es/sobre-mi', sections: 'Portrait Figure (B&W home session) → Bio (Prose, faith implicit) → Facts SpecTable (time zone, languages) → Stack (SpecTable) → Timeline (4–6 milestones) → Tags → CTA', states: 'Portrait loading (hatch)' },
+      { id: 'P07', name: '404', route: '/404 (localized)', sections: 'Sheet "not found" with frame draw → Button home + links to Work / Notes', states: 'EN/ES by path prefix' },
+      { id: 'P08', name: 'Blog index', route: '/en/notes · /es/notas', sections: 'SheetHeader → Category filter (ChipGroup: Process, Automation, Engineering, Cases) → PostRow list (language tag on single-language posts) → Pagination (from 10) → RSS link', states: 'Filtered with 0 results; hidden from nav until 3 posts' },
+      { id: 'P09', name: 'Blog post', route: '/en/notes/[slug] · /es/notas/[slug]', sections: 'Post header (N-ID, date, meta, Tags) → Prose (h2/h3, code, quote, Figure) → Author block + “Write to me” CTA → Related (2 PostRows) → Prev/next (chronological)', states: 'Long code block overflow; post in one language only; TOC only with ≥3 h2' }
+    ];
+    const key = id => parseFloat(id.slice(1).replace('b', '.5'));
+    screens.sort((a, b) => key(a.id) - key(b.id));
+    const ids = screens.map(s => s.id);
+    const comps = [
+      { id: 'C01', name: 'Button', variants: 'Primary (ink), secondary (outline), text link with →, external ↗', states: 'Default, hover, press, focus, disabled, loading', motion: 'Press 160ms, arrow nudge', use: ['P01','P02','P03','P04','P05','P05b','P06','P07','P09','P10'] },
+      { id: 'C02', name: 'Field + ChipGroup', variants: 'Text, email, textarea; chip single/multi select', states: 'Empty, focus, filled, error, disabled', motion: 'Error shake 300ms', use: ['P05','P08','P10'] },
+      { id: 'C03', name: 'ContactForm', variants: 'Full (P05), compact CTA (P01 link-out)', states: 'Idle, invalid, sending, sent, failed', motion: 'Checkmark stroke 600ms', use: ['P05','P05b'] },
+      { id: 'C04', name: 'SheetHeader / Sheet', variants: 'Page header, section label, 404 sheet', states: 'Static', motion: 'Frame draw, reveal', use: ids },
+      { id: 'C05', name: 'SpecTable', variants: '2-col key/value, comparison grid, metrics', states: 'Row omitted when no data', motion: 'Row stagger 60ms', use: ['P01','P02','P03','P04','P06'] },
+      { id: 'C06', name: 'Status', variants: 'Available (green dot), booked (graphite)', states: 'On, off', motion: 'Dot pulse (off in reduced motion)', use: ['P01','P05'] },
+      { id: 'C07', name: 'Tag / Chip', variants: 'Static tag, selectable chip', states: 'Default, hover, selected, focus', motion: 'Hover 200ms', use: ['P02','P03','P06','P08','P09','P10'] },
+      { id: 'C08', name: 'ProjectCard', variants: 'Large (home), grid (work index), next-project (case footer)', states: 'Default, hover (cobalt border), focus, no screenshot (hatch)', motion: 'View Transition morph', use: ['P01','P02','P10'] },
+      { id: 'C09', name: 'PackageCard', variants: 'Compact (home), full (pricing), featured', states: 'Default, hover, featured', motion: 'Hover 200ms', use: ['P01','P04'] },
+      { id: 'C10', name: 'SiteNav / SiteFooter', variants: 'Desktop bar, mobile menu (44px rows)', states: 'Current page, menu open/closed, scrolled', motion: 'Menu sheet 450ms', use: ids },
+      { id: 'C11', name: 'LangSwitch + ThemeToggle', variants: 'In nav, in mobile menu', states: 'EN/ES, light/dark, focus', motion: 'Text fade 150ms, circular reveal', use: ids },
+      { id: 'C12', name: 'Figure', variants: 'Screenshot (FIG frame + caption), portrait, hatch placeholder', states: 'Loading (hatch), loaded', motion: 'Reveal 350ms', use: ['P02','P06','P09'] },
+      { id: 'C13', name: 'PostRow', variants: 'List row, related row', states: 'Default, hover, focus', motion: 'Hover 200ms', use: ['P01','P08','P09','P10'] },
+      { id: 'C14', name: 'Prose', variants: 'Body, case-study body, post body (code, quote, lists)', states: 'Static', motion: 'None', use: ['P02','P06','P09','P11'] },
+      { id: 'C15', name: 'Pagination', variants: 'Numbered (index pages), prev/next with titles (post, case)', states: 'Current, hover, focus, disabled at ends', motion: 'Hover 200ms, arrow nudge', use: ['P02','P08','P09','P10'] },
+      { id: 'C16', name: 'FAQ', variants: 'Question rows (mono Q-ID + question), native details/summary', states: 'Closed, open, hover, focus', motion: '+ rotates to × 200ms; answer fade + 6px rise 250ms (height instant)', use: ['P03','P04'] },
+      { id: 'C17', name: 'TOC', variants: 'Sticky sidebar (desktop), collapsible block (tablet/mobile)', states: 'Current section, hover, focus, open/closed', motion: 'Active marker slide 200ms', use: ['P02','P09'] }
+    ];
+    return {
+      totals: [
+        { label: 'SCREENS', value: String(screens.length) },
+        { label: 'FRAMES (×3 BREAKPOINTS)', value: String(screens.length * 3) },
+        { label: 'COMPONENTS', value: String(comps.length) },
+        { label: 'LOCALES × THEMES', value: '2 × 2' }
+      ],
+      screens,
+      screenIds: ids,
+      fields: [
+        { k: 'id', t: 'FM-NN', u: 'Card label, URL order, SheetHeader' },
+        { k: 'slug · lang', t: 'string · en|es', u: 'Route, LangSwitch pair' },
+        { k: 'title · summary', t: 'string', u: 'ProjectCard, SheetHeader, meta' },
+        { k: 'client · sector', t: 'string · string[]', u: 'Client line, P10 filter' },
+        { k: 'modules · stack', t: 'string[]', u: 'SpecTable, Tags' },
+        { k: 'status', t: 'live|in-use|wip', u: 'SpecTable, card badge' },
+        { k: 'role · timeline', t: 'string', u: 'Client line' },
+        { k: 'cover · shots[]', t: 'image + alt + caption', u: 'ProjectCard, Figures' },
+        { k: 'metrics[]', t: '{ label, value, date }', u: 'Outcome SpecTable (omitted if empty)' },
+        { k: 'featured · order', t: 'boolean · number', u: 'P01 selection' },
+        { k: 'draft', t: 'boolean', u: 'Hidden from lists' },
+        { k: 'body', t: 'Markdown, 5 h2 sections', u: 'Prose + TOC' }
+      ],
+      placeholders: [
+        { k: 'SaaS MVP', v: 'From $4,500 per project · 4–6 weeks · featured', f: 'src/content/pricing/*.md → from' },
+        { k: 'Automation', v: 'From $900 per project · 1–2 weeks', f: 'src/content/pricing/*.md → from' },
+        { k: 'Fullstack contract', v: 'From $2,800/month · ~20 h/week', f: 'src/content/pricing/*.md → from' },
+        { k: 'Maintenance plan', v: 'From $150/month · after the 30 included days', f: 'src/content/pricing/*.md → from' },
+        { k: 'Budget chips (P05)', v: '< $1,000 · $1,000–5,000 · $5,000–10,000 · $10,000+ · Not sure yet', f: 'src/config/site.ts → budgets' },
+        { k: 'Availability', v: 'Available from Nov 2026 (shows “Available” once the date passes)', f: 'src/config/site.ts → availableFrom' },
+        { k: 'Portrait', v: 'Hatch placeholder, 4:5, labelled “PORTRAIT · B&W”', f: 'src/assets/portrait.jpg' },
+        { k: 'Screenshots', v: 'Hatch placeholders with FIG label + caption, 16:10 desktop / 9:19.5 mobile', f: 'public/work/fm-NN/* → shots[]' }
+      ],
+      timeline: [
+        { y: '2026 — now', m: 'Freelance · ChurchApp (Gracia Eterna)', d: 'Local church. Design, fullstack and deployment of the membership system in Next.js + Supabase; v1.0 public 10 days after the first commit (FM-01).' },
+        { y: '2025 — now', m: 'Developer · Chapel Library', d: 'Nonprofit, Pensacola (US), remote. Automated inventory and print distribution across warehouses with Apps Script and Workspace (FM-02).' },
+        { y: '2024', m: 'Full Stack · La Web del Colchón', d: 'E-commerce, Spain, remote. New database, data migration, REST API and new frontend in Laravel.' },
+        { y: '2023', m: 'Full Stack · Skills EMPLI', d: 'Job platform, Lima (PE), remote. Landing pages, dashboards and the candidate–company matching flow in React.' },
+        { y: '2023', m: 'Henry · Full Stack bootcamp', d: 'Formal switch from operations to software.' },
+        { y: '2018 — 2022', m: 'Procurement admin · CVG Venalum', d: 'Aluminium industry, Puerto Ordaz. Ran the contracts database for works and services; where the data-flow mindset comes from.' }
+      ],
+      projects: [
+        { id: 'FM-01', name: 'ChurchApp', ready: 'Copy, metrics; shots as hatch placeholders' },
+        { id: 'FM-02', name: 'Chapel', ready: 'Copy, metrics; shot as hatch placeholder' },
+        { id: 'FM-03', name: 'AquaPro', ready: 'Paused (draft: true)' }
+      ],
+      comps: comps.map(c => ({ ...c, count: c.use.length + '/' + ids.length })),
+      matrix: comps.map(c => ({ name: c.name, cells: ids.map(i => c.use.includes(i) ? '■' : '—') }))
+    };
+  }
+}
+</script>
+</body>
+</html>

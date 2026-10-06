@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="design-system/styles.css" rel="stylesheet"></link><style>a{color:var(--accent);text-decoration:none}a:hover{color:var(--text);text-decoration:underline}button{font:inherit}</style></helmet>
+<div data-theme="{{ theme }}" style="container-type:inline-size;background:var(--bg);color:var(--text);font-family:var(--font-sans);width:100%">
+
+<header style="position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:var(--border-ink)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px clamp(20px,4cqi,48px)">
+<a href="#" aria-label="fmyers.dev home" style="display:flex;flex:none"><sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}"><img src="assets/wordmark-light.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if><sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><img src="assets/wordmark-dark.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if></a>
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><nav style="display:flex;gap:22px;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap"><sc-for list="{{ nav }}" as="n" hint-placeholder-count="5"><a href="#" aria-current="{{ n.cur }}" style="display:flex;gap:6px;color:{{ n.c }};text-decoration:none;padding:4px 0 2px;border-bottom:{{ n.bd }}"><span style="color:var(--text-muted)">{{ n.id }}</span>{{ n.label }}</a></sc-for></nav></sc-if>
+<div style="display:flex;gap:10px;align-items:center;flex:none">
+<sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}"><div style="display:flex;border:var(--border-ink)"><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ enBg }};color:{{ enFg }}">EN</span><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ esBg }};color:{{ esFg }}">ES</span></div><button aria-label="Toggle theme" style="font-family:var(--font-mono);font-size:14px;width:34px;height:34px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">◐</button></sc-if>
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><a href="#" style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap;background:var(--accent);color:var(--accent-fg);padding:10px 16px;text-decoration:none">{{ c.startCaps }}</a></sc-if>
+<sc-if value="{{ notDesk }}" hint-placeholder-val="{{ false }}"><button style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;min-height:44px;padding:0 14px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">{{ c.menu }}</button></sc-if>
+</div>
+</div>
+</header>
+
+<main style="max-width:1280px;margin:0 auto;padding:clamp(20px,3cqi,32px) clamp(20px,4cqi,48px) clamp(56px,8cqi,96px);display:flex;flex-direction:column;gap:clamp(40px,6cqi,72px)">
+
+<div style="display:flex;flex-direction:column;gap:16px">
+<a href="#" style="align-self:flex-start;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;color:var(--accent);min-height:32px;display:flex;align-items:center">← {{ c.allWork }}</a>
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>FM-01 — {{ c.caseStudy }}</span><span style="display:flex;align-items:center;gap:8px;color:var(--text-muted)"><span style="width:8px;height:8px;border-radius:50%;background:var(--ok)"></span>{{ c.live }} · v1.2.0</span></div>
+<section data-screen-label="Case · Header" style="border:var(--border-frame);position:relative;background:var(--bg)">
+<div style="padding:clamp(24px,4cqi,48px);display:flex;flex-direction:column;gap:16px">
+<h1 style="margin:0;font-stretch:110%;font-weight:700;font-size:clamp(44px,6.6cqi,84px);letter-spacing:-0.035em;line-height:0.95">ChurchApp</h1>
+<p style="margin:0;font-size:clamp(17px,1.5cqi,19px);line-height:1.45;max-width:680px;text-wrap:pretty">{{ c.summary }}</p>
+<div style="display:flex;gap:6px 20px;flex-wrap:wrap;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)"><span>{{ c.client }}</span><span>{{ c.role }}</span><span>{{ c.timeline }}</span></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:1px;background:var(--line);border-top:var(--border-ink)"><sc-for list="{{ spec }}" as="r" hint-placeholder-count="4"><div style="background:var(--surface);padding:12px 16px;display:flex;flex-direction:column;gap:4px"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ r.k }}</span><span style="font-size:15px;line-height:1.4;text-wrap:pretty">{{ r.v }}</span></div></sc-for></div>
+<div style="position:absolute;right:-2px;bottom:-2px;width:28px;height:28px;background:var(--accent)"></div>
+</section>
+</div>
+
+<figure style="margin:0;display:flex;flex-direction:column;gap:8px">
+<div style="aspect-ratio:16/10;border:var(--border-ink);background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 10px);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ c.shot }} · 1600×1000</div>
+<figcaption style="display:flex;gap:12px;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted);text-wrap:pretty"><span style="color:var(--accent);flex:none">FIG. 1</span><span>{{ c.fig1 }}</span></figcaption>
+</figure>
+
+<div style="display:flex;gap:64px;align-items:flex-start;flex-direction:{{ bodyDir }}">
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><nav aria-label="{{ c.contents }}" style="position:sticky;top:88px;flex:0 0 240px;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px">{{ c.contents }}</span>
+<div style="position:relative;border-left:var(--border-rule)">
+<div aria-hidden="true" style="position:absolute;left:-1px;top:0;width:2px;height:36px;background:var(--accent);transform:{{ tocY }};transition:transform 200ms var(--ease-in-out)"></div>
+<sc-for list="{{ toc }}" as="h" hint-placeholder-count="5"><a href="#" onClick="{{ h.go }}" style="display:flex;gap:10px;align-items:center;height:36px;padding-left:14px;font-size:15px;color:{{ h.c }};font-weight:{{ h.w }};text-decoration:none"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">{{ h.n }}</span>{{ h.label }}</a></sc-for>
+</div>
+</nav></sc-if>
+<sc-if value="{{ notDesk }}" hint-placeholder-val="{{ false }}"><div style="width:100%;border:var(--border-ink)">
+<button onClick="{{ tocToggle }}" aria-expanded="{{ tocOpenS }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px;padding:0 14px;border:0;background:transparent;color:var(--text);cursor:pointer;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;text-align:left"><span>{{ c.contents }} · {{ tocNow }}</span><span aria-hidden="true" style="font-size:18px;transform:{{ tocRot }};transition:transform 200ms var(--ease-out)">+</span></button>
+<sc-if value="{{ tocOpen }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;border-top:var(--border-rule)"><sc-for list="{{ toc }}" as="h" hint-placeholder-count="5"><a href="#" onClick="{{ h.goClose }}" style="display:flex;gap:10px;align-items:center;min-height:44px;padding:0 14px;border-bottom:var(--border-rule);font-size:15px;color:{{ h.c }};font-weight:{{ h.w }};text-decoration:none"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">{{ h.n }}</span>{{ h.label }}</a></sc-for></div></sc-if>
+</div></sc-if>
+
+<article style="flex:1 1 auto;min-width:0;width:100%;max-width:680px;display:flex;flex-direction:column;gap:clamp(36px,4cqi,48px)">
+<sc-for list="{{ sections }}" as="s" hint-placeholder-count="5"><section style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;gap:12px;align-items:baseline"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--accent)">{{ s.n }}</span><h2 style="margin:0;font-stretch:110%;font-weight:700;font-size:clamp(24px,2.2cqi,28px);letter-spacing:-0.5px">{{ s.h }}</h2></div>
+<sc-for list="{{ s.p }}" as="p" hint-placeholder-count="1"><p style="margin:0;font-size:17px;line-height:1.6;text-wrap:pretty">{{ p }}</p></sc-for>
+<sc-if value="{{ s.hasList }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:10px"><sc-for list="{{ s.list }}" as="li" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:20px minmax(0,1fr);gap:6px;font-size:17px;line-height:1.55"><span style="font-family:var(--font-mono);color:var(--text-muted)">—</span><span style="text-wrap:pretty"><b style="font-weight:600">{{ li.b }}</b>{{ li.t }}</span></div></sc-for></div></sc-if>
+<sc-if value="{{ s.hasMetrics }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:6px"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:1px;background:var(--line);border:var(--border-ink)"><sc-for list="{{ metrics }}" as="m" hint-placeholder-count="3"><div style="background:var(--surface);padding:16px;display:flex;flex-direction:column;gap:6px"><span style="font-stretch:110%;font-weight:700;font-size:36px;letter-spacing:-1px;line-height:1">{{ m.v }}</span><span style="font-size:14px;line-height:1.35;color:var(--text-muted);text-wrap:pretty">{{ m.l }}</span></div></sc-for></div><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ c.asOf }}</span></div></sc-if>
+<sc-if value="{{ s.hasFig }}" hint-placeholder-val="{{ false }}"><figure style="margin:8px 0 0;display:flex;flex-direction:column;gap:8px"><div style="aspect-ratio:16/10;border:var(--border-ink);background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 10px);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ c.shot }} · 1600×1000</div><figcaption style="display:flex;gap:12px;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)"><span style="color:var(--accent);flex:none">FIG. 2</span><span>{{ c.fig2 }}</span></figcaption></figure></sc-if>
+</section></sc-for>
+</article>
+</div>
+
+<section data-screen-label="Case · Next" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>{{ c.next }}</span><span style="color:var(--text-muted)">02 / 02</span></div>
+<a href="#" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));border:var(--border-ink);background:var(--surface);color:var(--text);text-decoration:none;transition:border-color 200ms ease" style-hover="border-color:var(--accent)">
+<div style="aspect-ratio:16/10;background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 10px);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ c.shot }} · 16:10</div>
+<div style="padding:24px;display:flex;flex-direction:column;gap:10px;border-left:var(--border-rule)">
+<div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:13px;letter-spacing:1px"><span style="color:var(--accent)">FM-02</span><span style="color:var(--text-muted)">{{ c.inUse }}</span></div>
+<div style="font-stretch:110%;font-weight:700;font-size:34px;letter-spacing:-1px">Chapel</div>
+<div style="font-size:16px;line-height:1.45;text-wrap:pretty">{{ c.chapel }}</div>
+<div style="margin-top:auto;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;color:var(--accent)">{{ c.readCaps }} →</div>
+</div>
+</a>
+</section>
+
+<section data-screen-label="Case · CTA" style="border-top:var(--border-frame);padding-top:24px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap">
+<div style="font-stretch:110%;font-weight:700;font-size:clamp(26px,2.7cqi,34px);letter-spacing:-0.5px;text-wrap:balance">{{ c.similar }}</div>
+<a href="#" style="font-size:17px;font-weight:600;background:var(--accent);color:var(--accent-fg);padding:16px 24px;text-decoration:none;white-space:nowrap">{{ c.start }} →</a>
+</section>
+</main>
+
+<footer style="border-top:var(--border-ink);padding:20px clamp(20px,4cqi,48px);display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)"><span>FMYERS.DEV · REV 2026.10</span><span style="display:flex;gap:20px;flex-wrap:wrap"><a href="https://github.com/Solideomyers">GITHUB ↗</a><a href="https://linkedin.com/in/franciscomyers">LINKEDIN ↗</a><a href="https://wa.me/584249080683">WHATSAPP ↗</a><a href="#">{{ c.privacy }}</a></span><span>© 2026 · {{ c.langName }}</span></footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;es&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en'|'es'&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;},&quot;bp&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;tablet&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop'|'tablet'|'mobile'&quot;}}">
+const COPY = {
+  en: {
+    startCaps: 'START A PROJECT', start: 'Start a project', menu: 'MENU', allWork: 'ALL WORK', caseStudy: 'CASE STUDY', live: 'LIVE', inUse: 'IN USE',
+    summary: 'Membership system for a local church, from application to congregational vote. Public in 10 days.',
+    client: 'GRACIA ETERNA · LOCAL CHURCH', role: 'DESIGN, FULLSTACK AND DEPLOYMENT', timeline: 'AUG 2026 — ONGOING',
+    shot: 'SCREENSHOT', fig1: 'Public page — application and folio check', fig2: 'Staff panel — cohort overview',
+    contents: 'CONTENTS', asOf: 'AS OF SEP 2026', next: 'NEXT PROJECT', readCaps: 'READ CASE',
+    chapel: 'Inventory and distribution for a nonprofit publisher across two warehouses, on Google Workspace.',
+    similar: 'Want something similar?', privacy: 'PRIVACY', langName: 'ENGLISH',
+    heads: ['Context', 'Problem', 'Constraints', 'Solution', 'Outcome'],
+    spec: [['SECTOR', 'Faith · Nonprofit'], ['MODULES', 'Applications · Cohorts · Attendance · Interviews · Member roll · Minutes · Sunday publications'], ['STACK', 'Next.js · TypeScript · Supabase · Vercel'], ['STATUS', 'Live · v1.2.0']],
+    p: [
+      ['Gracia Eterna is a Reformed Baptist church. Becoming a member takes four phases: a formal application, five modules of doctrinal instruction taken with a cohort, a confirmation interview with the pastors, and a vote of the congregational assembly.'],
+      ['The church needed one place to run that whole process: take applications, record attendance class by class, approve modules, schedule interviews and keep the member roll. It also needed a way for each applicant to see where their file stood without asking the office.'],
+      [], [], []
+    ],
+    lists: [[], [],
+      [['', 'The pastoral team works from their phones, and the member roll and bulletins are photocopied in black and white. Status is shown with letter codes and borders, never with background colour alone.'], ['', 'Production holds real personal data. Development runs on a separate database, and only a release touches production.'], ['', 'Staff access is by invitation only. There is no public sign-up.']],
+      [['Public page: ', "explains membership and its four phases and takes the application with the applicant's testimony. The applicant gets a folio number by email and checks progress with folio and ID, with no password."], ['Staff panel: ', 'candidates, cohorts, attendance per class from the phone, module approval one by one (reversible), interviews, member roll, transfers, minutes and hymnal.'], ['Sunday publications: ', 'bulletin, mobile bulletin, liturgy and prayer service, with an order of worship the office configures without touching code.'], ['Key decision: ', 'no custom server. The client talks to Supabase directly, row-level security guards every table, and sensitive logic lives in database and Edge Functions.']],
+      [['', 'Public v1.0.0 shipped 10 days after the first commit (Aug 25 → Sep 4, 2026). v1.1.0 followed on Sep 9 and v1.2.0 on Sep 24.']]
+    ],
+    metrics: [['10 days', 'First commit to public v1.0.0'], ['11', 'Candidates in cohort 3, phase 1'], ['100%', 'Average attendance, phase 1']]
+  },
+  es: {
+    startCaps: 'INICIAR PROYECTO', start: 'Iniciar un proyecto', menu: 'MENÚ', allWork: 'TODOS LOS PROYECTOS', caseStudy: 'CASO DE ESTUDIO', live: 'EN VIVO', inUse: 'EN USO',
+    summary: 'Sistema de membresía para una iglesia local, desde la solicitud hasta el voto de la asamblea. Público en 10 días.',
+    client: 'GRACIA ETERNA · IGLESIA LOCAL', role: 'DISEÑO, FULLSTACK Y DESPLIEGUE', timeline: 'AGO 2026 — EN CURSO',
+    shot: 'CAPTURA', fig1: 'Página pública — solicitud y consulta de folio', fig2: 'Panel del equipo — vista de la cohorte',
+    contents: 'CONTENIDO', asOf: 'DATOS A SEP 2026', next: 'SIGUIENTE PROYECTO', readCaps: 'LEER CASO',
+    chapel: 'Inventario y distribución de una editorial sin fines de lucro en dos almacenes, sobre Google Workspace.',
+    similar: '¿Quieres algo parecido?', privacy: 'PRIVACIDAD', langName: 'ESPAÑOL',
+    heads: ['Contexto', 'Problema', 'Restricciones', 'Solución', 'Resultado'],
+    spec: [['SECTOR', 'Fe · Sin fines de lucro'], ['MÓDULOS', 'Solicitudes · Cohortes · Asistencia · Entrevistas · Padrón · Actas · Publicaciones dominicales'], ['STACK', 'Next.js · TypeScript · Supabase · Vercel'], ['ESTADO', 'En vivo · v1.2.0']],
+    p: [
+      ['Gracia Eterna es una iglesia bautista reformada. Hacerse miembro tiene cuatro fases: una solicitud formal, cinco módulos de instrucción doctrinal cursados en cohorte, una entrevista de confirmación con los pastores y el voto de la asamblea congregacional.'],
+      ['La iglesia necesitaba un solo lugar para llevar todo ese proceso: recibir solicitudes, registrar la asistencia clase por clase, aprobar módulos, agendar entrevistas y mantener el padrón. También hacía falta que cada solicitante viera en qué punto estaba su expediente sin preguntar a la oficina.'],
+      [], [], []
+    ],
+    lists: [[], [],
+      [['', 'El equipo pastoral trabaja desde el teléfono, y el padrón y los boletines se fotocopian en blanco y negro. Los estados se muestran con códigos de letra y bordes, nunca solo con color de fondo.'], ['', 'Producción guarda datos personales reales. El desarrollo usa una base de datos aparte, y solo una versión publicada toca producción.'], ['', 'El acceso del equipo es solo por invitación. No hay registro público.']],
+      [['Página pública: ', 'explica la membresía y sus cuatro fases y recibe la solicitud con el testimonio. El solicitante recibe un folio por correo y consulta su avance con folio y cédula, sin contraseña.'], ['Panel del equipo: ', 'candidatos, cohortes, asistencia por clase desde el teléfono, aprobación de módulos uno a uno (reversible), entrevistas, padrón, traslados, actas e himnario.'], ['Publicaciones dominicales: ', 'boletín, boletín móvil, liturgia y culto de oración, con un orden de culto que la oficina configura sin tocar código.'], ['Decisión clave: ', 'sin servidor propio. El cliente habla con Supabase, la seguridad a nivel de fila protege cada tabla y la lógica sensible vive en funciones de base de datos y Edge Functions.']],
+      [['', 'La v1.0.0 pública salió 10 días después del primer commit (25 ago → 4 sep 2026). Siguieron la v1.1.0 el 9 de septiembre y la v1.2.0 el 24.']]
+    ],
+    metrics: [['10 días', 'Del primer commit a la v1.0.0 pública'], ['11', 'Candidatos en la cohorte 3, fase 1'], ['100%', 'Asistencia promedio, fase 1']]
+  }
+};
+class Component extends DCLogic {
+  state = { toc: 0, tocOpen: false };
+  renderVals() {
+    const lang = this.props.lang === 'es' ? 'es' : 'en', es = lang === 'es', c = COPY[lang];
+    const theme = this.props.theme === 'dark' ? 'dark' : 'light';
+    const bp = this.props.bp || 'desktop', isDesk = bp === 'desktop', s = this.state;
+    const on = { bg: 'var(--invert-bg)', fg: 'var(--invert-fg)' }, off = { bg: 'transparent', fg: 'var(--text)' };
+    const navL = es ? ['SERVICIOS', 'PROYECTOS', 'SOBRE MÍ', 'PRECIOS', 'CONTACTO'] : ['SERVICES', 'WORK', 'ABOUT', 'PRICING', 'CONTACT'];
+    return {
+      c, theme, isLight: theme === 'light', isDark: theme === 'dark', isDesk, notDesk: !isDesk, notMobile: bp !== 'mobile',
+      bodyDir: isDesk ? 'row' : 'column',
+      enBg: es ? off.bg : on.bg, enFg: es ? off.fg : on.fg, esBg: es ? on.bg : off.bg, esFg: es ? on.fg : off.fg,
+      nav: navL.map((label, i) => ({ id: '0' + (i + 1), label, cur: i === 1 ? 'page' : 'false', c: i === 1 ? 'var(--accent)' : 'var(--text)', bd: i === 1 ? '2px solid var(--accent)' : '2px solid transparent' })),
+      spec: c.spec.map(([k, v]) => ({ k, v })),
+      metrics: c.metrics.map(([v, l]) => ({ v, l })),
+      sections: c.heads.map((h, i) => ({ n: '0' + (i + 1), h, p: c.p[i], list: c.lists[i].map(([b, t]) => ({ b, t })), hasList: c.lists[i].length > 0, hasMetrics: i === 4, hasFig: i === 3 })),
+      toc: c.heads.map((label, i) => {
+        const cur = i === s.toc;
+        return { n: '0' + (i + 1), label, c: cur ? 'var(--text)' : 'var(--text-muted)', w: cur ? '600' : '400',
+          go: e => { e.preventDefault(); this.setState({ toc: i }); }, goClose: e => { e.preventDefault(); this.setState({ toc: i, tocOpen: false }); } };
+      }),
+      tocY: `translateY(${s.toc * 36}px)`, tocNow: `0${s.toc + 1}/05 ${c.heads[s.toc]}`,
+      tocOpen: s.tocOpen, tocOpenS: String(s.tocOpen), tocRot: s.tocOpen ? 'rotate(45deg)' : 'none', tocToggle: () => this.setState({ tocOpen: !s.tocOpen })
+    };
+  }
+}
+</script>
+</body>
+</html>

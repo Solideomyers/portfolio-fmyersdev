@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="design-system/styles.css" rel="stylesheet"></link><style>body{margin:0;background:var(--bg)}a{color:var(--accent);text-decoration:none}a:hover{color:var(--text);text-decoration:underline}input,textarea,select,button{font:inherit}</style></helmet>
+<div data-theme="{{ theme }}" style="background:var(--bg);color:var(--text);font-family:var(--font-sans);min-height:100vh">
+<div style="position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:var(--border-ink);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px var(--gutter)">
+<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap"><sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}"><img src="assets/wordmark-light.svg" alt="fmyers.dev" style="height:26px;display:block"></img></sc-if><sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><img src="assets/wordmark-dark.svg" alt="fmyers.dev" style="height:26px;display:block"></img></sc-if><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--text-muted)">DESIGN SYSTEM · REV 2026.10</span></div>
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<div style="display:flex;border:var(--border-ink)"><sc-for list="{{ langOpts }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;padding:8px 14px;border:0;cursor:pointer;background:{{ o.bg }};color:{{ o.fg }};transition:background-color 160ms ease,transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">{{ o.label }}</button></sc-for></div>
+<div style="display:flex;border:var(--border-ink)"><sc-for list="{{ themeOpts }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;padding:8px 14px;border:0;cursor:pointer;background:{{ o.bg }};color:{{ o.fg }};transition:background-color 160ms ease,transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">{{ o.label }}</button></sc-for></div>
+</div>
+</div>
+
+<div ref="{{ bodyRef }}" style="max-width:1280px;margin:0 auto;padding:48px var(--gutter) 96px;display:flex;flex-direction:column;gap:72px">
+
+<div style="display:flex;flex-direction:column;gap:12px;max-width:760px">
+<h1 style="margin:0;font-stretch:110%;font-weight:700;font-size:var(--fs-display-l);letter-spacing:-0.03em;line-height:1">Every surface is a numbered sheet.</h1>
+<div style="font-size:var(--fs-body-l);line-height:1.45;color:var(--text-muted);text-wrap:pretty">Tokens, components and rules for fmyers.dev, the GitHub profile and LinkedIn. One accent, square corners, ink frames, mono labels. Built for Astro: tokens live in <span style="font-family:var(--font-mono);font-size:15px;color:var(--text)">design-system/styles.css</span>.</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;border-bottom:var(--border-frame);padding-bottom:10px"><span>SHEET A — FOUNDATIONS</span><span style="color:var(--text-muted)">A1–A5</span></div>
+
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">A1 — COLOR</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:1px;background:var(--line);border:var(--border-rule)">
+<sc-for list="{{ swatches }}" as="s" hint-placeholder-count="10"><div style="background:var(--surface);display:flex;flex-direction:column">
+<div style="height:72px;background:{{ s.v }};border-bottom:var(--border-rule)"></div>
+<div style="padding:12px;display:flex;flex-direction:column;gap:4px"><div style="font-weight:600;font-size:15px">{{ s.name }}</div><div style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">{{ s.token }}</div><div style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">{{ s.l }} · {{ s.d }}</div><div style="font-size:13px;color:var(--text-muted);text-wrap:pretty">{{ s.use }}</div></div>
+</div></sc-for>
+</div>
+<div style="font-size:15px;color:var(--text-muted);text-wrap:pretty;max-width:760px">Components only read the semantic layer (<span style="font-family:var(--font-mono);font-size:13px">--bg, --surface, --line, --text, --accent…</span>). Dark mode swaps the base layer via <span style="font-family:var(--font-mono);font-size:13px">[data-theme="dark"]</span> or the OS preference.</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">A2 — TYPE</div>
+<div style="display:flex;flex-direction:column;border-top:var(--border-ink)">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px 24px;padding:20px 0;border-bottom:var(--border-rule);align-items:baseline"><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">DISPLAY XL · 84/0.95 · −0.035em</span><span style="grid-column:span 2;font-stretch:110%;font-weight:700;font-size:var(--fs-display-xl);letter-spacing:-0.035em;line-height:0.95">{{ t.h1 }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px 24px;padding:20px 0;border-bottom:var(--border-rule);align-items:baseline"><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">DISPLAY L · 52/1 · −0.03em</span><span style="grid-column:span 2;font-stretch:110%;font-weight:700;font-size:var(--fs-display-l);letter-spacing:-0.03em;line-height:1">{{ t.contactH }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px 24px;padding:16px 0;border-bottom:var(--border-rule);align-items:baseline"><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">H2 · 34 · 700 · −1px</span><span style="grid-column:span 2;font-stretch:110%;font-weight:700;font-size:34px;letter-spacing:-1px">ChurchApp</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px 24px;padding:16px 0;border-bottom:var(--border-rule);align-items:baseline"><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">H3 · 28 · 700 · −0.5px</span><span style="grid-column:span 2;font-stretch:110%;font-weight:700;font-size:28px;letter-spacing:-0.5px">{{ t.s1 }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px 24px;padding:16px 0;border-bottom:var(--border-rule);align-items:baseline"><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">BODY L · 19/1.45</span><span style="grid-column:span 2;font-size:19px;line-height:1.45;text-wrap:pretty;max-width:680px">{{ t.lead }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px 24px;padding:16px 0;border-bottom:var(--border-rule);align-items:baseline"><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">BODY · 17/1.5</span><span style="grid-column:span 2;font-size:17px;line-height:1.5;text-wrap:pretty;max-width:680px">{{ t.body }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px 24px;padding:16px 0;border-bottom:var(--border-rule);align-items:baseline"><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">LABEL · MONO 13 · +1px · CAPS</span><span style="grid-column:span 2;font-family:var(--font-mono);font-size:13px;letter-spacing:1px">{{ t.label }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px 24px;padding:16px 0;border-bottom:var(--border-rule);align-items:baseline"><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">SPEC KEY · MONO 11 · +1px</span><span style="grid-column:span 2;font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">SECTOR · MODULES · STACK · STATUS</span></div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:40px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">A3 — SPACING · BORDERS</div>
+<div style="display:flex;flex-direction:column;gap:6px"><sc-for list="{{ spaces }}" as="s" hint-placeholder-count="11"><div style="display:grid;grid-template-columns:90px 48px 1fr;gap:12px;align-items:center;font-family:var(--font-mono);font-size:12px;color:var(--text-muted)"><span>{{ s.t }}</span><span>{{ s.v }}px</span><span style="height:10px;background:var(--accent);width:{{ s.w }}"></span></div></sc-for></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:56px;border:var(--border-frame);position:relative"><div style="position:absolute;right:-2px;bottom:-2px;width:14px;height:14px;background:var(--accent)"></div></div><span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">FRAME 2px INK</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:56px;border:var(--border-ink)"></div><span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">CARD 1px INK</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:56px;border-top:var(--border-rule);border-bottom:var(--border-rule)"></div><span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">RULE 1px</span></div>
+</div>
+<div style="font-size:15px;color:var(--text-muted);text-wrap:pretty">Radius is always 0. Page gutter is clamp(20px, 4vw, 48px); content max 1280; prose max 680. No shadows — depth comes from frames and hatch.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">A4 — MOTION</div>
+<div style="display:flex;flex-direction:column;border-top:var(--border-ink)"><sc-for list="{{ motion }}" as="m" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:130px 1fr;gap:12px;padding:10px 0;border-bottom:var(--border-rule)"><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">{{ m.k }}</span><span style="font-size:15px;text-wrap:pretty">{{ m.v }}</span></div></sc-for></div>
+<button onClick="{{ replay }}" style="align-self:flex-start;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;padding:8px 12px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer;transition:transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">{{ t.replay }}</button>
+<div style="height:120px;border:var(--border-rule);background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 10px);position:relative;overflow:hidden">{{ sheetDemo }}</div>
+<div style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent);margin-top:12px">A5 — ICONS · GLYPHS</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;font-family:var(--font-mono);font-size:15px"><sc-for list="{{ glyphs }}" as="g" hint-placeholder-count="6"><span style="border:var(--border-rule);padding:8px 12px;display:flex;gap:10px"><span style="color:var(--accent)">{{ g.g }}</span><span style="font-size:12px;color:var(--text-muted)">{{ g.u }}</span></span></sc-for></div>
+<div style="font-size:15px;color:var(--text-muted);text-wrap:pretty">No icon library, no emoji. Typographic glyphs only, plus the status dot and the cobalt corner square.</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:48px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;border-bottom:var(--border-frame);padding-bottom:10px"><span>SHEET B — COMPONENTS</span><span style="color:var(--text-muted)">B1–B15 · ASTRO</span></div>
+
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">B1 — BUTTON</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">Button.astro · variant · size · disabled</span></div>
+<div style="display:flex;flex-direction:column;gap:20px;border:var(--border-rule);padding:24px;background:var(--surface)">
+<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+<button style="font-family:var(--font-sans);font-size:17px;font-weight:600;white-space:nowrap;background:var(--accent);color:var(--accent-fg);border:0;padding:16px 24px;cursor:pointer;transition:transform 160ms var(--ease-out),filter 160ms ease" style-hover="filter:brightness(1.08)" style-active="transform:scale(0.97)">{{ t.start }} →</button>
+<button style="font-family:var(--font-sans);font-size:17px;font-weight:600;white-space:nowrap;background:transparent;color:var(--text);border:var(--border-ink);padding:16px 24px;cursor:pointer;transition:transform 160ms var(--ease-out),background-color 160ms ease" style-hover="background-color:var(--hatch)" style-active="transform:scale(0.97)">{{ t.see }}</button>
+<button style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap;background:transparent;color:var(--accent);border:0;padding:16px 4px;cursor:pointer" style-hover="text-decoration:underline">{{ t.read }} →</button>
+<button disabled="" style="font-family:var(--font-sans);font-size:17px;font-weight:600;white-space:nowrap;background:var(--hatch);color:var(--text-muted);border:0;padding:16px 24px;cursor:not-allowed">{{ t.sending }}</button>
+</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+<button style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap;background:var(--accent);color:var(--accent-fg);border:0;padding:12px 18px;cursor:pointer;transition:transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">{{ t.startCaps }}</button>
+<button style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap;background:transparent;color:var(--text);border:var(--border-ink);padding:12px 18px;cursor:pointer;transition:transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">MENU</button>
+</div>
+<div style="display:flex;gap:24px;flex-wrap:wrap;font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)"><span>PRIMARY · LG 17/600 · 16×24</span><span>SECONDARY · 1px INK</span><span>LINK · MONO</span><span>DISABLED · HATCH</span><span>SM · MONO 13 · 12×18</span></div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">B2 — FORM</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">Field.astro · ChipGroup.astro · ContactForm.astro</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:24px">
+<div style="display:flex;flex-direction:column;border:var(--border-frame);background:var(--surface)">
+<label style="display:flex;flex-direction:column;gap:6px;padding:14px 20px;border-bottom:var(--border-rule)"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ t.fName }}</span><input placeholder="{{ t.phName }}" style="border:0;background:transparent;font-size:17px;outline:none;color:var(--text);padding:2px 0;transition:box-shadow 160ms ease" style-focus="box-shadow:inset 0 -2px 0 var(--accent)"></input></label>
+<label style="display:flex;flex-direction:column;gap:6px;padding:14px 20px;border-bottom:var(--border-rule);box-shadow:inset 3px 0 0 var(--danger)"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--danger)">{{ t.fEmail }}</span><input value="francisco@" style="border:0;background:transparent;font-size:17px;outline:none;color:var(--text);padding:2px 0"></input><span style="font-size:14px;color:var(--danger)">{{ t.errEmail }}</span></label>
+<label style="display:flex;flex-direction:column;gap:6px;padding:14px 20px;border-bottom:var(--border-rule);opacity:0.55"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ t.fBudget }}</span><input disabled="" placeholder="—" style="border:0;background:transparent;font-size:17px;outline:none;color:var(--text);padding:2px 0;cursor:not-allowed"></input></label>
+<div style="padding:14px 20px;border-bottom:var(--border-rule);display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ t.fType }}</span><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ ptypes }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.pick }}" aria-pressed="{{ c.on }}" style="font-family:var(--font-mono);font-size:13px;padding:8px 12px;border:var(--border-ink);background:{{ c.bg }};color:{{ c.fg }};cursor:pointer;transition:background-color 160ms ease,transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">{{ c.name }}</button></sc-for></div></div>
+<label style="display:flex;flex-direction:column;gap:6px;padding:14px 20px"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ t.fMsg }}</span><textarea rows="2" placeholder="{{ t.phMsg }}" style="border:0;background:transparent;font-size:17px;outline:none;resize:none;color:var(--text)"></textarea></label>
+</div>
+<div style="display:flex;flex-direction:column;gap:24px">
+<div style="border:var(--border-frame);background:var(--surface);padding:32px;display:flex;flex-direction:column;gap:10px">
+<div style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;color:var(--ok);display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:var(--ok)"></span>{{ t.received }}</div>
+<div style="font-stretch:110%;font-weight:700;font-size:28px">{{ t.reply }}</div>
+<div style="font-size:15px;color:var(--text-muted)">{{ t.replyNote }}</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;font-size:15px;color:var(--text-muted);text-wrap:pretty">
+<div>{{ t.formNote1 }}</div>
+<div>{{ t.formNote2 }}</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">B3 — SHEET HEADER · SHEET FRAME</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">SheetHeader.astro · Sheet.astro (frame, ruler, corner)</span></div>
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>{{ t.sheet01 }}</span><span style="color:var(--text-muted)">REV 2026.10</span></div>
+<div style="border:var(--border-frame);position:relative">
+<div style="height:32px;border-bottom:var(--border-rule);display:grid;grid-template-columns:repeat(8,1fr)"><sc-for list="{{ zones }}" as="z" hint-placeholder-count="8"><div style="border-right:var(--border-rule);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">{{ z }}</div></sc-for></div>
+<div style="padding:32px;display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--font-mono);font-size:13px;letter-spacing:1.5px;color:var(--accent)">{{ t.sheet00 }}</span><span style="font-stretch:110%;font-weight:700;font-size:40px;letter-spacing:-1px;line-height:1">{{ t.h1 }}</span></div>
+<div style="position:absolute;right:-2px;bottom:-2px;width:28px;height:28px;background:var(--accent)"></div>
+</div>
+<div style="font-size:15px;color:var(--text-muted);text-wrap:pretty;max-width:760px">{{ t.sheetNote }}</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:40px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">B4 — SPEC TABLE</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">SpecTable.astro · rows · cols</span></div>
+<div style="border:var(--border-frame);background:var(--surface)"><sc-for list="{{ block }}" as="r" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:120px 1fr;border-bottom:var(--border-rule);min-height:52px"><div style="border-right:var(--border-rule);padding:0 12px;display:flex;align-items:center;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ r.k }}</div><div style="padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:16px;font-weight:{{ r.w }};color:{{ r.c }}">{{ r.v }}</div></div></sc-for></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--line);border:var(--border-ink)"><sc-for list="{{ specs }}" as="r" hint-placeholder-count="4"><div style="background:var(--surface);padding:12px 16px;display:flex;flex-direction:column;gap:4px"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ r.k }}</span><span style="font-size:15px">{{ r.v }}</span></div></sc-for></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">B5 — STATUS BADGE</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">Status.astro · live · inUse · pilot · available</span></div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;border:var(--border-rule);padding:20px;background:var(--surface)">
+<span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;display:flex;align-items:center;gap:8px;border:var(--border-ink);padding:6px 10px"><span style="width:8px;height:8px;border-radius:50%;background:var(--ok)"></span>{{ t.live }}</span>
+<span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;display:flex;align-items:center;gap:8px;border:var(--border-ink);padding:6px 10px"><span style="width:8px;height:8px;border-radius:50%;border:1.5px solid var(--ok);box-sizing:border-box"></span>{{ t.inUse }}</span>
+<span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;display:flex;align-items:center;gap:8px;border:1px dashed var(--text-muted);padding:6px 10px;color:var(--text-muted)"><span style="width:8px;height:8px;border-radius:50%;background:var(--text-muted)"></span>{{ t.pilot }}</span>
+<span style="display:flex;align-items:center;gap:10px;font-size:16px"><span style="width:10px;height:10px;border-radius:50%;background:var(--ok)"></span>{{ t.available }}</span>
+</div>
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">B6 — TAG · CHIP</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">Tag.astro (static) · Chip (toggle)</span></div>
+<div style="display:flex;flex-direction:column;gap:14px;border:var(--border-rule);padding:20px;background:var(--surface)">
+<div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ tags }}" as="d" hint-placeholder-count="5"><span style="font-family:var(--font-mono);font-size:12px;border:var(--border-ink);padding:6px 10px">{{ d }}</span></sc-for></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ filters }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.pick }}" aria-pressed="{{ c.on }}" style="font-family:var(--font-mono);font-size:13px;padding:8px 12px;border:var(--border-ink);background:{{ c.bg }};color:{{ c.fg }};cursor:pointer;transition:background-color 160ms ease,transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">{{ c.name }}</button></sc-for></div>
+</div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:40px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">B7 — PROJECT CARD</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">ProjectCard.astro · hover: cobalt border</span></div>
+<a href="#" style="display:flex;flex-direction:column;border:var(--border-ink);background:var(--surface);color:var(--text);text-decoration:none;transition:border-color 160ms ease" style-hover="border-color:var(--accent)">
+<div style="display:flex;justify-content:space-between;padding:12px 16px;border-bottom:var(--border-rule);font-family:var(--font-mono);font-size:13px;letter-spacing:1px"><span style="color:var(--accent)">FM-01</span><span style="color:var(--text-muted)">{{ t.inUse }}</span></div>
+<div style="aspect-ratio:16/9;background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 10px);border-bottom:var(--border-rule);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">{{ t.shot }}</div>
+<div style="padding:20px 16px;display:flex;flex-direction:column;gap:8px"><div style="font-stretch:110%;font-weight:700;font-size:34px;letter-spacing:-1px">ChurchApp</div><div style="font-size:16px;line-height:1.45;text-wrap:pretty">{{ t.churchDesc }}</div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;border-top:var(--border-rule)"><sc-for list="{{ specs }}" as="r" hint-placeholder-count="4"><div style="padding:10px 16px;border-bottom:var(--border-rule);display:flex;flex-direction:column;gap:3px"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ r.k }}</span><span style="font-size:15px">{{ r.v }}</span></div></sc-for></div>
+<div style="padding:14px 16px;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;color:var(--accent)">{{ t.readCaps }} →</div>
+</a>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">B8 — PACKAGE CARD</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">PackageCard.astro · featured</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--line);border:var(--border-ink)">
+<sc-for list="{{ packages }}" as="p" hint-placeholder-count="2"><div style="padding:24px;display:flex;flex-direction:column;gap:14px;background:{{ p.bg }};position:relative">
+<div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:13px"><span style="color:var(--accent)">{{ p.id }}</span><sc-if value="{{ p.feat }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;letter-spacing:1px;background:var(--invert-bg);color:var(--invert-fg);padding:3px 6px">{{ t.common }}</span></sc-if></div>
+<div style="font-stretch:110%;font-weight:700;font-size:26px">{{ p.name }}</div>
+<div style="display:flex;align-items:baseline;gap:10px;border-bottom:1px dashed var(--text-muted);padding-bottom:6px"><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">{{ p.unit }}</span><span style="font-stretch:110%;font-weight:700;font-size:32px;color:var(--line)">$ ———</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><sc-for list="{{ p.inc }}" as="i" hint-placeholder-count="3"><div style="font-size:15px;display:flex;gap:10px"><span style="font-family:var(--font-mono);color:var(--text-muted)">—</span>{{ i }}</div></sc-for></div>
+<button style="margin-top:auto;align-self:flex-start;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;background:transparent;color:var(--accent);border:0;padding:4px 0;cursor:pointer" style-hover="text-decoration:underline">{{ t.ask }} →</button>
+</div></sc-for>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">B9 — NAV · FOOTER · B10 — LANGUAGE / THEME SWITCH</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">SiteNav.astro · SiteFooter.astro · LangSwitch.astro</span></div>
+<div style="border:var(--border-rule)">
+<div style="border-bottom:var(--border-ink);display:flex;align-items:center;justify-content:space-between;padding:14px 24px;gap:24px;background:var(--bg)">
+<sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}"><img src="assets/wordmark-light.svg" alt="fmyers.dev" style="height:24px;display:block;flex:none"></img></sc-if><sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><img src="assets/wordmark-dark.svg" alt="fmyers.dev" style="height:24px;display:block;flex:none"></img></sc-if>
+<div style="flex:1 1 0;min-width:0;overflow-x:auto;scrollbar-width:none;display:flex;justify-content:safe center;gap:22px;white-space:nowrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px"><sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><a href="#" style="color:{{ n.c }};text-decoration:none;display:flex;gap:6px;padding-bottom:2px;border-bottom:{{ n.bd }}"><span style="color:var(--text-muted)">{{ n.id }}</span>{{ n.en }}</a></sc-for></div>
+<div style="display:flex;gap:10px;align-items:center;flex:none">
+<div style="display:flex;border:var(--border-ink)"><sc-for list="{{ langOpts }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;border:0;cursor:pointer;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button></sc-for></div>
+<button onClick="{{ flipTheme }}" aria-label="Toggle theme" style="font-family:var(--font-mono);font-size:14px;width:34px;height:34px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">{{ themeGlyph }}</button>
+<button style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap;background:var(--accent);color:var(--accent-fg);border:0;padding:10px 16px;cursor:pointer">{{ t.startCaps }}</button>
+</div>
+</div>
+<div style="height:72px;background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 10px)"></div>
+<div style="border-top:var(--border-ink);padding:20px 24px;display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted);background:var(--bg)"><span>FMYERS.DEV · REV 2026.10</span><span style="display:flex;gap:20px;flex-wrap:wrap"><a href="https://github.com/Solideomyers">GITHUB ↗</a><a href="https://linkedin.com/in/franciscomyers">LINKEDIN ↗</a><a href="https://wa.me/584249080683">WHATSAPP ↗</a></span><span>© 2026 · {{ t.langName }}</span></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:24px;align-items:start">
+<div style="width:min(100%,375px);border:var(--border-rule);background:var(--bg)">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:var(--border-ink)"><sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}"><img src="assets/wordmark-light.svg" alt="fmyers.dev" style="height:22px;display:block"></img></sc-if><sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><img src="assets/wordmark-dark.svg" alt="fmyers.dev" style="height:22px;display:block"></img></sc-if><button onClick="{{ toggleMenu }}" aria-expanded="{{ menuOpen }}" style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;min-height:44px;padding:0 14px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">{{ menuLabel }}</button></div>
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column"><sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><a href="#" style="display:flex;gap:12px;align-items:center;min-height:52px;padding:0 16px;border-bottom:var(--border-rule);font-family:var(--font-mono);font-size:15px;letter-spacing:1px;color:var(--text)"><span style="color:var(--text-muted)">{{ n.id }}</span>{{ n.en }}</a></sc-for><div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;gap:12px"><div style="display:flex;border:var(--border-ink)"><sc-for list="{{ langOpts }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="font-family:var(--font-mono);font-size:13px;min-height:44px;padding:0 14px;border:0;cursor:pointer;background:{{ o.bg }};color:{{ o.fg }}">{{ o.label }}</button></sc-for></div><button style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;min-height:44px;background:var(--accent);color:var(--accent-fg);border:0;padding:0 16px;cursor:pointer">{{ t.startCaps }}</button></div></div></sc-if>
+</div>
+<div style="font-size:15px;color:var(--text-muted);display:flex;flex-direction:column;gap:8px;text-wrap:pretty"><div>{{ t.navNote1 }}</div><div>{{ t.navNote2 }}</div><div>{{ t.navNote3 }}</div></div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:40px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">B11 — FIGURE</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">Figure.astro · n · caption · ratio</span></div>
+<figure style="margin:0;display:flex;flex-direction:column;gap:8px">
+<div style="aspect-ratio:16/10;border:var(--border-ink);background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 10px);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">{{ t.shot }} · 1600×1000</div>
+<figcaption style="display:flex;gap:12px;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)"><span style="color:var(--accent)">FIG. 1</span><span>{{ t.figCap }}</span></figcaption>
+</figure>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">B12 — BLOG (FUTURE)</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">PostRow.astro · Prose.astro</span></div>
+<div style="display:flex;flex-direction:column;border-top:var(--border-ink)"><sc-for list="{{ posts }}" as="p" hint-placeholder-count="2"><a href="#" style="display:grid;grid-template-columns:96px 1fr;gap:16px;padding:16px 0;border-bottom:var(--border-rule);color:var(--text);text-decoration:none;transition:color 160ms ease" style-hover="color:var(--accent)"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ p.n }}<br></br>{{ p.date }}</span><span style="display:flex;flex-direction:column;gap:6px"><span style="font-stretch:110%;font-weight:700;font-size:22px;letter-spacing:-0.3px">{{ p.title }}</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">{{ p.meta }}</span></span></a></sc-for></div>
+<div style="display:flex;flex-direction:column;gap:14px;max-width:680px">
+<h3 style="margin:8px 0 0;font-stretch:110%;font-weight:700;font-size:24px;letter-spacing:-0.3px">{{ t.proseH }}</h3>
+<p style="margin:0;font-size:17px;line-height:1.6;text-wrap:pretty">{{ t.proseP }} <a href="#">{{ t.proseLink }}</a>.</p>
+<pre style="margin:0;font-family:var(--font-mono);font-size:14px;line-height:1.6;background:var(--surface);border:var(--border-rule);padding:14px 16px;overflow-x:auto;color:var(--text)">const sheet = await getEntry('work', 'fm-01');</pre>
+<blockquote style="margin:0;padding:4px 0 4px 16px;border-left:2px solid var(--line-strong);font-size:19px;line-height:1.45;text-wrap:pretty">{{ t.quote }}</blockquote>
+</div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:40px;align-items:start">
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">B13 — {{ nx.pagT }}</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">Pagination.astro · current · total</span></div>
+<nav aria-label="{{ nx.pagT }}" style="display:flex;flex-wrap:wrap;border-top:var(--border-rule);border-left:var(--border-rule)">
+<button onClick="{{ pgPrev }}" aria-disabled="{{ pgFirst }}" style="min-height:44px;padding:0 14px;border:0;border-right:var(--border-rule);border-bottom:var(--border-rule);background:transparent;color:var(--text);font-family:var(--font-mono);font-size:13px;letter-spacing:1px;cursor:pointer;opacity:{{ pgPrevOp }}">← {{ nx.prev }}</button>
+<sc-for list="{{ pgItems }}" as="p" hint-placeholder-count="5"><button onClick="{{ p.go }}" aria-current="{{ p.cur }}" style="min-width:44px;min-height:44px;border:0;border-right:var(--border-rule);border-bottom:var(--border-rule);background:{{ p.bg }};color:{{ p.fg }};font-family:var(--font-mono);font-size:13px;cursor:pointer;transition:color 200ms ease" style-hover="color:var(--accent)">{{ p.label }}</button></sc-for>
+<button onClick="{{ pgNext }}" aria-disabled="{{ pgLast }}" style="min-height:44px;padding:0 14px;border:0;border-right:var(--border-rule);border-bottom:var(--border-rule);background:transparent;color:var(--text);font-family:var(--font-mono);font-size:13px;letter-spacing:1px;cursor:pointer;opacity:{{ pgNextOp }}">{{ nx.next }} →</button>
+</nav>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));border-top:var(--border-ink)">
+<a href="#" style="display:flex;flex-direction:column;gap:6px;padding:14px 12px 14px 0;border-bottom:var(--border-rule);color:var(--text);text-decoration:none;transition:color 200ms ease" style-hover="color:var(--accent)"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">← {{ nx.prevItem }} · N-01</span><span style="font-stretch:110%;font-weight:700;font-size:17px;text-wrap:pretty">{{ nx.prevTitle }}</span></a>
+<a href="#" style="display:flex;flex-direction:column;gap:6px;padding:14px 0 14px 12px;border-bottom:var(--border-rule);color:var(--text);text-decoration:none;text-align:right;transition:color 200ms ease" style-hover="color:var(--accent)"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">N-03 · {{ nx.nextItem }} →</span><span style="font-stretch:110%;font-weight:700;font-size:17px;text-wrap:pretty">{{ nx.nextTitle }}</span></a>
+</div>
+<div style="font-size:15px;color:var(--text-muted);display:flex;flex-direction:column;gap:6px;text-wrap:pretty"><div>{{ nx.pagNote1 }}</div><div>{{ nx.pagNote2 }}</div></div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">B14 — FAQ</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">Faq.astro · items · page</span></div>
+<div style="display:flex;flex-direction:column;border-top:var(--border-ink)">
+<sc-for list="{{ faqItems }}" as="f" hint-placeholder-count="4"><div style="border-bottom:var(--border-rule)">
+<button onClick="{{ f.toggle }}" aria-expanded="{{ f.open }}" style="width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) 24px;gap:8px;align-items:baseline;min-height:52px;padding:14px 0;border:0;background:transparent;color:var(--text);text-align:left;cursor:pointer;font-family:var(--font-sans);transition:color 200ms ease" style-hover="color:var(--accent)"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ f.id }}</span><span style="font-weight:600;font-size:17px;text-wrap:pretty">{{ f.q }}</span><span aria-hidden="true" style="font-family:var(--font-mono);font-size:20px;line-height:1;justify-self:end;transform:{{ f.rot }};transition:transform 200ms var(--ease-out)">+</span></button>
+<sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}"><div style="padding:0 32px 16px 52px;font-size:15px;line-height:1.55;color:var(--text-muted);text-wrap:pretty">{{ f.a }}</div></sc-if>
+</div></sc-for>
+</div>
+<div style="font-size:15px;color:var(--text-muted);display:flex;flex-direction:column;gap:6px;text-wrap:pretty"><div>{{ nx.faqNote1 }}</div><div>{{ nx.faqNote2 }}</div></div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">B15 — {{ nx.tocT }}</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">Toc.astro · headings · minDepth</span></div>
+<span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ nx.tocDesk }}</span>
+<nav aria-label="{{ nx.tocT }}" style="width:min(100%,240px);display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px">{{ nx.contents }}</span>
+<div style="position:relative;border-left:var(--border-rule)">
+<div aria-hidden="true" style="position:absolute;left:-1px;top:0;width:2px;height:36px;background:var(--accent);transform:{{ tocY }};transition:transform 200ms var(--ease-in-out)"></div>
+<sc-for list="{{ tocItems }}" as="h" hint-placeholder-count="5"><a href="#" onClick="{{ h.go }}" aria-current="{{ h.cur }}" style="display:flex;gap:10px;align-items:center;height:36px;padding-left:14px;font-size:15px;color:{{ h.c }};font-weight:{{ h.w }};text-decoration:none;transition:color 200ms ease" style-hover="color:var(--accent)"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">{{ h.n }}</span>{{ h.label }}</a></sc-for>
+</div>
+</nav>
+<span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted);margin-top:8px">{{ nx.tocMob }}</span>
+<div style="width:min(100%,375px);border:var(--border-ink)">
+<button onClick="{{ tocToggle }}" aria-expanded="{{ tocOpen }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px;padding:0 14px;border:0;background:transparent;color:var(--text);cursor:pointer;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;text-align:left"><span>{{ nx.contents }} · {{ tocNow }}</span><span aria-hidden="true" style="font-size:18px;transform:{{ tocRot }};transition:transform 200ms var(--ease-out)">+</span></button>
+<sc-if value="{{ tocOpen }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;border-top:var(--border-rule)"><sc-for list="{{ tocItems }}" as="h" hint-placeholder-count="5"><a href="#" onClick="{{ h.goClose }}" style="display:flex;gap:10px;align-items:center;min-height:44px;padding:0 14px;border-bottom:var(--border-rule);font-size:15px;color:{{ h.c }};font-weight:{{ h.w }};text-decoration:none"><span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">{{ h.n }}</span>{{ h.label }}</a></sc-for></div></sc-if>
+</div>
+<div style="font-size:15px;color:var(--text-muted);display:flex;flex-direction:column;gap:6px;text-wrap:pretty"><div>{{ nx.tocNote1 }}</div><div>{{ nx.tocNote2 }}</div></div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;border-bottom:var(--border-frame);padding-bottom:10px"><span>SHEET C — RULES · DO / DON'T</span><span style="color:var(--text-muted)">R1–R8</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:24px">
+<div style="display:flex;flex-direction:column;gap:8px"><div style="height:110px;border:var(--border-frame);position:relative;background:var(--surface);padding:16px;display:flex;flex-direction:column;gap:8px;box-sizing:border-box"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--accent)">FM-02</span><span style="font-stretch:110%;font-weight:700;font-size:22px">Chapel</span><div style="position:absolute;right:-2px;bottom:-2px;width:18px;height:18px;background:var(--accent)"></div></div><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--ok)">DO · {{ t.do1 }}</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="height:110px;border-radius:16px;background:linear-gradient(135deg,var(--accent),#7B4FD8);box-shadow:0 12px 30px rgba(0,0,0,.25);padding:16px;display:flex;flex-direction:column;gap:8px;box-sizing:border-box;color:#fff"><span style="font-size:11px">✨ FM-02</span><span style="font-weight:700;font-size:22px">Chapel</span></div><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--danger)">DON'T · {{ t.dont1 }}</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="height:110px;border:var(--border-rule);padding:16px;display:flex;gap:10px;align-items:center;box-sizing:border-box;flex-wrap:wrap"><span style="font-family:var(--font-sans);font-size:15px;font-weight:600;background:var(--accent);color:var(--accent-fg);padding:10px 14px">{{ t.start }}</span><span style="font-size:15px;font-weight:600;border:var(--border-ink);padding:9px 14px">{{ t.see }}</span></div><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--ok)">DO · {{ t.do2 }}</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="height:110px;border:var(--border-rule);padding:16px;display:flex;gap:10px;align-items:center;box-sizing:border-box;flex-wrap:wrap"><span style="font-size:15px;font-weight:600;background:var(--accent);color:var(--accent-fg);padding:10px 14px">{{ t.start }}</span><span style="font-size:15px;font-weight:600;background:var(--accent);color:var(--accent-fg);padding:10px 14px">{{ t.see }}</span><span style="font-size:15px;color:var(--accent);font-weight:700">NEW</span></div><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--danger)">DON'T · {{ t.dont2 }}</span></div>
+</div>
+<div style="display:flex;flex-direction:column;border-top:var(--border-ink)">
+<sc-for list="{{ rules }}" as="r" hint-placeholder-count="8"><div style="display:grid;grid-template-columns:48px repeat(auto-fit,minmax(min(100%,260px),1fr));gap:8px 24px;padding:14px 0;border-bottom:var(--border-rule);font-size:15px;line-height:1.45">
+<span style="font-family:var(--font-mono);font-size:12px;color:var(--accent);padding-top:2px">{{ r.n }}</span>
+<span style="display:flex;gap:10px;text-wrap:pretty"><span style="font-family:var(--font-mono);font-size:12px;color:var(--ok);padding-top:2px;flex:none">DO</span>{{ r.do }}</span>
+<span style="display:flex;gap:10px;text-wrap:pretty;color:var(--text-muted)"><span style="font-family:var(--font-mono);font-size:12px;color:var(--danger);padding-top:2px;flex:none">DON'T</span>{{ r.dont }}</span>
+</div></sc-for>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;border-bottom:var(--border-frame);padding-bottom:10px"><span>{{ t.dHead }}</span><span style="color:var(--text-muted)">D1–D11 · MOTION · VIEW TRANSITIONS</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:1px;background:var(--line);border:var(--border-ink)">
+<sc-for list="{{ principles }}" as="p" hint-placeholder-count="4"><div style="background:var(--surface);padding:18px 20px;display:flex;flex-direction:column;gap:6px"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--accent)">{{ p.k }}</span><span style="font-stretch:110%;font-weight:700;font-size:20px">{{ p.h }}</span><span style="font-size:15px;line-height:1.45;color:var(--text-muted);text-wrap:pretty">{{ p.b }}</span></div></sc-for>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:32px 24px">
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">D1 — SIGNATURE · FIRST LOAD</span><button onClick="{{ play1 }}" style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;padding:6px 10px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer;transition:transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">{{ t.replayS }}</button></div>
+<div style="height:200px;border:var(--border-rule);background:var(--bg);position:relative;overflow:hidden">
+<div style="position:absolute;left:20px;top:20px;right:20px;bottom:20px">
+<div ref="{{ d1t }}" style="position:absolute;left:0;top:0;right:0;height:2px;background:var(--line-strong);transform-origin:left"></div>
+<div ref="{{ d1r }}" style="position:absolute;top:0;right:0;bottom:0;width:2px;background:var(--line-strong);transform-origin:top"></div>
+<div ref="{{ d1b }}" style="position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--line-strong);transform-origin:right"></div>
+<div ref="{{ d1l }}" style="position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--line-strong);transform-origin:bottom"></div>
+<div ref="{{ d1z }}" style="position:absolute;left:2px;right:2px;top:2px;height:24px;display:grid;grid-template-columns:repeat(8,1fr)"><sc-for list="{{ zones }}" as="z" hint-placeholder-count="8"><div style="border-right:var(--border-rule);border-bottom:var(--border-rule);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">{{ z }}</div></sc-for></div>
+<div ref="{{ d1h }}" style="position:absolute;left:18px;right:18px;top:44px;display:flex;flex-direction:column;gap:6px"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--accent)">SHEET 00</span><span style="font-stretch:110%;font-weight:700;font-size:26px;letter-spacing:-0.5px;line-height:1">{{ t.h1 }}</span></div>
+<div ref="{{ d1c }}" style="position:absolute;right:0;bottom:0;width:20px;height:20px;background:var(--accent);transform-origin:bottom right"></div>
+</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ t.d1s }}</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">D2 — CARD → CASE STUDY</span><button onClick="{{ toggleCase }}" style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;padding:6px 10px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer;transition:transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">{{ caseBtn }}</button></div>
+<div style="height:200px;border:var(--border-rule);background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 10px);position:relative;overflow:hidden">
+<div ref="{{ d2card }}" onClick="{{ toggleCase }}" style="position:absolute;left:{{ cs.l }};top:{{ cs.t }};width:{{ cs.w }};height:{{ cs.h }};box-sizing:border-box;border:{{ cs.b }};background:var(--surface);cursor:pointer;display:flex;flex-direction:column;overflow:hidden">
+<div style="display:flex;justify-content:space-between;padding:8px 10px;border-bottom:var(--border-rule);font-family:var(--font-mono);font-size:10px;letter-spacing:1px"><span style="color:var(--accent)">FM-01</span><span style="color:var(--text-muted)">{{ caseTag }}</span></div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:6px"><span style="font-stretch:110%;font-weight:700;font-size:{{ cs.fs }};letter-spacing:-0.5px;line-height:1">ChurchApp</span><sc-if value="{{ caseOpen }}" hint-placeholder-val="{{ false }}"><span ref="{{ d2body }}" style="font-size:14px;line-height:1.45;color:var(--text-muted);max-width:420px">{{ t.churchDesc }}</span></sc-if></div>
+</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ t.d2s }}</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">D3 — SCROLL REVEAL · STAGGER</span><button onClick="{{ play3 }}" style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;padding:6px 10px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer;transition:transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">{{ t.replayS }}</button></div>
+<div ref="{{ d3 }}" style="height:200px;box-sizing:border-box;border:var(--border-rule);background:var(--bg);padding:14px 20px;display:flex;flex-direction:column;overflow:hidden">
+<sc-for list="{{ services3 }}" as="s" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:52px 1fr;gap:12px;padding:10px 0;border-bottom:var(--border-rule);align-items:baseline"><span style="font-family:var(--font-mono);font-size:11px;color:var(--accent)">{{ s.id }}</span><span style="font-stretch:110%;font-weight:700;font-size:18px">{{ s.n }}</span></div></sc-for>
+</div>
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ t.d3s }}</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">D4 — THEME · D5 — LANGUAGE</span></div>
+<div style="height:200px;box-sizing:border-box;border:var(--border-rule);background:var(--surface);padding:20px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:16px">
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<button onClick="{{ flipTheme }}" style="white-space:nowrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;padding:12px 16px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer;display:flex;gap:10px;align-items:center;transition:transform 160ms var(--ease-out)" style-active="transform:scale(0.97)"><span>{{ themeGlyph }}</span>{{ t.d4btn }}</button>
+<button onClick="{{ flipLang }}" style="white-space:nowrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;padding:12px 16px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer;transition:transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">{{ t.d5btn }}</button>
+</div>
+<span style="font-size:15px;line-height:1.45;color:var(--text-muted);text-wrap:pretty">{{ t.d4note }}</span>
+</div>
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ t.d4s }}</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">D6 — FORM · SEND · ERROR · CONFIRM</span><button onClick="{{ reset6 }}" style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;padding:6px 10px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer;transition:transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">RESET</button></div>
+<div style="min-height:200px;box-sizing:border-box;border:var(--border-rule);background:var(--bg);padding:20px;display:flex;flex-direction:column;gap:14px">
+<sc-if value="{{ d6notSent }}" hint-placeholder-val="{{ true }}">
+<label ref="{{ d6field }}" style="display:flex;flex-direction:column;gap:6px;padding:12px 16px;border:var(--border-ink);background:var(--surface);box-shadow:{{ d6shadow }}"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:{{ d6labC }}">{{ t.fEmail }}</span><input value="{{ email }}" onChange="{{ onEmail }}" placeholder="you@company.com" style="border:0;background:transparent;font-size:17px;outline:none;color:var(--text);padding:2px 0"></input><sc-if value="{{ d6err }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:var(--danger)">{{ t.errEmail }}</span></sc-if></label>
+<button onClick="{{ send6 }}" style="align-self:flex-start;font-family:var(--font-sans);font-size:17px;font-weight:600;white-space:nowrap;background:var(--accent);color:var(--accent-fg);border:0;padding:14px 22px;cursor:pointer;min-width:190px;transition:transform 160ms var(--ease-out)" style-active="transform:scale(0.97)"><span style="display:inline-block;transition:filter 200ms ease,opacity 200ms ease;filter:{{ d6blur }};opacity:{{ d6op }}">{{ d6text }}</span></button>
+</sc-if>
+<sc-if value="{{ d6sent }}" hint-placeholder-val="{{ false }}">
+<div ref="{{ d6conf }}" style="border:var(--border-frame);background:var(--surface);padding:24px;display:flex;flex-direction:column;gap:8px">
+<div style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;color:var(--ok);display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path ref="{{ d6check }}" d="M3 9.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:0"></path></svg>{{ t.received }}</div>
+<div style="font-stretch:110%;font-weight:700;font-size:24px">{{ t.reply }}</div>
+</div>
+</sc-if>
+</div>
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ t.d6s }}</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">D7 — COPY EMAIL · TOAST</span></div>
+<div style="height:200px;box-sizing:border-box;border:var(--border-rule);background:var(--bg);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center">
+<button onClick="{{ copy7 }}" style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;padding:12px 16px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer;display:flex;gap:10px;transition:transform 160ms var(--ease-out)" style-active="transform:scale(0.97)"><span>{{ email7 }}</span><span style="color:var(--accent)">{{ t.copy }}</span></button>
+<div role="status" style="position:absolute;left:16px;right:16px;bottom:16px;background:var(--invert-bg);color:var(--invert-fg);padding:12px 16px;display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;transform:{{ toastY }};opacity:{{ toastO }};transition:{{ toastT }}"><span style="width:8px;height:8px;border-radius:50%;background:var(--ok)"></span>{{ t.copied }}</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ t.d7s }}</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">D8 — HOVER SET · FINE POINTER</span></div>
+<div style="min-height:200px;box-sizing:border-box;border:var(--border-rule);background:var(--bg);padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;align-content:start">
+<div style="border:var(--border-ink);background:var(--surface);padding:12px;display:flex;flex-direction:column;gap:4px;cursor:pointer;transition:border-color 200ms ease" style-hover="border-color:var(--accent)"><span style="font-family:var(--font-mono);font-size:10px;letter-spacing:1px;color:var(--accent)">FM-02</span><span style="font-stretch:110%;font-weight:700;font-size:18px">Chapel</span></div>
+<div style="display:flex;flex-direction:column;gap:12px;justify-content:center">
+<a href="#" onMouseEnter="{{ arrowOn }}" onMouseLeave="{{ arrowOff }}" onClick="{{ noop }}" style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--accent);text-decoration:none;display:flex;gap:6px">{{ t.readCaps }}<span style="display:inline-block;transform:{{ arrowX }};transition:transform 200ms var(--ease-out)">→</span></a>
+<a href="#" onClick="{{ noop }}" style="font-size:15px;color:var(--accent);text-decoration:none;text-underline-offset:3px" style-hover="text-decoration:underline">{{ t.linkTxt }}</a>
+</div>
+<button style="font-family:var(--font-sans);font-size:15px;font-weight:600;white-space:nowrap;background:transparent;color:var(--text);border:var(--border-ink);padding:12px 16px;cursor:pointer;transition:transform 160ms var(--ease-out)" style-hover="background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 6px)" style-active="transform:scale(0.97)">{{ t.see }}</button>
+<div style="display:flex;flex-direction:column;border-top:var(--border-rule)"><sc-for list="{{ specs3 }}" as="r" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:8px;padding:6px 8px;border-bottom:var(--border-rule);transition:background-color 200ms ease" style-hover="background-color:var(--hatch)"><span style="font-family:var(--font-mono);font-size:10px;letter-spacing:1px;color:var(--text-muted)">{{ r.k }}</span><span style="font-size:13px">{{ r.v }}</span></div></sc-for></div>
+</div>
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ t.d8s }}</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">D9 — HERO CROSSHAIR</span><span style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">{{ t.hoverMe }}</span></div>
+<div ref="{{ d9 }}" onMouseMove="{{ move9 }}" onMouseEnter="{{ enter9 }}" onMouseLeave="{{ leave9 }}" style="height:200px;border:var(--border-rule);background:var(--bg);position:relative;overflow:hidden;cursor:crosshair">
+<div style="position:absolute;left:20px;bottom:18px;font-stretch:110%;font-weight:700;font-size:26px;letter-spacing:-0.5px;line-height:1;max-width:70%;pointer-events:none">{{ t.h1 }}</div>
+<div ref="{{ d9v }}" style="position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--accent);opacity:0;pointer-events:none;transition:opacity 200ms ease"></div>
+<div ref="{{ d9h }}" style="position:absolute;left:0;right:0;top:0;height:1px;background:var(--accent);opacity:0;pointer-events:none;transition:opacity 200ms ease"></div>
+<div ref="{{ d9lab }}" style="position:absolute;left:0;top:0;font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--accent);background:var(--bg);padding:2px 6px;opacity:0;pointer-events:none;white-space:nowrap;transition:opacity 200ms ease">X 0000 · Y 0000</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ t.d9s }}</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">D10 — LIVE RULER</span></div>
+<div style="height:200px;box-sizing:border-box;border:var(--border-rule);background:var(--bg);padding:20px;display:flex;flex-direction:column;justify-content:center;gap:0">
+<div style="display:grid;grid-template-columns:repeat(6,1fr);border:var(--border-ink);border-bottom:0"><sc-for list="{{ ruler }}" as="z" hint-placeholder-count="6"><button onClick="{{ z.pick }}" style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;padding:12px 4px;border:0;border-right:var(--border-rule);background:transparent;color:{{ z.c }};cursor:pointer;transition:color 200ms ease">{{ z.id }}</button></sc-for></div>
+<div style="position:relative;height:3px;border:var(--border-ink);border-top:0;border-bottom:0;background:var(--line)"><div style="position:absolute;left:0;top:0;width:16.6667%;height:3px;background:var(--accent);transform:{{ rulerX }};transition:transform 450ms var(--ease-in-out)"></div></div>
+<div style="border:var(--border-ink);border-top:0;padding:12px;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ rulerLabel }}</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ t.d10s }}</span>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline"><span style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">D11 — 404 · CROSSED-OUT SHEET</span><button onClick="{{ play11 }}" style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;padding:6px 10px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer;transition:transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">{{ t.replayS }}</button></div>
+<div style="height:200px;box-sizing:border-box;border:var(--border-rule);background:var(--bg);padding:20px">
+<div style="height:100%;box-sizing:border-box;border:var(--border-frame);position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;padding:14px">
+<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" style="position:absolute;left:0;top:0;width:100%;height:100%;color:var(--text-muted)"><path ref="{{ d11a }}" d="M0 0L100 100" fill="none" stroke="currentColor" stroke-width="1.5" vector-effect="non-scaling-stroke" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:0"></path><path ref="{{ d11b }}" d="M100 0L0 100" fill="none" stroke="currentColor" stroke-width="1.5" vector-effect="non-scaling-stroke" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:0"></path></svg>
+<span style="position:relative;font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--accent);background:var(--bg);align-self:flex-start;padding:2px 4px">{{ t.s404 }}</span>
+<span style="position:relative;font-stretch:110%;font-weight:700;font-size:22px;background:var(--bg);align-self:flex-start;padding:0 4px">{{ t.h404 }}</span>
+</div>
+</div>
+<span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ t.d11s }}</span>
+</div>
+
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font-family:var(--font-mono);font-size:var(--fs-label);letter-spacing:1px;color:var(--accent)">{{ t.catalog }}</div>
+<div style="overflow-x:auto;border-top:var(--border-ink)">
+<div style="min-width:720px;display:grid;grid-template-columns:40px repeat(2,minmax(0,1.1fr)) minmax(0,1.6fr) minmax(0,1.2fr) minmax(0,1fr)">
+<sc-for list="{{ catHead }}" as="h" hint-placeholder-count="6"><div style="padding:10px 8px;border-bottom:var(--border-ink);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ h }}</div></sc-for>
+<sc-for list="{{ catalog }}" as="r" hint-placeholder-count="15"><div style="display:contents"><div style="padding:10px 8px;border-bottom:var(--border-rule);font-family:var(--font-mono);font-size:12px;color:var(--accent)">{{ r.n }}</div><div style="padding:10px 8px;border-bottom:var(--border-rule);font-size:15px;font-weight:600">{{ r.what }}</div><div style="padding:10px 8px;border-bottom:var(--border-rule);font-size:14px;color:var(--text-muted)">{{ r.when }}</div><div style="padding:10px 8px;border-bottom:var(--border-rule);font-size:14px;text-wrap:pretty">{{ r.how }}</div><div style="padding:10px 8px;border-bottom:var(--border-rule);font-family:var(--font-mono);font-size:12px">{{ r.time }}</div><div style="padding:10px 8px;border-bottom:var(--border-rule);font-size:14px;color:var(--text-muted)">{{ r.rm }}</div></div></sc-for>
+</div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 24px;font-size:15px;color:var(--text-muted)"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--danger)">{{ t.never }}</span><span style="text-wrap:pretty">{{ t.neverList }}</span></div>
+</div>
+</div>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;es&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en'|'es'&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;}}">
+const T = {
+  en: {
+    h1: 'I build SaaS products, end to end.', contactH: "Tell me what you're building.", s1: 'SaaS MVP',
+    lead: 'From a validated idea to a product in production: spec, interface, API, database and deploy.',
+    body: 'I take products from idea to production. One person accountable from start to finish.',
+    label: 'SHEET 02 — SELECTED WORK', replay: 'REPLAY SHEET TRANSITION',
+    start: 'Start a project', startCaps: 'START A PROJECT', see: 'See the work', read: 'Read case study', readCaps: 'READ CASE STUDY', sending: 'Sending…',
+    fName: 'NAME', phName: 'Your name', fEmail: 'EMAIL', errEmail: 'Add the full address, e.g. you@company.com', fBudget: 'BUDGET (DISABLED)', fType: 'PROJECT TYPE', fMsg: 'MESSAGE', phMsg: 'What problem should this solve?',
+    received: 'REQUEST RECEIVED', reply: "I'll reply within 24 hours.", replyNote: 'A copy of your message is on its way to your inbox.',
+    formNote1: 'Labels sit inside the field, mono caps. Focus = 2px cobalt underline. Error = alert bar left + message in plain words.',
+    formNote2: 'Fields share one frame; rows divide with rules. Never floating cards or rounded inputs.',
+    sheet00: 'SHEET 00 — FRANCISCO MYERS · FULLSTACK DEVELOPER', sheet01: 'SHEET 01 — SERVICES',
+    sheetNote: 'Header: number + title left, revision or count right, ink rule under. Frame: 2px ink, 8-zone ruler on top, cobalt corner bottom-right. One frame per screen, max.',
+    live: 'LIVE', inUse: 'IN USE', pilot: 'PILOT', available: 'Available for new projects',
+    shot: 'REAL SCREENSHOT', churchDesc: 'Membership management for a local church — requests, roster, liturgy and teaching.',
+    common: 'MOST COMMON', ask: 'ASK FOR A QUOTE', langName: 'ENGLISH',
+    navNote1: 'Desktop: wordmark · numbered links (scroll if tight) · EN|ES · theme · CTA. Active link gets a 2px cobalt underline.',
+    navNote2: 'Mobile: wordmark + MENU (44px). Menu opens as full-width rows with the language switch and CTA at the bottom.',
+    navNote3: 'Language switch changes the whole page (/en ↔ /es). It keeps the current section.',
+    figCap: 'Requests module — weekly view', proseH: 'Why every project starts with a spec', proseP: 'A one-page spec costs a day and saves weeks. It lists modules, data and the one metric that matters, then becomes the', proseLink: 'case study sheet', quote: 'The spec is the contract with the future maintainer — usually me.',
+    do1: 'square frame, one accent', dont1: 'rounded, gradient, shadow, emoji', do2: 'one primary per view', dont2: 'two primaries + loud labels',
+    dHead: 'SHEET D — MOTION · MICRO-INTERACTIONS', replayS: 'REPLAY', caseOpen: 'CLOSE', caseClosed: 'OPEN CASE', catalog: 'D12 — CATALOG',
+    d1s: 'FRAME 4×~200MS EASE-DRAW → RULER STAGGER 30MS → CORNER 250MS · ONCE PER SESSION · NEVER BLOCKS INPUT',
+    d2s: 'VIEW TRANSITIONS · TRANSITION:NAME="FM-01" · 450MS EASE-IN-OUT · BACK = REVERSE',
+    d3s: 'MOTION inView · ONCE · RISE 12PX + FADE · 350MS · STAGGER 60MS, MAX 6',
+    d4btn: 'TOGGLE THEME', d5btn: 'EN ↔ ES', d4note: 'Both switches are live for this whole page. Theme reveals as a circle from the button; language fades the text.',
+    d4s: 'THEME 450MS EASE-IN-OUT CIRCLE · LANGUAGE 150MS FADE',
+    d6s: 'SEND: LABEL BLUR 200MS · ERROR: SHAKE ±6PX 300MS · CONFIRM: RISE 350MS + CHECK DRAWN 400MS',
+    copy: 'COPY', copied: 'EMAIL COPIED', d7s: 'ENTERS AND LEAVES BY THE BOTTOM EDGE · 350MS IN · 250MS OUT · 2.4S HOLD',
+    linkTxt: 'Inline link', d8s: 'BORDER · ARROW 4PX · UNDERLINE · HATCH · ROW — 200MS · @MEDIA (HOVER:HOVER)',
+    hoverMe: 'MOVE THE POINTER', d9s: 'SPRING FOLLOW (MOTION) · BOUNCE 0 · FINE POINTER + DESKTOP ONLY · HIDDEN ON TOUCH',
+    d10s: 'INDICATOR FOLLOWS THE SECTION IN VIEW · CSS TRANSITION 450MS (INTERRUPTIBLE)', s404: 'SHEET 404', h404: 'This sheet is not in the set.', d11s: 'TWO STROKES DRAWN 600MS EASE-DRAW, 120MS APART · RARE',
+    never: 'NEVER ANIMATE', neverList: 'keyboard focus, nav jumps, scroll-anchored content after first reveal, the status dot, prices, spec values, anything on a loop.'
+  },
+  es: {
+    h1: 'Construyo productos SaaS de punta a punta.', contactH: 'Cuéntame qué estás construyendo.', s1: 'MVP SaaS',
+    lead: 'De una idea validada a un producto en producción: especificación, interfaz, API, base de datos y despliegue.',
+    body: 'Llevo productos de la idea a producción. Un solo responsable de principio a fin.',
+    label: 'LÁMINA 02 — PROYECTOS', replay: 'REPETIR TRANSICIÓN',
+    start: 'Iniciar un proyecto', startCaps: 'INICIAR PROYECTO', see: 'Ver proyectos', read: 'Leer caso', readCaps: 'LEER CASO', sending: 'Enviando…',
+    fName: 'NOMBRE', phName: 'Tu nombre', fEmail: 'CORREO', errEmail: 'Escribe la dirección completa, p. ej. tu@empresa.com', fBudget: 'PRESUPUESTO (INACTIVO)', fType: 'TIPO DE PROYECTO', fMsg: 'MENSAJE', phMsg: '¿Qué problema debe resolver?',
+    received: 'SOLICITUD RECIBIDA', reply: 'Te respondo en menos de 24 horas.', replyNote: 'Te llega una copia de tu mensaje al correo.',
+    formNote1: 'La etiqueta va dentro del campo, en mono mayúsculas. Foco = subrayado cobalto de 2px. Error = barra de alerta + mensaje claro.',
+    formNote2: 'Los campos comparten un marco y se separan con líneas. Nunca tarjetas flotantes ni inputs redondeados.',
+    sheet00: 'LÁMINA 00 — FRANCISCO MYERS · DESARROLLADOR FULLSTACK', sheet01: 'LÁMINA 01 — SERVICIOS',
+    sheetNote: 'Cabecera: número + título a la izquierda, revisión o conteo a la derecha, línea de tinta debajo. Marco: 2px tinta, regla de 8 zonas arriba, esquina cobalto abajo a la derecha. Máximo un marco por pantalla.',
+    live: 'EN VIVO', inUse: 'EN USO', pilot: 'PILOTO', available: 'Disponible para nuevos proyectos',
+    shot: 'CAPTURA REAL', churchDesc: 'Gestión de membresía para una iglesia local: solicitudes, turnos, liturgia y enseñanza.',
+    common: 'MÁS ELEGIDO', ask: 'PEDIR COTIZACIÓN', langName: 'ESPAÑOL',
+    navNote1: 'Escritorio: wordmark · enlaces numerados (con scroll si no caben) · EN|ES · tema · CTA. El enlace activo lleva subrayado cobalto de 2px.',
+    navNote2: 'Móvil: wordmark + MENÚ (44px). El menú abre filas a todo el ancho, con idioma y CTA al final.',
+    navNote3: 'El selector de idioma cambia toda la página (/en ↔ /es) y mantiene la sección actual.',
+    figCap: 'Módulo de solicitudes — vista semanal', proseH: 'Por qué todo proyecto empieza con una especificación', proseP: 'Una especificación de una página cuesta un día y ahorra semanas. Enumera módulos, datos y la métrica que importa, y después se convierte en la', proseLink: 'lámina del caso', quote: 'La especificación es el contrato con quien mantendrá el código — normalmente yo.',
+    do1: 'marco recto, un acento', dont1: 'redondeado, degradado, sombra, emoji', do2: 'un primario por vista', dont2: 'dos primarios + etiquetas ruidosas',
+    dHead: 'LÁMINA D — MOVIMIENTO · MICRO-INTERACCIONES', replayS: 'REPETIR', caseOpen: 'CERRAR', caseClosed: 'ABRIR CASO', catalog: 'D12 — CATÁLOGO',
+    d1s: 'MARCO 4×~200MS EASE-DRAW → REGLA ESCALONADA 30MS → ESQUINA 250MS · UNA VEZ POR SESIÓN · NUNCA BLOQUEA',
+    d2s: 'VIEW TRANSITIONS · TRANSITION:NAME="FM-01" · 450MS EASE-IN-OUT · VOLVER = INVERSO',
+    d3s: 'MOTION inView · UNA VEZ · SUBE 12PX + FUNDIDO · 350MS · ESCALONADO 60MS, MÁX 6',
+    d4btn: 'CAMBIAR TEMA', d5btn: 'ES ↔ EN', d4note: 'Ambos selectores funcionan en toda esta página. El tema se revela en círculo desde el botón; el idioma funde el texto.',
+    d4s: 'TEMA 450MS EASE-IN-OUT CÍRCULO · IDIOMA 150MS FUNDIDO',
+    d6s: 'ENVIAR: DESENFOQUE 200MS · ERROR: SACUDIDA ±6PX 300MS · CONFIRMAR: SUBE 350MS + CHECK 400MS',
+    copy: 'COPIAR', copied: 'CORREO COPIADO', d7s: 'ENTRA Y SALE POR EL BORDE INFERIOR · 350MS ENTRA · 250MS SALE · 2.4S VISIBLE',
+    linkTxt: 'Enlace en texto', d8s: 'BORDE · FLECHA 4PX · SUBRAYADO · TRAMA · FILA — 200MS · @MEDIA (HOVER:HOVER)',
+    hoverMe: 'MUEVE EL PUNTERO', d9s: 'SEGUIMIENTO CON RESORTE (MOTION) · SIN REBOTE · SOLO PUNTERO FINO · OCULTO EN TÁCTIL',
+    d10s: 'EL INDICADOR SIGUE LA SECCIÓN VISIBLE · TRANSICIÓN CSS 450MS (INTERRUMPIBLE)', s404: 'LÁMINA 404', h404: 'Esta lámina no está en el juego.', d11s: 'DOS TRAZOS DIBUJADOS 600MS EASE-DRAW, 120MS ENTRE SÍ · RARO',
+    never: 'NUNCA ANIMAR', neverList: 'foco de teclado, saltos de navegación, contenido ya revelado, el punto de estado, precios, valores de ficha, nada en bucle.'
+  }
+};
+const NAV = { en: ['SERVICES', 'WORK', 'STACK', 'ABOUT', 'PRICING', 'CONTACT', 'NOTES'], es: ['SERVICIOS', 'PROYECTOS', 'STACK', 'SOBRE MÍ', 'PRECIOS', 'CONTACTO', 'NOTAS'] };
+class Component extends DCLogic {
+  state = { lang: null, theme: null, ptype: 0, filter: 0, menu: true, demo: 0, caseOpen: false, email: '', d6: 'idle', d6err: false, toast: false, arrow: false, ruler: 1, pg: 1, faqOpen: { 0: true }, toc: 2, tocOpen: false };
+  R = Object.fromEntries('rootRef bodyRef d1t d1r d1b d1l d1z d1h d1c d2card d2body d3 d6field d6conf d6check d9 d9v d9h d9lab d11a d11b'.split(' ').map(k => [k, React.createRef()]));
+  rm() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  componentDidMount() {
+    import('https://cdn.jsdelivr.net/npm/motion@12/+esm').then(m => { this.M = m; }).catch(() => {});
+    setTimeout(() => this.play1(), 250);
+  }
+  componentWillUnmount() { clearTimeout(this.tt); clearTimeout(this.st); }
+  componentDidUpdate(_, prev) {
+    const s = this.state;
+    if (this.flip && this.R.d2card.current) {
+      const el = this.R.d2card.current, a = this.flip, b = el.getBoundingClientRect(); this.flip = null;
+      if (!this.rm()) el.animate([{ transformOrigin: 'top left', transform: `translate(${a.left - b.left}px,${a.top - b.top}px) scale(${a.width / b.width},${a.height / b.height})` }, { transformOrigin: 'top left', transform: 'none' }], { duration: 450, easing: 'cubic-bezier(0.77,0,0.175,1)' });
+      const body = this.R.d2body.current; if (body) body.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250, delay: 250, easing: 'ease', fill: 'backwards' });
+    }
+    if (prev.d6 !== 'sent' && s.d6 === 'sent') {
+      const c = this.R.d6conf.current, k = this.R.d6check.current, r = this.rm();
+      if (c) c.animate([{ opacity: 0, transform: r ? 'none' : 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 350, easing: 'cubic-bezier(0.23,1,0.32,1)', fill: 'backwards' });
+      if (k) k.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: r ? 0 : 400, delay: r ? 0 : 200, easing: 'cubic-bezier(0.65,0,0.35,1)', fill: 'backwards' });
+    }
+  }
+  play1 = () => {
+    const R = this.R, r = this.rm(), E = 'cubic-bezier(0.65,0,0.35,1)', O = 'cubic-bezier(0.23,1,0.32,1)';
+    if (r) { [R.d1t, R.d1r, R.d1b, R.d1l, R.d1z, R.d1h, R.d1c].forEach(x => x.current && x.current.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 150 })); return; }
+    [[R.d1t, 'scaleX'], [R.d1r, 'scaleY'], [R.d1b, 'scaleX'], [R.d1l, 'scaleY']].forEach(([x, ax], i) => x.current && x.current.animate([{ transform: ax + '(0)' }, { transform: ax + '(1)' }], { duration: 200, delay: i * 130, easing: E, fill: 'backwards' }));
+    const z = R.d1z.current; if (z) [...z.children].forEach((c, i) => c.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, delay: 450 + i * 30, easing: 'ease', fill: 'backwards' }));
+    R.d1h.current && R.d1h.current.animate([{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 350, delay: 600, easing: O, fill: 'backwards' });
+    R.d1c.current && R.d1c.current.animate([{ opacity: 0, transform: 'scale(0.6)' }, { opacity: 1, transform: 'none' }], { duration: 250, delay: 800, easing: O, fill: 'backwards' });
+  };
+  play3 = () => {
+    const el = this.R.d3.current; if (!el) return; const kids = [...el.children].slice(0, 6), r = this.rm();
+    const from = { opacity: 0, transform: r ? 'none' : 'translateY(12px)' };
+    if (this.M && !r) { this.M.animate(kids, { opacity: [0, 1], transform: ['translateY(12px)', 'translateY(0px)'] }, { duration: 0.35, delay: this.M.stagger(0.06), ease: [0.23, 1, 0.32, 1] }); return; }
+    kids.forEach((c, i) => c.animate([from, { opacity: 1, transform: 'none' }], { duration: r ? 150 : 350, delay: r ? 0 : i * 60, easing: 'cubic-bezier(0.23,1,0.32,1)', fill: 'backwards' }));
+  };
+  play11 = () => {
+    const r = this.rm();
+    [this.R.d11a, this.R.d11b].forEach((x, i) => x.current && x.current.animate(r ? [{ opacity: 0 }, { opacity: 1 }] : [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: r ? 150 : 600, delay: r ? 0 : i * 120, easing: 'cubic-bezier(0.65,0,0.35,1)', fill: 'backwards' }));
+  };
+  setTheme = (v, e) => {
+    const cur = this.state.theme ?? this.props.theme ?? 'light'; if (v === cur) return;
+    if (!document.startViewTransition || this.rm()) { this.setState({ theme: v }); return; }
+    const b = e && e.currentTarget ? e.currentTarget.getBoundingClientRect() : null;
+    const x = b ? b.left + b.width / 2 : innerWidth / 2, y = b ? b.top + b.height / 2 : 0;
+    const rad = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    const html = document.documentElement; html.classList.add('theme-reveal');
+    const vt = document.startViewTransition(() => new Promise(res => this.setState({ theme: v }, res)));
+    vt.ready.then(() => html.animate({ clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${rad}px at ${x}px ${y}px)`] }, { duration: 450, easing: 'cubic-bezier(0.77,0,0.175,1)', pseudoElement: '::view-transition-new(root)' })).catch(() => {});
+    vt.updateCallbackDone.catch(() => {}); vt.finished.catch(() => {}).finally(() => html.classList.remove('theme-reveal'));
+  };
+  setLang = v => {
+    const cur = this.state.lang ?? this.props.lang ?? 'en'; if (v === cur) return;
+    this.setState({ lang: v }, () => { const b = this.R.bodyRef.current; if (b) b.animate([{ opacity: 0.15 }, { opacity: 1 }], { duration: 150, easing: 'ease' }); });
+  };
+  toggleCase = () => { const el = this.R.d2card.current; this.flip = el ? el.getBoundingClientRect() : null; this.setState({ caseOpen: !this.state.caseOpen }); };
+  send6 = () => {
+    if (this.state.d6 !== 'idle') return;
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(this.state.email)) {
+      this.setState({ d6err: true });
+      const f = this.R.d6field.current; if (f && !this.rm()) f.animate([{ transform: 'none' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'none' }], { duration: 300, easing: 'cubic-bezier(0.23,1,0.32,1)' });
+      return;
+    }
+    this.setState({ d6: 'sending', d6err: false }); this.st = setTimeout(() => this.setState({ d6: 'sent' }), 1100);
+  };
+  nxVals(s, es) {
+    const total = 6, pg = s.pg;
+    const nums = [...new Set([1, pg - 1, pg, pg + 1, total])].filter(n => n >= 1 && n <= total).sort((a, b) => a - b);
+    const pgItems = [];
+    nums.forEach((n, i) => {
+      if (i && n - nums[i - 1] > 1) pgItems.push({ label: '…', cur: 'false', bg: 'transparent', fg: 'var(--text-muted)', go: () => {} });
+      const cur = n === pg;
+      pgItems.push({ label: String(n).padStart(2, '0'), cur: cur ? 'page' : 'false', bg: cur ? 'var(--invert-bg)' : 'transparent', fg: cur ? 'var(--invert-fg)' : 'var(--text)', go: () => this.setState({ pg: n }) });
+    });
+    const faq = es ? [
+      ['¿Cuánto tarda un MVP?', 'Entre 4 y 6 semanas desde la especificación firmada. Recibes una versión navegable cada semana.'],
+      ['¿De quién es el código?', 'Tuyo. El repositorio se crea en tu cuenta desde el primer día y te entrego accesos y documentación.'],
+      ['¿Cuánto cuesta mantenerlo cada mes?', 'Hosting y servicios suelen costar entre $0 y $25 al mes en proyectos pequeños. Te lo detallo en la propuesta.'],
+      ['¿Cómo se paga?', '50% al iniciar y 50% en la entrega. Acepto transferencia, Zelle y cripto. Precios en USD.']
+    ] : [
+      ['How long does an MVP take?', '4 to 6 weeks from the signed spec. You get a working build to click through every week.'],
+      ['Who owns the code?', 'You do. The repository lives in your account from day one, and you get access and docs at handover.'],
+      ['What does it cost to run each month?', 'Hosting and services usually run $0–25 a month for small projects. The proposal lists them.'],
+      ['How do payments work?', '50% to start and 50% on delivery. Bank transfer, Zelle and crypto. Prices in USD.']
+    ];
+    const heads = es ? ['Contexto', 'Problema', 'Restricciones', 'Solución', 'Resultado'] : ['Context', 'Problem', 'Constraints', 'Solution', 'Outcome'];
+    return {
+      nx: es ? {
+        pagT: 'PAGINACIÓN', prev: 'ANTERIOR', next: 'SIGUIENTE', prevItem: 'ANTERIOR', nextItem: 'SIGUIENTE',
+        prevTitle: 'Apps Script como backend para pymes', nextTitle: 'Cómo cotizo un MVP',
+        pagNote1: 'Numerada en índices (P08, P10), con URL /page/2. Solo aparece desde 10 elementos.', pagNote2: 'Anterior/siguiente con título en posts (cronológico) y casos (siguiente FM-ID, vuelve al primero). Los extremos se desactivan.',
+        faqNote1: 'details/summary nativo. La primera abierta; se pueden abrir varias. Q-ID en mono.', faqNote2: 'Una sola colección con campo page (servicios / precios / ambas). Emite datos estructurados FAQPage.',
+        tocT: 'ÍNDICE', contents: 'CONTENIDO', tocDesk: 'DESKTOP · BARRA STICKY 240PX', tocMob: 'TABLET / MÓVIL · BLOQUE PLEGABLE',
+        tocNote1: 'Solo con 3 o más h2. Desktop muestra h2 + h3; tablet y móvil solo h2.', tocNote2: 'El marcador cobalto sigue la sección visible. En móvil, elegir una sección cierra el bloque.'
+      } : {
+        pagT: 'PAGINATION', prev: 'PREV', next: 'NEXT', prevItem: 'PREVIOUS', nextItem: 'NEXT',
+        prevTitle: 'Apps Script as a backend for SMBs', nextTitle: 'How I price an MVP',
+        pagNote1: 'Numbered on index pages (P08, P10), with /page/2 URLs. Only shown from 10 items.', pagNote2: 'Prev/next with titles on posts (chronological) and cases (next FM-ID, wraps to the first). Ends are disabled.',
+        faqNote1: 'Native details/summary. First item open; several can be open. Q-ID in mono.', faqNote2: 'One collection with a page field (services / pricing / both). Emits FAQPage structured data.',
+        tocT: 'TOC', contents: 'CONTENTS', tocDesk: 'DESKTOP · STICKY SIDEBAR 240PX', tocMob: 'TABLET / MOBILE · COLLAPSIBLE BLOCK',
+        tocNote1: 'Only with 3 or more h2. Desktop lists h2 + h3; tablet and mobile list h2 only.', tocNote2: 'The cobalt marker follows the section in view. On mobile, picking a section closes the block.'
+      },
+      pgItems, pgFirst: String(pg === 1), pgLast: String(pg === total),
+      pgPrevOp: pg === 1 ? '0.35' : '1', pgNextOp: pg === total ? '0.35' : '1',
+      pgPrev: () => pg > 1 && this.setState({ pg: pg - 1 }), pgNext: () => pg < total && this.setState({ pg: pg + 1 }),
+      faqItems: faq.map(([q, a], i) => {
+        const open = !!s.faqOpen[i];
+        return { id: 'Q-0' + (i + 1), q, a, open, rot: open ? 'rotate(45deg)' : 'none', toggle: () => this.setState(st => ({ faqOpen: { ...st.faqOpen, [i]: !st.faqOpen[i] } })) };
+      }),
+      tocItems: heads.map((label, i) => {
+        const cur = i === s.toc;
+        return { n: '0' + (i + 1), label, cur: cur ? 'location' : 'false', c: cur ? 'var(--text)' : 'var(--text-muted)', w: cur ? '600' : '400',
+          go: e => { e.preventDefault(); this.setState({ toc: i }); }, goClose: e => { e.preventDefault(); this.setState({ toc: i, tocOpen: false }); } };
+      }),
+      tocY: `translateY(${s.toc * 36}px)`, tocNow: `0${s.toc + 1}/05 ${heads[s.toc]}`,
+      tocOpen: s.tocOpen, tocRot: s.tocOpen ? 'rotate(45deg)' : 'none', tocToggle: () => this.setState({ tocOpen: !s.tocOpen })
+    };
+  }
+  copy7 = () => {
+    try { navigator.clipboard && navigator.clipboard.writeText('hola@fmyers.dev').catch(() => {}); } catch (e) {}
+    clearTimeout(this.tt); this.setState({ toast: true }); this.tt = setTimeout(() => this.setState({ toast: false }), 2400);
+  };
+  move9 = e => {
+    const box = this.R.d9.current; if (!box) return; const b = box.getBoundingClientRect();
+    const x = Math.round(e.clientX - b.left), y = Math.round(e.clientY - b.top), p = n => String(n).padStart(4, '0');
+    const v = this.R.d9v.current, hz = this.R.d9h.current, lab = this.R.d9lab.current;
+    const lx = Math.min(x + 10, b.width - 130), ly = Math.max(y - 24, 4);
+    const set = (el, tf) => { if (!el) return; if (this.M && !this.rm()) this.M.animate(el, { transform: tf }, { type: 'spring', stiffness: 520, damping: 46, mass: 0.6 }); else el.style.transform = tf; };
+    set(v, `translateX(${x}px)`); set(hz, `translateY(${y}px)`); set(lab, `translate(${lx}px,${ly}px)`);
+    if (lab) lab.textContent = `X ${p(x)} · Y ${p(y)} · ZONE ${Math.min(8, Math.floor(x / b.width * 8) + 1)}`;
+  };
+  vis9 = o => { [this.R.d9v, this.R.d9h, this.R.d9lab].forEach(x => x.current && (x.current.style.opacity = o)); };
+  renderVals() {
+    const s = this.state;
+    const lang = s.lang ?? this.props.lang ?? 'en', theme = s.theme ?? this.props.theme ?? 'light';
+    const t = T[lang], es = lang === 'es';
+    const seg = (cur, v) => ({ bg: cur === v ? 'var(--invert-bg)' : 'transparent', fg: cur === v ? 'var(--invert-fg)' : 'var(--text)', on: cur === v ? 'true' : 'false' });
+    const chip = on => ({ bg: on ? 'var(--invert-bg)' : 'transparent', fg: on ? 'var(--invert-fg)' : 'var(--text)', on: on ? 'true' : 'false' });
+    const demoKey = s.demo;
+    return {
+      t, theme, th: theme, isLight: theme !== 'dark', isDark: theme === 'dark',
+      langOpts: ['en', 'es'].map(v => ({ label: v.toUpperCase(), ...seg(lang, v), pick: () => this.setLang(v) })),
+      flipLang: () => this.setLang(es ? 'en' : 'es'), ...this.R,
+      play1: this.play1, play3: this.play3, play11: this.play11, toggleCase: this.toggleCase, caseOpen: s.caseOpen,
+      caseBtn: s.caseOpen ? t.caseOpen : t.caseClosed, caseTag: s.caseOpen ? 'CASE STUDY' : (es ? 'EN USO' : 'IN USE'),
+      cs: s.caseOpen ? { l: '0px', t: '0px', w: '100%', h: '100%', b: 'var(--border-frame)', fs: '40px' } : { l: '16px', t: '16px', w: '44%', h: '62%', b: 'var(--border-ink)', fs: '22px' },
+      services3: [['S-01', 'SaaS MVP'], ['S-02', es ? 'Automatización' : 'Business automation'], ['S-03', es ? 'Fullstack por contrato' : 'Fullstack on contract'], ['S-04', es ? 'Mantenimiento' : 'Maintenance']].map(([id, n]) => ({ id, n })),
+      email: s.email, onEmail: e => this.setState({ email: e.target.value, d6err: false }), send6: this.send6,
+      reset6: () => { clearTimeout(this.st); this.setState({ d6: 'idle', d6err: false, email: '' }); },
+      d6notSent: s.d6 !== 'sent', d6sent: s.d6 === 'sent', d6err: s.d6err,
+      d6shadow: s.d6err ? 'inset 3px 0 0 var(--danger)' : 'none', d6labC: s.d6err ? 'var(--danger)' : 'var(--text-muted)',
+      d6blur: s.d6 === 'sending' ? 'blur(2px)' : 'none', d6op: s.d6 === 'sending' ? '0.7' : '1', d6text: s.d6 === 'sending' ? t.sending : t.start + ' →',
+      copy7: this.copy7, email7: 'hola@fmyers.dev',
+      toastY: s.toast ? 'translateY(0)' : 'translateY(calc(100% + 16px))', toastO: s.toast ? '1' : '0',
+      toastT: s.toast ? 'transform 350ms var(--ease-out), opacity 350ms var(--ease-out)' : 'transform 250ms var(--ease-out), opacity 250ms var(--ease-out)',
+      arrowOn: () => this.setState({ arrow: true }), arrowOff: () => this.setState({ arrow: false }), arrowX: s.arrow ? 'translateX(4px)' : 'none', noop: e => e.preventDefault(),
+      specs3: [{ k: 'SECTOR', v: es ? 'Distribución' : 'Distribution' }, { k: 'STACK', v: 'NestJS' }, { k: es ? 'ESTADO' : 'STATUS', v: es ? 'En vivo' : 'Live' }],
+      move9: this.move9, enter9: () => this.vis9('1'), leave9: () => this.vis9('0'),
+      ruler: NAV[lang].slice(0, 6).map((n, i) => ({ id: '0' + (i + 1), c: s.ruler === i ? 'var(--accent)' : 'var(--text-muted)', pick: () => this.setState({ ruler: i }) })),
+      rulerX: `translateX(${s.ruler * 100}%)`, rulerLabel: (es ? 'LÁMINA 0' : 'SHEET 0') + (s.ruler + 1) + ' — ' + NAV[lang][s.ruler],
+      principles: (es ? [
+        ['M-01', 'Medido, como un plotter', 'Entradas 350ms, láminas 450ms, trazos 600ms. Nada pasa de 600ms.'],
+        ['M-02', 'La respuesta siempre es rápida', 'Presión 160ms, hover 200ms, idioma 150ms. La personalidad no frena la interacción.'],
+        ['M-03', 'Las líneas se dibujan', 'Marcos, checks y tachados se trazan. Nada aparece desde scale(0).'],
+        ['M-04', 'Movimiento reducido = solo opacidad', 'Sin desplazamientos ni escalas; los fundidos se mantienen.']
+      ] : [
+        ['M-01', 'Measured, like a plotter', 'Entries 350ms, sheets 450ms, strokes 600ms. Nothing goes past 600ms.'],
+        ['M-02', 'Feedback is always fast', 'Press 160ms, hover 200ms, language 150ms. Personality never slows input.'],
+        ['M-03', 'Lines get drawn', 'Frames, checks and strike-throughs are stroked. Nothing appears from scale(0).'],
+        ['M-04', 'Reduced motion = opacity only', 'No translate or scale; fades stay.']
+      ]).map(([k, h, b]) => ({ k, h, b })),
+      catHead: es ? ['#', 'INTERACCIÓN', 'CUÁNDO · FRECUENCIA', 'MOVIMIENTO', 'TIEMPO · CURVA', 'REDUCIDO'] : ['#', 'INTERACTION', 'WHEN · FREQUENCY', 'MOTION', 'TIMING · CURVE', 'REDUCED'],
+      catalog: (es ? [
+        ['Presión', 'Todo pulsable · decenas/día', 'scale(0.97)', '160ms ease-out', 'Sin escala'],
+        ['Hover', 'Puntero fino · decenas/día', 'Borde cobalto, flecha 4px, subrayado, trama, fila', '200ms ease', 'Solo color'],
+        ['Firma', 'Primera carga · 1/sesión', 'Marco → regla → esquina', '600ms + 450ms ease-draw', 'Fundido 150ms'],
+        ['Revelado', 'Sección entra · una vez', 'Sube 12px + fundido, escalonado 60ms (máx 6)', '350ms ease-out', 'Fundido'],
+        ['Tarjeta → caso', 'Abrir/cerrar caso · ocasional', 'Morph con View Transitions', '450ms ease-in-out', 'Fundido 150ms'],
+        ['Tema', 'Selector · raro', 'Círculo desde el botón', '450ms ease-in-out', 'Cambio directo'],
+        ['Idioma', 'Selector · raro', 'Fundido del texto', '150ms ease', 'Igual'],
+        ['Menú móvil', 'Abrir/cerrar · ocasional', 'Filas suben, escalonado 30ms', '350ms / 250ms salida', 'Fundido'],
+        ['Enviando', 'Enviar formulario', 'Etiqueta se desenfoca → "Enviando…"', '200ms ease', 'Igual'],
+        ['Error', 'Envío inválido', 'Sacudida ±6px ×2 + barra de alerta', '300ms ease-out', 'Solo barra'],
+        ['Confirmación', 'Éxito · 1/visita', 'Sube + fundido, check dibujado', '350ms + 400ms', 'Fundido'],
+        ['Toast', 'Copiar correo', 'Entra y sale por abajo', '350 / 250ms · 2.4s', 'Fundido'],
+        ['Regla viva', 'Scroll · continuo', 'Indicador se desliza a la zona', '450ms ease-in-out (transición)', 'Directo'],
+        ['Mira', 'Hero · puntero fino', 'Cruz + coordenadas con resorte', 'spring, sin rebote', 'Oculta'],
+        ['404', 'Raro', 'Dos trazos tachan la lámina', '600ms ease-draw', 'Estático']
+      ] : [
+        ['Press', 'Every pressable · tens/day', 'scale(0.97)', '160ms ease-out', 'No scale'],
+        ['Hover', 'Fine pointer · tens/day', 'Cobalt border, 4px arrow, underline, hatch, row', '200ms ease', 'Color only'],
+        ['Signature', 'First load · 1/session', 'Frame → ruler → corner', '600ms + 450ms ease-draw', 'Fade 150ms'],
+        ['Reveal', 'Section enters · once', 'Rise 12px + fade, 60ms stagger (max 6)', '350ms ease-out', 'Fade'],
+        ['Card → case', 'Open/close case · occasional', 'View Transitions morph', '450ms ease-in-out', 'Fade 150ms'],
+        ['Theme', 'Toggle · rare', 'Circle from the button', '450ms ease-in-out', 'Instant swap'],
+        ['Language', 'Toggle · rare', 'Text fade', '150ms ease', 'Same'],
+        ['Mobile menu', 'Open/close · occasional', 'Rows rise, 30ms stagger', '350ms / 250ms exit', 'Fade'],
+        ['Sending', 'Form submit', 'Label blurs → "Sending…"', '200ms ease', 'Same'],
+        ['Error', 'Invalid submit', 'Shake ±6px ×2 + alert bar', '300ms ease-out', 'Bar only'],
+        ['Confirmation', 'Success · 1/visit', 'Rise + fade, check drawn', '350ms + 400ms', 'Fade'],
+        ['Toast', 'Copy email', 'Enters and leaves by the bottom edge', '350 / 250ms · 2.4s', 'Fade'],
+        ['Live ruler', 'Scroll · continuous', 'Indicator slides to the zone', '450ms ease-in-out (transition)', 'Instant'],
+        ['Crosshair', 'Hero · fine pointer', 'Spring-follow cross + coordinates', 'spring, no bounce', 'Hidden'],
+        ['404', 'Rare', 'Two strokes cross the sheet out', '600ms ease-draw', 'Static']
+      ]).map(([what, when, how, time, rm], i) => ({ n: 'D' + String(i + 1).padStart(2, '0'), what, when, how, time, rm })),
+      themeOpts: [['light', es ? 'CLARO' : 'LIGHT'], ['dark', es ? 'OSCURO' : 'DARK']].map(([v, label]) => ({ label, ...seg(theme, v), pick: e => this.setTheme(v, e) })),
+      flipTheme: e => this.setTheme(theme === 'dark' ? 'light' : 'dark', e), themeGlyph: theme === 'dark' ? '○' : '●',
+      swatches: [
+        ['Paper', '--bg', '#F2F3EF', '#0E1114', es ? 'Fondo de lámina' : 'Sheet background'],
+        ['Paper raised', '--surface', '#F8F9F6', '#151A1F', es ? 'Tarjetas, formularios' : 'Cards, forms, tables'],
+        ['Hatch', '--hatch', '#E4E7E1', '#1E242A', es ? 'Placeholders, hover secundario' : 'Placeholders, secondary hover'],
+        ['Rule', '--line', '#C4C9C1', '#353C44', es ? 'Divisores, regla de zonas' : 'Dividers, zone ruler'],
+        ['Graphite', '--text-muted', '#5B626A', '#98A0A8', es ? 'Etiquetas, metadatos' : 'Labels, metadata'],
+        ['Ink', '--text · --line-strong', '#15181C', '#E9EBE6', es ? 'Texto, marcos' : 'Text, frames'],
+        ['Cobalt', '--accent', '#2B55C8', '#86A4F2', es ? 'El único acento: IDs, CTA' : 'The one accent: IDs, CTA'],
+        ['Signal', '--ok', '#1F8A4C', '#4CC47F', es ? 'Disponibilidad, éxito' : 'Availability, success'],
+        ['Alert', '--danger', '#B3362B', '#F08A80', es ? 'Solo errores de formulario' : 'Form errors only']
+      ].map(([name, token, l, d, use]) => ({ name, token, l, d, use, v: `var(${token.split(' ')[0]})` })),
+      spaces: [['--space-1', 4], ['--space-2', 8], ['--space-3', 12], ['--space-4', 16], ['--space-5', 20], ['--space-6', 24], ['--space-8', 32], ['--space-10', 40], ['--space-12', 48], ['--space-16', 64], ['--space-24', 96]].map(([t, v]) => ({ t, v, w: v * 2 + 'px' })),
+      motion: [
+        ['PRESS', es ? 'scale(0.97) · 160ms · ease-out — todo botón' : 'scale(0.97) · 160ms · ease-out — every button'],
+        ['HOVER', es ? 'color/borde · 200ms ease. Sin elevación.' : 'color/border · 200ms ease. No lift.'],
+        ['THEME', es ? 'revelado circular desde el botón · 450ms — ver D4' : 'circular reveal from the toggle · 450ms — see D4'],
+        ['SHEET', es ? 'tarjeta → caso con View Transitions · 450ms — ver D2' : 'card → case morph via View Transitions · 450ms — see D2'],
+        ['REDUCED', es ? 'prefers-reduced-motion: solo opacidad' : 'prefers-reduced-motion: opacity only']
+      ].map(([k, v]) => ({ k, v })),
+      replay: () => this.setState({ demo: s.demo + 1 }),
+      sheetDemo: React.createElement('div', { key: demoKey, ref: el => { if (el && !el.dataset.played) { el.dataset.played = 1; el.animate([{ transform: 'translateY(12px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 450, easing: 'cubic-bezier(0.77,0,0.175,1)', fill: 'both' }); } }, style: { position: 'absolute', left: 20, top: 20, right: 20, bottom: 20, background: 'var(--surface)', border: '2px solid var(--line-strong)', display: 'flex', alignItems: 'center', padding: '0 16px', fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: 1, color: 'var(--accent)' } }, es ? 'LÁMINA 02 — FM-01' : 'SHEET 02 — FM-01'),
+      glyphs: [['→', es ? 'acción' : 'action'], ['↗', es ? 'externo' : 'external'], ['←', es ? 'volver' : 'back'], ['—', es ? 'viñeta' : 'bullet'], ['·', es ? 'separador' : 'separator'], ['●', es ? 'estado' : 'status']].map(([g, u]) => ({ g, u })),
+      ptypes: ['SaaS MVP', es ? 'Automatización' : 'Automation', es ? 'Contrato' : 'Contract'].map((name, i) => ({ name, ...chip(s.ptype === i), pick: () => this.setState({ ptype: i }) })),
+      zones: ['1', '2', '3', '4', '5', '6', '7', '8'],
+      block: [
+        { k: 'STACK', v: 'Next.js · NestJS · PostgreSQL', w: 600, c: 'var(--accent)' },
+        { k: es ? 'AUTOMATIZ.' : 'AUTOMATION', v: 'Google Workspace', w: 400, c: 'var(--text)' },
+        { k: es ? 'ESTADO' : 'STATUS', v: t.available, w: 400, c: 'var(--text)' },
+        { k: es ? 'CONTACTO' : 'CONTACT', v: 'fmyers.dev', w: 600, c: 'var(--text)' }
+      ],
+      specs: [
+        { k: 'SECTOR', v: es ? 'Iglesia' : 'Church' }, { k: es ? 'MÓDULOS' : 'MODULES', v: es ? 'Solicitudes · Turnos' : 'Requests · Roster' },
+        { k: 'STACK', v: 'Next.js · NestJS' }, { k: es ? 'CLIENTE' : 'CLIENT', v: 'Gracia Eterna' }
+      ],
+      tags: es ? ['Especificación', 'UI', 'API', 'Base de datos', 'Despliegue'] : ['Spec', 'UI', 'API', 'Database', 'Deploy'],
+      filters: (es ? ['Todo', 'SaaS', 'Automatización', 'ONG'] : ['All', 'SaaS', 'Automation', 'Non-profit']).map((name, i) => ({ name, ...chip(s.filter === i), pick: () => this.setState({ filter: i }) })),
+      packages: [
+        { id: 'P-01', name: es ? 'Construcción de MVP' : 'MVP build', unit: es ? 'DESDE' : 'FROM', feat: true, inc: es ? ['Descubrimiento y especificación', 'App web + API + BD', 'Despliegue y entrega'] : ['Discovery & spec', 'Web app + API + DB', 'Deploy & handoff'] },
+        { id: 'P-03', name: es ? 'Contrato mensual' : 'Monthly contract', unit: es ? 'POR MES' : 'PER MONTH', feat: false, inc: es ? ['Horas reservadas', 'Revisión de código', 'Reporte semanal'] : ['Reserved hours', 'Code review & PRs', 'Weekly report'] }
+      ].map(p => ({ ...p, bg: p.feat ? 'var(--surface)' : 'var(--bg)' })),
+      nav: NAV[lang].map((en, i) => ({ id: '0' + (i + 1), en, c: i === 1 ? 'var(--accent)' : 'var(--text)', bd: i === 1 ? '2px solid var(--accent)' : '2px solid transparent' })),
+      menuOpen: s.menu, menuLabel: s.menu ? (es ? 'CERRAR' : 'CLOSE') : (es ? 'MENÚ' : 'MENU'), toggleMenu: () => this.setState({ menu: !s.menu }),
+      ...this.nxVals(s, es),
+      posts: (es ? [
+        { n: 'N-02', date: '2026.11', title: 'Por qué todo proyecto empieza con una especificación', meta: 'PROCESO · 6 MIN' },
+        { n: 'N-01', date: '2026.10', title: 'Apps Script como backend para pymes', meta: 'AUTOMATIZACIÓN · 9 MIN' }
+      ] : [
+        { n: 'N-02', date: '2026.11', title: 'Why every project starts with a spec', meta: 'PROCESS · 6 MIN' },
+        { n: 'N-01', date: '2026.10', title: 'Apps Script as a backend for small businesses', meta: 'AUTOMATION · 9 MIN' }
+      ]),
+      rules: (es ? [
+        ['Cada pantalla es una lámina numerada (00–07). El número no cambia entre idiomas.', 'Renumerar secciones o usar números decorativos.'],
+        ['Cobalto una vez por región: ID, stack principal o CTA.', 'Cobalto como fondo de bloque o en dos CTAs vecinos.'],
+        ['Esquinas rectas, líneas de 1px y marcos de 2px.', 'Bordes redondeados, sombras o desenfoques.'],
+        ['Una página = un idioma. El selector cambia todo.', 'Mezclar EN y ES en la web. (README y LinkedIn sí van apilados.)'],
+        ['Mono en mayúsculas para etiquetas, claves e IDs.', 'Mono para párrafos o títulos.'],
+        ['Solo capturas y cifras reales. Si no hay dato, se omite la fila.', 'Mockups generados o métricas inventadas.'],
+        ['Glifos tipográficos (→ ↗ — ·) como iconos.', 'Emoji, librerías de iconos o insignias de terceros.'],
+        ['Probar cada pantalla en claro y oscuro con tokens semánticos.', 'Escribir colores hex en componentes.']
+      ] : [
+        ['Every screen is a numbered sheet (00–07). The number never changes across languages.', 'Renumber sections or use numbers decoratively.'],
+        ['Cobalt once per region: an ID, the core stack or the CTA.', 'Cobalt as a block fill or on two neighbouring CTAs.'],
+        ['Square corners, 1px rules and 2px frames.', 'Rounded corners, shadows or blur.'],
+        ['One page = one language. The switch changes everything.', 'Mix EN and ES on the site. (README and LinkedIn stay stacked.)'],
+        ['Mono caps for labels, keys and IDs.', 'Mono for paragraphs or headlines.'],
+        ['Real screenshots and real numbers only. No data, no row.', 'Generated mockups or invented metrics.'],
+        ['Typographic glyphs (→ ↗ — ·) as icons.', 'Emoji, icon libraries or third-party badges.'],
+        ['Check every screen in light and dark with semantic tokens.', 'Hard-code hex values in components.']
+      ]).map(([d, x], i) => ({ n: 'R' + (i + 1), do: d, dont: x }))
+    };
+  }
+}
+</script>
+</body>
+</html>

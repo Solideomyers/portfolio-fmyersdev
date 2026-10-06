@@ -1,0 +1,48 @@
+---
+id: FM-02
+slug: chapel
+lang: en
+title: Chapel
+summary: Inventory and distribution for a nonprofit publisher across two warehouses, built on the Google Workspace the team already had.
+client: Chapel Library · nonprofit publisher
+sector: [Nonprofit, Logistics]
+modules: [Warehouses, Inventory, Batch entries & exits, Reports, Users]
+stack: [Google Apps Script, Google Sheets, Chart.js]
+status: in-use
+role: Fullstack on Google Workspace
+timeline: In use since late 2025
+year: 2025
+cover: { src: /work/fm-02/chapel.png, alt: "Chapel mobile app: dashboard, stock charts, batch entry and recent activity" }
+shots:
+  - { src: /work/fm-02/chapel.png, alt: "Chapel mobile app: dashboard, stock charts, batch entry and recent activity", caption: Mobile — dashboard, batch entry and activity }
+metrics:
+  - { label: Titles tracked, value: "594", date: 2026-10 }
+  - { label: Units tracked, value: "2,731", date: 2026-10 }
+  - { label: Warehouses, value: "2", date: 2026-10 }
+featured: true
+order: 2
+draft: false
+---
+
+## Context
+Chapel is the inventory system behind a nonprofit publisher's book distribution in Venezuela, which ships from two warehouses: Puerto Ordaz and Maracay.
+
+## Problem
+The team needed shared, up-to-date stock for both warehouses, a record of every entry and exit, and reports they could print or send.
+
+## Constraints
+- It had to run on the Google Workspace the team already uses, with no server costs.
+- Mobile-first: entries and exits are registered from the phone.
+- The data has to stay readable by people in a spreadsheet, for audits.
+
+## Solution
+- **Platform:** a single-page app on Google Apps Script with Google Sheets as the database (inventory, movement history, archived history, users). It runs on Workspace, so there are no server costs.
+- **Movements:** batch entries and exits per warehouse, saved as a single block so a batch is recorded whole. Leaving a form with unsaved items asks for confirmation first.
+- **Dashboard:** stock per warehouse, stock distribution, alerts and today's movements.
+- **Reports:** PDF and Excel inventory and order reports per warehouse, filtered by stock available or critical stock (0–10).
+- **Automation:** a daily low-stock email alert, and automatic archiving of history older than six months.
+- **Access:** four roles (Super Admin, Admin, User, Guest) with an approval flow, plus a team chat with presence.
+
+## Outcome
+- 594 titles and 2,731 units tracked across 2 warehouses, with every movement logged since December 2025.
+- Next step, in progress: a rewrite on Next.js, NestJS and PostgreSQL to take the app further.

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="design-system/styles.css" rel="stylesheet"></link><style>a{color:var(--accent);text-decoration:none}a:hover{color:var(--text);text-decoration:underline}button{font:inherit}</style></helmet>
+<div data-theme="{{ theme }}" style="container-type:inline-size;background:var(--bg);color:var(--text);font-family:var(--font-sans);width:100%">
+
+<header style="position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:var(--border-ink)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px clamp(20px,4cqi,48px)">
+<a href="#" aria-label="fmyers.dev home" style="display:flex;flex:none"><sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}"><img src="assets/wordmark-light.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if><sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><img src="assets/wordmark-dark.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if></a>
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><nav style="display:flex;gap:22px;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap"><sc-for list="{{ nav }}" as="n" hint-placeholder-count="5"><a href="#" aria-current="{{ n.cur }}" style="display:flex;gap:6px;color:{{ n.c }};text-decoration:none;padding:4px 0 2px;border-bottom:{{ n.bd }}"><span style="color:var(--text-muted)">{{ n.id }}</span>{{ n.label }}</a></sc-for></nav></sc-if>
+<div style="display:flex;gap:10px;align-items:center;flex:none">
+<sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}"><div style="display:flex;border:var(--border-ink)"><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ enBg }};color:{{ enFg }}">EN</span><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ esBg }};color:{{ esFg }}">ES</span></div><button aria-label="Toggle theme" style="font-family:var(--font-mono);font-size:14px;width:34px;height:34px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">◐</button></sc-if>
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><a href="#" style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap;background:var(--accent);color:var(--accent-fg);padding:10px 16px;text-decoration:none">{{ c.startCaps }}</a></sc-if>
+<sc-if value="{{ notDesk }}" hint-placeholder-val="{{ false }}"><button style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;min-height:44px;padding:0 14px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">{{ c.menu }}</button></sc-if>
+</div>
+</div>
+</header>
+
+<main style="max-width:1280px;margin:0 auto;padding:clamp(24px,4cqi,48px) clamp(20px,4cqi,48px) clamp(56px,8cqi,96px);display:flex;flex-direction:column;gap:clamp(48px,7cqi,80px)">
+
+<section data-screen-label="Services · Header" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>{{ c.sheet }}</span><span style="color:var(--text-muted)">P-01 — P-03</span></div>
+<h1 style="margin:0;font-stretch:110%;font-weight:700;font-size:clamp(40px,5.6cqi,72px);letter-spacing:-0.035em;line-height:0.95;max-width:900px;text-wrap:balance">{{ c.h1 }}</h1>
+<p style="margin:0;font-size:clamp(17px,1.5cqi,19px);line-height:1.45;color:var(--text-muted);max-width:640px;text-wrap:pretty">{{ c.lead }}</p>
+</section>
+
+<div style="display:flex;flex-direction:column;gap:32px">
+<sc-for list="{{ services }}" as="v" hint-placeholder-count="3"><section style="position:relative;border:{{ v.bd }};background:var(--surface);display:flex;flex-wrap:wrap">
+<div style="flex:1 1 300px;padding:clamp(20px,3cqi,32px);display:flex;flex-direction:column;gap:14px;border-right:var(--border-rule)">
+<div style="display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:13px"><span style="color:var(--accent)">{{ v.id }}</span><sc-if value="{{ v.feat }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;letter-spacing:1px;background:var(--invert-bg);color:var(--invert-fg);padding:3px 6px">{{ c.common }}</span></sc-if></div>
+<h2 style="margin:0;font-stretch:110%;font-weight:700;font-size:clamp(28px,3cqi,38px);letter-spacing:-0.5px;line-height:1.05">{{ v.name }}</h2>
+<p style="margin:0;font-size:16px;line-height:1.5;color:var(--text-muted);text-wrap:pretty">{{ v.for }}</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;border:var(--border-rule);background:var(--bg)"><div style="padding:10px 12px;border-right:var(--border-rule);display:flex;flex-direction:column;gap:3px"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ c.from }}</span><span style="font-weight:700;font-size:20px">{{ v.price }}</span></div><div style="padding:10px 12px;display:flex;flex-direction:column;gap:3px"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ c.timing }}</span><span style="font-size:15px">{{ v.time }}</span></div></div>
+<a href="#" style="margin-top:auto;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;color:var(--accent)">{{ c.seePrice }} →</a>
+</div>
+<div style="flex:2 1 420px;min-width:0;padding:clamp(20px,3cqi,32px);display:flex;flex-direction:column;gap:20px">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:20px 32px">
+<div style="display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ c.scope }}</span><sc-for list="{{ v.scope }}" as="i" hint-placeholder-count="4"><div style="font-size:15px;line-height:1.45;display:grid;grid-template-columns:18px minmax(0,1fr);gap:6px;text-wrap:pretty"><span style="font-family:var(--font-mono);color:var(--text-muted)">—</span>{{ i }}</div></sc-for></div>
+<div style="display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ c.deliver }}</span><sc-for list="{{ v.deliver }}" as="i" hint-placeholder-count="4"><div style="font-size:15px;line-height:1.45;display:grid;grid-template-columns:18px minmax(0,1fr);gap:6px;text-wrap:pretty"><span style="font-family:var(--font-mono);color:var(--ok)">✓</span>{{ i }}</div></sc-for></div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;padding-top:16px;border-top:var(--border-rule)"><sc-for list="{{ v.stack }}" as="t" hint-placeholder-count="4"><span style="font-family:var(--font-mono);font-size:12px;border:var(--border-ink);padding:6px 10px">{{ t }}</span></sc-for></div>
+<div style="font-size:14px;color:var(--text-muted);text-wrap:pretty">{{ v.proof }}</div>
+</div>
+<sc-if value="{{ v.feat }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;right:-2px;bottom:-2px;width:20px;height:20px;background:var(--accent)"></div></sc-if>
+</section></sc-for>
+</div>
+
+<section data-screen-label="Services · Process" style="display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>{{ c.processH }}</span><span style="color:var(--text-muted)">04</span></div>
+<div style="display:flex;flex-direction:column;border-top:var(--border-ink)"><sc-for list="{{ process }}" as="s" hint-placeholder-count="4"><div style="display:flex;flex-wrap:wrap;gap:6px 24px;padding:16px 0;border-bottom:var(--border-rule);align-items:baseline">
+<div style="flex:1 1 200px;display:flex;gap:14px;align-items:baseline"><span style="font-family:var(--font-mono);font-size:12px;color:var(--accent)">{{ s.n }}</span><span style="font-stretch:110%;font-weight:700;font-size:22px">{{ s.t }}</span></div>
+<span style="flex:0 1 140px;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ s.time }}</span>
+<span style="flex:2 1 320px;font-size:15px;line-height:1.5;text-wrap:pretty">{{ s.d }}</span>
+</div></sc-for></div>
+</section>
+
+<section data-screen-label="Services · FAQ" style="display:flex;flex-wrap:wrap;gap:24px 64px;align-items:flex-start">
+<div style="flex:1 1 280px;display:flex;flex-direction:column;gap:12px"><span style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px">FAQ · 04</span><h2 style="margin:0;font-stretch:110%;font-weight:700;font-size:clamp(32px,4.1cqi,52px);letter-spacing:-0.03em;line-height:1;text-wrap:balance">{{ c.faqH }}</h2></div>
+<div style="flex:2 1 460px;min-width:0;display:flex;flex-direction:column;border-top:var(--border-ink)">
+<sc-for list="{{ faq }}" as="f" hint-placeholder-count="4"><div style="border-bottom:var(--border-rule)">
+<button onClick="{{ f.toggle }}" aria-expanded="{{ f.openS }}" style="width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) 24px;gap:8px;align-items:baseline;min-height:52px;padding:14px 0;border:0;background:transparent;color:var(--text);text-align:left;cursor:pointer;font-family:var(--font-sans)" style-hover="color:var(--accent)"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ f.id }}</span><span style="font-weight:600;font-size:17px;text-wrap:pretty">{{ f.q }}</span><span aria-hidden="true" style="font-family:var(--font-mono);font-size:20px;line-height:1;justify-self:end;transform:{{ f.rot }};transition:transform 200ms var(--ease-out)">+</span></button>
+<sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}"><div style="padding:0 32px 16px 52px;font-size:15px;line-height:1.55;color:var(--text-muted);text-wrap:pretty">{{ f.a }}</div></sc-if>
+</div></sc-for>
+</div>
+</section>
+
+<section data-screen-label="Services · CTA" style="border-top:var(--border-frame);padding-top:24px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap">
+<div style="font-stretch:110%;font-weight:700;font-size:clamp(26px,2.7cqi,34px);letter-spacing:-0.5px;text-wrap:balance">{{ c.ctaH }}</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap"><a href="#" style="font-size:17px;font-weight:600;color:var(--text);border:var(--border-ink);padding:15px 24px;text-decoration:none;white-space:nowrap">{{ c.pricing }}</a><a href="#" style="font-size:17px;font-weight:600;background:var(--accent);color:var(--accent-fg);padding:16px 24px;text-decoration:none;white-space:nowrap">{{ c.start }} →</a></div>
+</section>
+</main>
+
+<footer style="border-top:var(--border-ink);padding:20px clamp(20px,4cqi,48px);display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)"><span>FMYERS.DEV · REV 2026.10</span><span style="display:flex;gap:20px;flex-wrap:wrap"><a href="https://github.com/Solideomyers">GITHUB ↗</a><a href="https://linkedin.com/in/franciscomyers">LINKEDIN ↗</a><a href="https://wa.me/584249080683">WHATSAPP ↗</a><a href="#">{{ c.privacy }}</a></span><span>© 2026 · {{ c.langName }}</span></footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;es&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en'|'es'&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;},&quot;bp&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;tablet&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop'|'tablet'|'mobile'&quot;}}">
+const COPY = {
+  en: {
+    startCaps: 'START A PROJECT', start: 'Start a project', menu: 'MENU', sheet: 'SHEET 02 — SERVICES', common: 'MOST CHOSEN', from: 'FROM', timing: 'TYPICAL TIMELINE',
+    h1: 'Three ways to work together.', lead: 'A product built from zero, an automation on the tools you already use, or a senior developer on your team. Each one starts with a short spec.',
+    seePrice: 'SEE PRICING', scope: 'WHAT I DO', deliver: 'WHAT YOU GET', processH: 'HOW A PROJECT RUNS', faqH: 'Working together.', ctaH: 'Have a problem that fits?', pricing: 'See pricing',
+    privacy: 'PRIVACY', langName: 'ENGLISH',
+    sv: [
+      ['SaaS MVP', 'For founders and teams with a validated idea that needs a real product, not a prototype.', '$4,500', '4–6 weeks', ['Turn the idea into a one-page spec and data model', 'Design the interface and the main flows', 'Build the web app, API and database', 'Set up auth, roles and an admin panel'], ['A product in production on your domain', 'The repository, in your account', 'Docs and a walkthrough video', '30 days of bug fixes'], ['Next.js', 'NestJS', 'PostgreSQL', 'Supabase', 'TypeScript'], 'Recent: ChurchApp — public in 10 days (FM-01).'],
+      ['Automation', 'For teams on Google Workspace losing hours to spreadsheets, copy-paste and manual reports.', '$900', '1–2 weeks', ['Map the current process with your team', 'Build forms, flows and approvals in Apps Script', 'Schedule reports and email alerts', 'Keep the data readable in Sheets'], ['A working tool inside your Workspace', 'No server or hosting costs', 'A short guide for your team', '30 days of bug fixes'], ['Google Apps Script', 'Google Sheets', 'Gmail', 'Chart.js'], 'Recent: Chapel — 594 titles across 2 warehouses (FM-02).'],
+      ['Fullstack contract', 'For teams that already have a product and need a senior pair of hands for a few months.', '$2,800 / mo', 'Monthly', ['Pick up tickets across frontend, API and database', 'Review code and add tests', 'Join your standups and board', 'Flag risks early, in writing'], ['~20 hours a week', 'A weekly written report', 'Clean pull requests with context', 'Cancel with 30 days notice'], ['React', 'Node.js', 'Laravel', 'PostgreSQL', 'MongoDB'], 'Past teams: Skills EMPLI (Peru), La Web del Colchón (Spain).']
+    ],
+    pr: [['01', 'Spec', '1 WEEK', 'One page with modules, data and the metric that matters. You sign it, and the price is fixed.'], ['02', 'Build', '3–5 WEEKS', 'Weekly builds on a live link. One call a week; the rest in writing.'], ['03', 'Launch', '1 WEEK', 'Deploy to your domain, hand over access and docs, record a walkthrough.'], ['04', 'Support', '30 DAYS', 'Bug fixes included. Then an optional maintenance plan from $150 a month.']],
+    faq: [['Q-07', 'What do I need to have ready?', 'A clear problem and someone who can answer questions within a day or two. Brand assets and sample data help, but I can work without them at first.'], ['Q-08', 'How do we work across time zones?', "I'm on Venezuela time (UTC−4), which overlaps with US mornings and European afternoons. We meet once a week; the rest happens in writing, and you always see progress on a live link."], ['Q-09', 'Can you take over an existing project?', 'Yes. I start with a paid one-week audit of the code and data, then propose whether to fix, extend or rebuild.'], ['Q-10', 'Why build on Google Workspace instead of a custom app?', "When your team already lives in Sheets and Gmail, an Apps Script tool ships in days, costs nothing to host and stays readable for audits. When you outgrow it, I'll tell you and plan the move."]]
+  },
+  es: {
+    startCaps: 'INICIAR PROYECTO', start: 'Iniciar un proyecto', menu: 'MENÚ', sheet: 'LÁMINA 02 — SERVICIOS', common: 'MÁS ELEGIDO', from: 'DESDE', timing: 'PLAZO TÍPICO',
+    h1: 'Tres formas de trabajar juntos.', lead: 'Un producto desde cero, una automatización sobre las herramientas que ya usas o un desarrollador senior en tu equipo. Todo empieza con una especificación corta.',
+    seePrice: 'VER PRECIOS', scope: 'QUÉ HAGO', deliver: 'QUÉ RECIBES', processH: 'CÓMO VA UN PROYECTO', faqH: 'Trabajar juntos.', ctaH: '¿Tienes un problema que encaja?', pricing: 'Ver precios',
+    privacy: 'PRIVACIDAD', langName: 'ESPAÑOL',
+    sv: [
+      ['SaaS MVP', 'Para fundadores y equipos con una idea validada que necesita un producto real, no un prototipo.', '$4,500', '4–6 semanas', ['Convertir la idea en una especificación y un modelo de datos', 'Diseñar la interfaz y los flujos principales', 'Construir la app web, la API y la base de datos', 'Configurar autenticación, roles y panel'], ['Un producto en producción en tu dominio', 'El repositorio, en tu cuenta', 'Documentación y un video de recorrido', '30 días de corrección de errores'], ['Next.js', 'NestJS', 'PostgreSQL', 'Supabase', 'TypeScript'], 'Reciente: ChurchApp — pública en 10 días (FM-01).'],
+      ['Automatización', 'Para equipos en Google Workspace que pierden horas en hojas de cálculo, copiar y pegar y reportes manuales.', '$900', '1–2 semanas', ['Mapear el proceso actual con tu equipo', 'Construir formularios, flujos y aprobaciones en Apps Script', 'Programar reportes y alertas por correo', 'Mantener los datos legibles en Sheets'], ['Una herramienta funcionando en tu Workspace', 'Sin costos de servidor ni hosting', 'Una guía corta para tu equipo', '30 días de corrección de errores'], ['Google Apps Script', 'Google Sheets', 'Gmail', 'Chart.js'], 'Reciente: Chapel — 594 títulos en 2 almacenes (FM-02).'],
+      ['Fullstack por contrato', 'Para equipos que ya tienen un producto y necesitan manos senior por unos meses.', '$2,800 / mes', 'Mensual', ['Tomar tareas de frontend, API y base de datos', 'Revisar código y añadir tests', 'Sumarme a tus reuniones y tablero', 'Avisar riesgos a tiempo, por escrito'], ['~20 horas por semana', 'Un reporte semanal por escrito', 'Pull requests limpios y con contexto', 'Cancelas con 30 días de aviso'], ['React', 'Node.js', 'Laravel', 'PostgreSQL', 'MongoDB'], 'Equipos anteriores: Skills EMPLI (Perú), La Web del Colchón (España).']
+    ],
+    pr: [['01', 'Especificación', '1 SEMANA', 'Una página con módulos, datos y la métrica que importa. La firmas y el precio queda fijo.'], ['02', 'Construcción', '3–5 SEMANAS', 'Versiones semanales en un enlace en vivo. Una llamada por semana; lo demás por escrito.'], ['03', 'Lanzamiento', '1 SEMANA', 'Despliegue en tu dominio, entrega de accesos y documentación, video de recorrido.'], ['04', 'Soporte', '30 DÍAS', 'Corrección de errores incluida. Después, plan de mantenimiento opcional desde $150 al mes.']],
+    faq: [['Q-07', '¿Qué necesito tener listo?', 'Un problema claro y alguien que pueda responder preguntas en uno o dos días. La identidad de marca y datos de ejemplo ayudan, pero al inicio puedo trabajar sin ellos.'], ['Q-08', '¿Cómo trabajamos con distintas zonas horarias?', 'Estoy en hora de Venezuela (UTC−4), que coincide con las mañanas de EE. UU. y las tardes de Europa. Nos reunimos una vez por semana; el resto va por escrito, y siempre ves el avance en un enlace en vivo.'], ['Q-09', '¿Puedes retomar un proyecto existente?', 'Sí. Empiezo con una auditoría pagada de una semana sobre el código y los datos, y luego propongo si corregir, ampliar o rehacer.'], ['Q-10', '¿Por qué Google Workspace en vez de una app a medida?', 'Si tu equipo ya vive en Sheets y Gmail, una herramienta en Apps Script sale en días, no cuesta hosting y sigue siendo legible para auditorías. Cuando se quede corta, te lo diré y planificamos la migración.']]
+  }
+};
+class Component extends DCLogic {
+  state = { open: { 0: true } };
+  renderVals() {
+    const lang = this.props.lang === 'es' ? 'es' : 'en', es = lang === 'es', c = COPY[lang];
+    const theme = this.props.theme === 'dark' ? 'dark' : 'light';
+    const bp = this.props.bp || 'desktop', isDesk = bp === 'desktop';
+    const on = { bg: 'var(--invert-bg)', fg: 'var(--invert-fg)' }, off = { bg: 'transparent', fg: 'var(--text)' };
+    const navL = es ? ['SERVICIOS', 'PROYECTOS', 'SOBRE MÍ', 'PRECIOS', 'CONTACTO'] : ['SERVICES', 'WORK', 'ABOUT', 'PRICING', 'CONTACT'];
+    return {
+      c, theme, isLight: theme === 'light', isDark: theme === 'dark', isDesk, notDesk: !isDesk, notMobile: bp !== 'mobile',
+      enBg: es ? off.bg : on.bg, enFg: es ? off.fg : on.fg, esBg: es ? on.bg : off.bg, esFg: es ? on.fg : off.fg,
+      nav: navL.map((label, i) => ({ id: '0' + (i + 1), label, cur: i === 0 ? 'page' : 'false', c: i === 0 ? 'var(--accent)' : 'var(--text)', bd: i === 0 ? '2px solid var(--accent)' : '2px solid transparent' })),
+      services: c.sv.map(([name, f, price, time, scope, deliver, stack, proof], i) => ({ id: 'P-0' + (i + 1), name, for: f, price, time, scope, deliver, stack, proof, feat: i === 0, bd: i === 0 ? 'var(--border-frame)' : 'var(--border-ink)' })),
+      process: c.pr.map(([n, t, time, d]) => ({ n, t, time, d })),
+      faq: c.faq.map(([id, q, a], i) => {
+        const open = !!this.state.open[i];
+        return { id, q, a, open, openS: String(open), rot: open ? 'rotate(45deg)' : 'none', toggle: () => this.setState(s => ({ open: { ...s.open, [i]: !s.open[i] } })) };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

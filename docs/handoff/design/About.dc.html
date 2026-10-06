@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="design-system/styles.css" rel="stylesheet"></link><style>a{color:var(--accent);text-decoration:none}a:hover{color:var(--text);text-decoration:underline}button{font:inherit}</style></helmet>
+<div data-theme="{{ theme }}" style="container-type:inline-size;background:var(--bg);color:var(--text);font-family:var(--font-sans);width:100%">
+
+<header style="position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:var(--border-ink)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px clamp(20px,4cqi,48px)">
+<a href="#" aria-label="fmyers.dev home" style="display:flex;flex:none"><sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}"><img src="assets/wordmark-light.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if><sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><img src="assets/wordmark-dark.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if></a>
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><nav style="display:flex;gap:22px;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap"><sc-for list="{{ nav }}" as="n" hint-placeholder-count="5"><a href="#" aria-current="{{ n.cur }}" style="display:flex;gap:6px;color:{{ n.c }};text-decoration:none;padding:4px 0 2px;border-bottom:{{ n.bd }}"><span style="color:var(--text-muted)">{{ n.id }}</span>{{ n.label }}</a></sc-for></nav></sc-if>
+<div style="display:flex;gap:10px;align-items:center;flex:none">
+<sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}"><div style="display:flex;border:var(--border-ink)"><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ enBg }};color:{{ enFg }}">EN</span><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ esBg }};color:{{ esFg }}">ES</span></div><button aria-label="Toggle theme" style="font-family:var(--font-mono);font-size:14px;width:34px;height:34px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">◐</button></sc-if>
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><a href="#" style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap;background:var(--accent);color:var(--accent-fg);padding:10px 16px;text-decoration:none">{{ c.startCaps }}</a></sc-if>
+<sc-if value="{{ notDesk }}" hint-placeholder-val="{{ false }}"><button style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;min-height:44px;padding:0 14px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">{{ c.menu }}</button></sc-if>
+</div>
+</div>
+</header>
+
+<main style="max-width:1280px;margin:0 auto;padding:clamp(24px,4cqi,48px) clamp(20px,4cqi,48px) clamp(56px,8cqi,96px);display:flex;flex-direction:column;gap:clamp(48px,7cqi,80px)">
+
+<section data-screen-label="About · Intro" style="display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>{{ c.sheet }}</span><span style="color:var(--text-muted)">REV 2026.10</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:32px 64px;align-items:flex-start">
+<figure style="margin:0;flex:1 1 260px;max-width:420px;display:flex;flex-direction:column;gap:8px">
+<div style="position:relative;aspect-ratio:4/5;border:var(--border-frame);background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 10px);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ c.portrait }}<div style="position:absolute;right:-2px;bottom:-2px;width:28px;height:28px;background:var(--accent)"></div></div>
+<figcaption style="display:flex;gap:12px;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)"><span style="color:var(--accent)">FIG. 1</span><span>FRANCISCO MYERS · CIUDAD GUAYANA</span></figcaption>
+</figure>
+<div style="flex:1.6 1 380px;min-width:0;display:flex;flex-direction:column;gap:20px">
+<span style="font-family:var(--font-mono);font-size:13px;letter-spacing:1.5px;color:var(--accent)">{{ c.role }}</span>
+<h1 style="margin:0;font-stretch:110%;font-weight:700;font-size:clamp(40px,5.6cqi,72px);letter-spacing:-0.035em;line-height:0.95;text-wrap:balance">{{ c.h1 }}</h1>
+<sc-for list="{{ c.bio }}" as="p" hint-placeholder-count="2"><p style="margin:0;font-size:clamp(17px,1.5cqi,19px);line-height:1.55;max-width:640px;text-wrap:pretty">{{ p }}</p></sc-for>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:1px;background:var(--line);border:var(--border-ink);max-width:640px"><sc-for list="{{ facts }}" as="r" hint-placeholder-count="4"><div style="background:var(--surface);padding:12px 16px;display:flex;flex-direction:column;gap:4px"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ r.k }}</span><span style="font-size:15px">{{ r.v }}</span></div></sc-for></div>
+</div>
+</div>
+</section>
+
+<section data-screen-label="About · Timeline" style="display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>{{ c.timelineH }}</span><span style="color:var(--text-muted)">2018 — 2026</span></div>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ timeline }}" as="t" hint-placeholder-count="6"><div style="display:flex;flex-wrap:wrap;gap:4px 32px;padding:18px 0;border-bottom:var(--border-rule)">
+<span style="flex:0 0 160px;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;color:{{ t.yc }}">{{ t.y }}</span>
+<div style="flex:1 1 300px;display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font-stretch:110%;font-weight:700;font-size:clamp(19px,1.8cqi,22px)">{{ t.m }}</span><span style="font-size:15px;line-height:1.5;color:var(--text-muted);text-wrap:pretty">{{ t.d }}</span></div>
+</div></sc-for>
+</div>
+</section>
+
+<section data-screen-label="About · Stack" style="display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>STACK</span><span style="color:var(--text-muted)">06</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:1px;background:var(--line);border:var(--border-ink)"><sc-for list="{{ stack }}" as="r" hint-placeholder-count="6"><div style="background:var(--surface);padding:16px;display:flex;flex-direction:column;gap:6px"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ r.k }}</span><span style="font-size:16px;line-height:1.4">{{ r.v }}</span></div></sc-for></div>
+</section>
+
+<section data-screen-label="About · CTA" style="border-top:var(--border-frame);padding-top:24px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap">
+<div style="font-stretch:110%;font-weight:700;font-size:clamp(26px,2.7cqi,34px);letter-spacing:-0.5px;text-wrap:balance">{{ c.ctaH }}</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap"><a href="#" style="font-size:17px;font-weight:600;color:var(--text);border:var(--border-ink);padding:15px 24px;text-decoration:none;white-space:nowrap">{{ c.work }}</a><a href="#" style="font-size:17px;font-weight:600;background:var(--accent);color:var(--accent-fg);padding:16px 24px;text-decoration:none;white-space:nowrap">{{ c.start }} →</a></div>
+</section>
+</main>
+
+<footer style="border-top:var(--border-ink);padding:20px clamp(20px,4cqi,48px);display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)"><span>FMYERS.DEV · REV 2026.10</span><span style="display:flex;gap:20px;flex-wrap:wrap"><a href="https://github.com/Solideomyers">GITHUB ↗</a><a href="https://linkedin.com/in/franciscomyers">LINKEDIN ↗</a><a href="https://wa.me/584249080683">WHATSAPP ↗</a><a href="#">{{ c.privacy }}</a></span><span>© 2026 · {{ c.langName }}</span></footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;es&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en'|'es'&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;},&quot;bp&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;tablet&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop'|'tablet'|'mobile'&quot;}}">
+const COPY = {
+  en: {
+    startCaps: 'START A PROJECT', start: 'Start a project', menu: 'MENU', sheet: 'SHEET 03 — ABOUT', role: 'FULLSTACK DEVELOPER · VENEZUELA · REMOTE',
+    portrait: 'PORTRAIT · B&W · 4:5', h1: 'Francisco Myers', timelineH: 'TIMELINE', ctaH: "Let's build the next one.", work: 'See work', privacy: 'PRIVACY', langName: 'ENGLISH',
+    bio: ['I build web products with JavaScript and TypeScript, React and Node.js, and automations on Google Workspace. Before I wrote code, I ran the contracts database for works and services at an aluminium plant. That is where I learned to organise how information moves between users, contractors and internal teams.', 'Today I apply that judgement to APIs, databases and interfaces, mostly for organisations with small teams and real constraints. I like projects where one person owns the whole thing, from the spec to the deploy.'],
+    facts: [['BASED IN', 'Ciudad Guayana, VE'], ['TIME ZONE', 'VET · UTC−4'], ['LANGUAGES', 'Spanish (native) · English (B1)'], ['WORKS', 'Remote, US · EU · LatAm']],
+    tl: [['2026 — NOW', 'Freelance · ChurchApp (Gracia Eterna)', 'Membership system for a local church in Next.js and Supabase. Public v1.0 ten days after the first commit.'], ['2025 — NOW', 'Developer · Chapel Library', 'Nonprofit publisher, Pensacola (US), remote. Inventory and distribution across warehouses on Apps Script and Workspace.'], ['2024', 'Full Stack · La Web del Colchón', 'E-commerce, Spain, remote. New database, data migration, REST API and new frontend in Laravel.'], ['2023', 'Full Stack · Skills EMPLI', 'Job platform, Lima (PE), remote. Landing pages, dashboards and the candidate–company matching flow in React.'], ['2023', 'Henry · Full Stack bootcamp', 'Formal switch from operations to software.'], ['2018 — 2022', 'Procurement admin · CVG Venalum', 'Aluminium industry, Puerto Ordaz. Ran the contracts database for works and services.']],
+    st: [['LANGUAGES', 'JavaScript · TypeScript · PHP'], ['FRONTEND', 'React · Redux Toolkit · Vite · Tailwind CSS'], ['BACKEND', 'Node.js · NestJS · Laravel · REST APIs'], ['DATA', 'PostgreSQL · MongoDB · Prisma · Supabase'], ['TOOLS', 'Git · Figma · Google Apps Script'], ['PRACTICES', 'Design patterns · Data modelling']]
+  },
+  es: {
+    startCaps: 'INICIAR PROYECTO', start: 'Iniciar un proyecto', menu: 'MENÚ', sheet: 'LÁMINA 03 — SOBRE MÍ', role: 'DESARROLLADOR FULLSTACK · VENEZUELA · REMOTO',
+    portrait: 'RETRATO · B/N · 4:5', h1: 'Francisco Myers', timelineH: 'TRAYECTORIA', ctaH: 'Construyamos el siguiente.', work: 'Ver proyectos', privacy: 'PRIVACIDAD', langName: 'ESPAÑOL',
+    bio: ['Construyo productos web con JavaScript y TypeScript, React y Node.js, y automatizaciones sobre Google Workspace. Antes de programar, administré la base de datos de contrataciones de obras y servicios en una planta de aluminio. Ahí aprendí a ordenar cómo fluye la información entre usuarios, contratistas y áreas internas.', 'Hoy aplico ese criterio al diseñar APIs, bases de datos e interfaces, sobre todo para organizaciones con equipos pequeños y restricciones reales. Me gustan los proyectos donde una sola persona responde por todo, de la especificación al despliegue.'],
+    facts: [['BASE', 'Ciudad Guayana, VE'], ['ZONA HORARIA', 'VET · UTC−4'], ['IDIOMAS', 'Español (nativo) · Inglés (B1)'], ['TRABAJO', 'Remoto, EE. UU. · UE · LatAm']],
+    tl: [['2026 — HOY', 'Freelance · ChurchApp (Gracia Eterna)', 'Sistema de membresía para una iglesia local en Next.js y Supabase. v1.0 pública diez días después del primer commit.'], ['2025 — HOY', 'Desarrollador · Chapel Library', 'Editorial sin fines de lucro, Pensacola (EE. UU.), remoto. Inventario y distribución entre almacenes con Apps Script y Workspace.'], ['2024', 'Full Stack · La Web del Colchón', 'E-commerce, España, remoto. Base de datos nueva, migración, API REST y frontend nuevo en Laravel.'], ['2023', 'Full Stack · Skills EMPLI', 'Plataforma de empleo, Lima (PE), remoto. Landing pages, dashboards y el flujo entre candidatos y empresas en React.'], ['2023', 'Henry · Bootcamp Full Stack', 'Cambio formal de operaciones a software.'], ['2018 — 2022', 'Asistente administrativo · CVG Venalum', 'Industria del aluminio, Puerto Ordaz. Administré la base de datos de contrataciones de obras y servicios.']],
+    st: [['LENGUAJES', 'JavaScript · TypeScript · PHP'], ['FRONTEND', 'React · Redux Toolkit · Vite · Tailwind CSS'], ['BACKEND', 'Node.js · NestJS · Laravel · APIs REST'], ['DATOS', 'PostgreSQL · MongoDB · Prisma · Supabase'], ['HERRAMIENTAS', 'Git · Figma · Google Apps Script'], ['PRÁCTICAS', 'Patrones de diseño · Modelado de datos']]
+  }
+};
+class Component extends DCLogic {
+  renderVals() {
+    const lang = this.props.lang === 'es' ? 'es' : 'en', es = lang === 'es', c = COPY[lang];
+    const theme = this.props.theme === 'dark' ? 'dark' : 'light';
+    const bp = this.props.bp || 'desktop', isDesk = bp === 'desktop';
+    const on = { bg: 'var(--invert-bg)', fg: 'var(--invert-fg)' }, off = { bg: 'transparent', fg: 'var(--text)' };
+    const navL = es ? ['SERVICIOS', 'PROYECTOS', 'SOBRE MÍ', 'PRECIOS', 'CONTACTO'] : ['SERVICES', 'WORK', 'ABOUT', 'PRICING', 'CONTACT'];
+    return {
+      c, theme, isLight: theme === 'light', isDark: theme === 'dark', isDesk, notDesk: !isDesk, notMobile: bp !== 'mobile',
+      enBg: es ? off.bg : on.bg, enFg: es ? off.fg : on.fg, esBg: es ? on.bg : off.bg, esFg: es ? on.fg : off.fg,
+      nav: navL.map((label, i) => ({ id: '0' + (i + 1), label, cur: i === 2 ? 'page' : 'false', c: i === 2 ? 'var(--accent)' : 'var(--text)', bd: i === 2 ? '2px solid var(--accent)' : '2px solid transparent' })),
+      facts: c.facts.map(([k, v]) => ({ k, v })), stack: c.st.map(([k, v]) => ({ k, v })),
+      timeline: c.tl.map(([y, m, d], i) => ({ y, m, d, yc: i < 2 ? 'var(--accent)' : 'var(--text-muted)' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

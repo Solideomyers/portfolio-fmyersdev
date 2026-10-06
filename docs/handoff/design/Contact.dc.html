@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="design-system/styles.css" rel="stylesheet"></link><style>a{color:var(--accent);text-decoration:none}a:hover{color:var(--text);text-decoration:underline}input,textarea,button{font:inherit}</style></helmet>
+<div data-theme="{{ theme }}" style="container-type:inline-size;background:var(--bg);color:var(--text);font-family:var(--font-sans);width:100%">
+
+<header style="position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:var(--border-ink)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px clamp(20px,4cqi,48px)">
+<a href="#" aria-label="fmyers.dev home" style="display:flex;flex:none"><sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}"><img src="assets/wordmark-light.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if><sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><img src="assets/wordmark-dark.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if></a>
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><nav style="display:flex;gap:22px;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap"><sc-for list="{{ nav }}" as="n" hint-placeholder-count="5"><a href="#" aria-current="{{ n.cur }}" style="display:flex;gap:6px;color:{{ n.c }};text-decoration:none;padding:4px 0 2px;border-bottom:{{ n.bd }}"><span style="color:var(--text-muted)">{{ n.id }}</span>{{ n.label }}</a></sc-for></nav></sc-if>
+<div style="display:flex;gap:10px;align-items:center;flex:none">
+<sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}"><div style="display:flex;border:var(--border-ink)"><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ enBg }};color:{{ enFg }}">EN</span><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ esBg }};color:{{ esFg }}">ES</span></div><button aria-label="Toggle theme" style="font-family:var(--font-mono);font-size:14px;width:34px;height:34px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">◐</button></sc-if>
+<sc-if value="{{ notDesk }}" hint-placeholder-val="{{ false }}"><button style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;min-height:44px;padding:0 14px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">{{ c.menu }}</button></sc-if>
+</div>
+</div>
+</header>
+
+<main style="max-width:1280px;margin:0 auto;padding:clamp(24px,4cqi,48px) clamp(20px,4cqi,48px) clamp(56px,8cqi,96px);display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>{{ c.sheet }}</span><span style="color:var(--text-muted)">{{ sheetRight }}</span></div>
+
+<sc-if value="{{ isForm }}" hint-placeholder-val="{{ true }}">
+<div data-screen-label="Contact · Form" style="display:flex;flex-wrap:wrap;gap:32px 64px;align-items:flex-start">
+<div style="flex:1 1 300px;display:flex;flex-direction:column;gap:20px">
+<h1 style="margin:0;font-stretch:110%;font-weight:700;font-size:clamp(40px,5.2cqi,66px);letter-spacing:-0.035em;line-height:0.95;text-wrap:balance">{{ c.h1 }}</h1>
+<p style="margin:0;font-size:clamp(17px,1.5cqi,19px);line-height:1.45;color:var(--text-muted);text-wrap:pretty">{{ c.lead }}</p>
+<div style="display:flex;align-items:center;gap:10px;font-size:16px"><span style="width:10px;height:10px;border-radius:50%;background:var(--ok);flex:none"></span>{{ c.available }}</div>
+<div style="display:flex;flex-direction:column;border-top:var(--border-ink)">
+<sc-for list="{{ channels }}" as="ch" hint-placeholder-count="3"><a href="{{ ch.href }}" style="display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:12px;align-items:center;min-height:52px;border-bottom:var(--border-rule);color:var(--text);text-decoration:none" style-hover="color:var(--accent)"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ ch.k }}</span><span style="font-size:16px;overflow-wrap:anywhere">{{ ch.v }}</span><span style="font-family:var(--font-mono);color:var(--accent)">{{ ch.g }}</span></a></sc-for>
+</div>
+</div>
+
+<form onSubmit="{{ submit }}" novalidate="" style="flex:1.4 1 420px;min-width:0;display:flex;flex-direction:column;border:var(--border-frame);background:var(--surface);position:relative">
+<label style="display:flex;flex-direction:column;gap:6px;padding:14px 20px;border-bottom:var(--border-rule)"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ c.fName }}</span><input value="{{ name }}" onChange="{{ setName }}" placeholder="{{ c.phName }}" autocomplete="name" style="border:0;background:transparent;font-size:17px;outline:none;color:var(--text);padding:2px 0;min-height:28px" style-focus="box-shadow:inset 0 -2px 0 var(--accent)"></input></label>
+<label ref="{{ emailRef }}" style="display:flex;flex-direction:column;gap:6px;padding:14px 20px;border-bottom:var(--border-rule);box-shadow:{{ emShadow }}"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:{{ emLab }}">{{ c.fEmail }}</span><input type="email" value="{{ email }}" onChange="{{ setEmail }}" placeholder="{{ c.phEmail }}" autocomplete="email" aria-invalid="{{ emErrS }}" style="border:0;background:transparent;font-size:17px;outline:none;color:var(--text);padding:2px 0;min-height:28px" style-focus="box-shadow:inset 0 -2px 0 var(--accent)"></input><sc-if value="{{ emErr }}" hint-placeholder-val="{{ false }}"><span role="alert" style="font-size:14px;color:var(--danger)">{{ c.errEmail }}</span></sc-if></label>
+<div style="padding:14px 20px;border-bottom:var(--border-rule);display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ c.fType }}</span><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ types }}" as="t" hint-placeholder-count="4"><button type="button" onClick="{{ t.pick }}" aria-pressed="{{ t.on }}" style="font-family:var(--font-mono);font-size:13px;min-height:40px;padding:0 12px;border:var(--border-ink);background:{{ t.bg }};color:{{ t.fg }};cursor:pointer;transition:background-color 160ms ease,transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">{{ t.name }}</button></sc-for></div></div>
+<div style="padding:14px 20px;border-bottom:var(--border-rule);display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ c.fBudget }}</span><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ budgets }}" as="t" hint-placeholder-count="5"><button type="button" onClick="{{ t.pick }}" aria-pressed="{{ t.on }}" style="font-family:var(--font-mono);font-size:13px;min-height:40px;padding:0 12px;border:var(--border-ink);background:{{ t.bg }};color:{{ t.fg }};cursor:pointer;transition:background-color 160ms ease,transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">{{ t.name }}</button></sc-for></div></div>
+<label style="display:flex;flex-direction:column;gap:6px;padding:14px 20px;border-bottom:var(--border-rule)"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ c.fMsg }}</span><textarea rows="4" value="{{ msg }}" onChange="{{ setMsg }}" placeholder="{{ c.phMsg }}" style="border:0;background:transparent;font-size:17px;line-height:1.5;outline:none;resize:vertical;color:var(--text)"></textarea></label>
+<div style="padding:16px 20px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:10px;border:var(--border-rule);background:var(--bg);padding:10px 12px;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted);align-self:flex-start"><span style="width:14px;height:14px;border:var(--border-ink);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ok)">✓</span>CLOUDFLARE TURNSTILE</div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
+<span style="font-size:14px;color:var(--text-muted);text-wrap:pretty;flex:1 1 200px">{{ c.privacyNote }} <a href="#">{{ c.privacyLink }}</a>.</span>
+<button type="submit" aria-disabled="{{ sendingS }}" style="font-size:17px;font-weight:600;background:var(--accent);color:var(--accent-fg);border:0;padding:16px 24px;min-width:200px;cursor:pointer;transition:transform 160ms var(--ease-out)" style-active="transform:scale(0.97)"><span style="display:inline-block;filter:{{ sendBlur }};opacity:{{ sendOp }};transition:filter 200ms ease,opacity 200ms ease">{{ sendLabel }}</span></button>
+</div>
+<sc-if value="{{ netErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="display:flex;gap:10px;align-items:baseline;border:1px solid var(--danger);padding:10px 12px;font-size:15px;color:var(--danger);text-wrap:pretty"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;flex:none">ERR</span>{{ c.netErr }}</div></sc-if>
+</div>
+<input tabindex="-1" autocomplete="off" aria-hidden="true" name="website" style="position:absolute;left:-9999px;width:1px;height:1px"></input>
+</form>
+</div>
+</sc-if>
+
+<sc-if value="{{ isSent }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Contact · Sent" ref="{{ sentRef }}" style="border:var(--border-frame);position:relative;background:var(--surface);padding:clamp(28px,5cqi,64px);display:flex;flex-direction:column;gap:20px;max-width:860px">
+<svg viewBox="0 0 48 48" width="56" height="56" aria-hidden="true" style="display:block;color:var(--ok)"><rect x="1" y="1" width="46" height="46" fill="none" stroke="currentColor" stroke-width="2"></rect><path ref="{{ checkRef }}" d="M13 25l7 7 15-16" fill="none" stroke="currentColor" stroke-width="3" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:0"></path></svg>
+<span style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;color:var(--ok)">{{ c.received }}</span>
+<h1 style="margin:0;font-stretch:110%;font-weight:700;font-size:clamp(36px,4.6cqi,58px);letter-spacing:-0.03em;line-height:1;text-wrap:balance">{{ c.sentH }}</h1>
+<p style="margin:0;font-size:clamp(17px,1.5cqi,19px);line-height:1.45;color:var(--text-muted);max-width:600px;text-wrap:pretty">{{ c.sentP }}</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:1px;background:var(--line);border:var(--border-ink)"><sc-for list="{{ sentSpec }}" as="r" hint-placeholder-count="3"><div style="background:var(--bg);padding:12px 16px;display:flex;flex-direction:column;gap:4px"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ r.k }}</span><span style="font-size:15px">{{ r.v }}</span></div></sc-for></div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+<a href="#" style="font-size:17px;font-weight:600;color:var(--text);border:var(--border-ink);padding:15px 24px;text-decoration:none;white-space:nowrap">← {{ c.home }}</a>
+<a href="#" style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;color:var(--accent)">{{ c.whileWait }} →</a>
+</div>
+<div style="position:absolute;right:-2px;bottom:-2px;width:28px;height:28px;background:var(--accent)"></div>
+</section>
+</sc-if>
+</main>
+
+<footer style="border-top:var(--border-ink);padding:20px clamp(20px,4cqi,48px);display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)"><span>FMYERS.DEV · REV 2026.10</span><span style="display:flex;gap:20px;flex-wrap:wrap"><a href="https://github.com/Solideomyers">GITHUB ↗</a><a href="https://linkedin.com/in/franciscomyers">LINKEDIN ↗</a><a href="https://wa.me/584249080683">WHATSAPP ↗</a><a href="#">{{ c.privacyCaps }}</a></span><span>© 2026 · {{ c.langName }}</span></footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;es&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en'|'es'&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;},&quot;bp&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;tablet&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop'|'tablet'|'mobile'&quot;},&quot;view&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;form&quot;,&quot;error&quot;,&quot;sending&quot;,&quot;neterr&quot;,&quot;sent&quot;],&quot;default&quot;:&quot;form&quot;,&quot;tsType&quot;:&quot;'form'|'error'|'sending'|'neterr'|'sent'&quot;}}">
+const COPY = {
+  en: {
+    menu: 'MENU', sheet: 'SHEET 06 — CONTACT', h1: "Tell me what you're building.", lead: 'A few lines are enough. I reply within 2 business days with questions or a first estimate.',
+    available: 'Available for new projects from Nov 2026',
+    fName: 'NAME', phName: 'Your name', fEmail: 'EMAIL', phEmail: 'you@company.com', errEmail: 'Write the full address, e.g. you@company.com',
+    fType: 'PROJECT TYPE', fBudget: 'BUDGET · OPTIONAL', fMsg: 'MESSAGE', phMsg: 'What problem should it solve? Who uses it?',
+    privacyNote: 'I only use this to reply to you.', privacyLink: 'Privacy', send: 'Send brief →', sending: 'Sending…',
+    netErr: "The message didn't go through. Try again, or write to hola@fmyers.dev.",
+    received: 'BRIEF RECEIVED', sentH: "Thanks. I'll reply within 2 business days.", sentP: 'A copy of your message is on its way to your inbox. If it is urgent, WhatsApp is the fastest way to reach me.',
+    home: 'Back home', whileWait: 'SEE SELECTED WORK', privacyCaps: 'PRIVACY', langName: 'ENGLISH',
+    types: ['SaaS MVP', 'Automation', 'Contract', 'Other'], budgets: ['< $1k', '$1–5k', '$5–10k', '$10k+', 'Not sure yet'],
+    ch: [['WHATSAPP', '+58 424 908 0683', '↗'], ['EMAIL', 'hola@fmyers.dev', '→'], ['LINKEDIN', 'in/franciscomyers', '↗']],
+    spec: [['REPLY BY', '2 business days'], ['TIME ZONE', 'VET · UTC−4'], ['FROM', 'hola@fmyers.dev']]
+  },
+  es: {
+    menu: 'MENÚ', sheet: 'LÁMINA 06 — CONTACTO', h1: 'Cuéntame qué estás construyendo.', lead: 'Unas líneas bastan. Respondo en 2 días hábiles con preguntas o una primera estimación.',
+    available: 'Disponible para nuevos proyectos desde nov 2026',
+    fName: 'NOMBRE', phName: 'Tu nombre', fEmail: 'CORREO', phEmail: 'tu@empresa.com', errEmail: 'Escribe la dirección completa, p. ej. tu@empresa.com',
+    fType: 'TIPO DE PROYECTO', fBudget: 'PRESUPUESTO · OPCIONAL', fMsg: 'MENSAJE', phMsg: '¿Qué problema debe resolver? ¿Quién lo usa?',
+    privacyNote: 'Solo lo uso para responderte.', privacyLink: 'Privacidad', send: 'Enviar resumen →', sending: 'Enviando…',
+    netErr: 'El mensaje no se envió. Inténtalo de nuevo o escribe a hola@fmyers.dev.',
+    received: 'RESUMEN RECIBIDO', sentH: 'Gracias. Te respondo en 2 días hábiles.', sentP: 'Te llega una copia de tu mensaje al correo. Si es urgente, WhatsApp es la vía más rápida.',
+    home: 'Volver al inicio', whileWait: 'VER PROYECTOS', privacyCaps: 'PRIVACIDAD', langName: 'ESPAÑOL',
+    types: ['SaaS MVP', 'Automatización', 'Contrato', 'Otro'], budgets: ['< $1k', '$1–5k', '$5–10k', '$10k+', 'No lo sé aún'],
+    ch: [['WHATSAPP', '+58 424 908 0683', '↗'], ['CORREO', 'hola@fmyers.dev', '→'], ['LINKEDIN', 'in/franciscomyers', '↗']],
+    spec: [['RESPUESTA', '2 días hábiles'], ['ZONA HORARIA', 'VET · UTC−4'], ['DESDE', 'hola@fmyers.dev']]
+  }
+};
+const HREF = ['https://wa.me/584249080683', 'mailto:hola@fmyers.dev', 'https://linkedin.com/in/franciscomyers'];
+class Component extends DCLogic {
+  emailRef = React.createRef(); checkRef = React.createRef(); sentRef = React.createRef();
+  constructor(p) {
+    super(p);
+    const v = p.view || 'form';
+    this.state = { view: v === 'sent' ? 'sent' : 'form', name: v === 'form' ? '' : 'Ana Rivas', email: v === 'error' ? 'ana@' : (v === 'form' ? '' : 'ana@rivas.co'), msg: v === 'form' ? '' : 'Need an app to manage volunteer shifts for our NGO.', type: v === 'form' ? -1 : 0, budget: v === 'form' ? -1 : 1, err: v === 'error', phase: v === 'sending' ? 'sending' : (v === 'neterr' ? 'neterr' : 'idle') };
+  }
+  componentWillUnmount() { clearTimeout(this.t); }
+  rm() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  componentDidUpdate(_, prev) {
+    if (prev.view !== 'sent' && this.state.view === 'sent') {
+      const r = this.rm(), s = this.sentRef.current, k = this.checkRef.current;
+      if (s) s.animate([{ opacity: 0, transform: r ? 'none' : 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 350, easing: 'cubic-bezier(0.23,1,0.32,1)' });
+      if (k) k.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: r ? 0 : 400, delay: r ? 0 : 200, easing: 'cubic-bezier(0.65,0,0.35,1)', fill: 'backwards' });
+    }
+  }
+  submit = e => {
+    e.preventDefault();
+    if (this.state.phase === 'sending') return;
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(this.state.email)) {
+      this.setState({ err: true });
+      const el = this.emailRef.current;
+      if (el && !this.rm()) el.animate([{ transform: 'none' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'none' }], { duration: 300, easing: 'cubic-bezier(0.23,1,0.32,1)' });
+      return;
+    }
+    this.setState({ err: false, phase: 'sending' });
+    this.t = setTimeout(() => this.setState({ phase: 'idle', view: 'sent' }), 1600);
+  };
+  renderVals() {
+    const lang = this.props.lang === 'es' ? 'es' : 'en', es = lang === 'es', c = COPY[lang], s = this.state;
+    const theme = this.props.theme === 'dark' ? 'dark' : 'light';
+    const bp = this.props.bp || 'desktop', isDesk = bp === 'desktop';
+    const on = { bg: 'var(--invert-bg)', fg: 'var(--invert-fg)' }, off = { bg: 'transparent', fg: 'var(--text)' };
+    const navL = es ? ['SERVICIOS', 'PROYECTOS', 'SOBRE MÍ', 'PRECIOS', 'CONTACTO'] : ['SERVICES', 'WORK', 'ABOUT', 'PRICING', 'CONTACT'];
+    const chip = (sel, key) => (name, i) => ({ name, on: String(sel === i), bg: sel === i ? on.bg : 'transparent', fg: sel === i ? on.fg : 'var(--text)', pick: () => this.setState({ [key]: sel === i ? -1 : i }) });
+    const sending = s.phase === 'sending';
+    return {
+      c, theme, isLight: theme === 'light', isDark: theme === 'dark', isDesk, notDesk: !isDesk, notMobile: bp !== 'mobile',
+      enBg: es ? off.bg : on.bg, enFg: es ? off.fg : on.fg, esBg: es ? on.bg : off.bg, esFg: es ? on.fg : off.fg,
+      nav: navL.map((label, i) => ({ id: '0' + (i + 1), label, cur: i === 4 ? 'page' : 'false', c: i === 4 ? 'var(--accent)' : 'var(--text)', bd: i === 4 ? '2px solid var(--accent)' : '2px solid transparent' })),
+      isForm: s.view === 'form', isSent: s.view === 'sent', sheetRight: s.view === 'sent' ? '06b' : (es ? 'RESPUESTA EN 2 DÍAS HÁBILES' : 'REPLY IN 2 BUSINESS DAYS'),
+      channels: c.ch.map(([k, v, g], i) => ({ k, v, g, href: HREF[i] })),
+      name: s.name, email: s.email, msg: s.msg, emailRef: this.emailRef, checkRef: this.checkRef, sentRef: this.sentRef,
+      setName: e => this.setState({ name: e.target.value }), setEmail: e => this.setState({ email: e.target.value, err: false }), setMsg: e => this.setState({ msg: e.target.value }),
+      emErr: s.err, emErrS: String(s.err), emShadow: s.err ? 'inset 3px 0 0 var(--danger)' : 'none', emLab: s.err ? 'var(--danger)' : 'var(--text-muted)',
+      types: c.types.map(chip(s.type, 'type')), budgets: c.budgets.map(chip(s.budget, 'budget')),
+      submit: this.submit, sendingS: String(sending), sendLabel: sending ? c.sending : c.send, sendBlur: sending ? 'blur(2px)' : 'none', sendOp: sending ? '0.7' : '1',
+      netErr: s.phase === 'neterr',
+      sentSpec: c.spec.map(([k, v]) => ({ k, v }))
+    };
+  }
+}
+</script>
+</body>
+</html>

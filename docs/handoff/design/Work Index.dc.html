@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="design-system/styles.css" rel="stylesheet"></link><style>a{color:var(--accent);text-decoration:none}a:hover{color:var(--text);text-decoration:underline}button{font:inherit}</style></helmet>
+<div data-theme="{{ theme }}" style="container-type:inline-size;background:var(--bg);color:var(--text);font-family:var(--font-sans);width:100%">
+
+<header style="position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:var(--border-ink)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px clamp(20px,4cqi,48px)">
+<a href="#" aria-label="fmyers.dev home" style="display:flex;flex:none"><sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}"><img src="assets/wordmark-light.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if><sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><img src="assets/wordmark-dark.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if></a>
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><nav style="display:flex;gap:22px;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap"><sc-for list="{{ nav }}" as="n" hint-placeholder-count="5"><a href="#" aria-current="{{ n.cur }}" style="display:flex;gap:6px;color:{{ n.c }};text-decoration:none;padding:4px 0 2px;border-bottom:{{ n.bd }}"><span style="color:var(--text-muted)">{{ n.id }}</span>{{ n.label }}</a></sc-for></nav></sc-if>
+<div style="display:flex;gap:10px;align-items:center;flex:none">
+<sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}"><div style="display:flex;border:var(--border-ink)"><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ enBg }};color:{{ enFg }}">EN</span><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ esBg }};color:{{ esFg }}">ES</span></div><button aria-label="Toggle theme" style="font-family:var(--font-mono);font-size:14px;width:34px;height:34px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">◐</button></sc-if>
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><a href="#" style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap;background:var(--accent);color:var(--accent-fg);padding:10px 16px;text-decoration:none">{{ c.startCaps }}</a></sc-if>
+<sc-if value="{{ notDesk }}" hint-placeholder-val="{{ false }}"><button style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;min-height:44px;padding:0 14px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">{{ c.menu }}</button></sc-if>
+</div>
+</div>
+</header>
+
+<main style="max-width:1280px;margin:0 auto;padding:clamp(24px,4cqi,48px) clamp(20px,4cqi,48px) clamp(56px,8cqi,96px);display:flex;flex-direction:column;gap:clamp(48px,7cqi,80px)">
+
+<section data-screen-label="Work · Header" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>{{ c.sheet }}</span><span style="color:var(--text-muted)">{{ c.count }}</span></div>
+<h1 style="margin:0;font-stretch:110%;font-weight:700;font-size:clamp(40px,5.6cqi,72px);letter-spacing:-0.035em;line-height:0.95;max-width:900px;text-wrap:balance">{{ c.h1 }}</h1>
+<p style="margin:0;font-size:clamp(17px,1.5cqi,19px);line-height:1.45;color:var(--text-muted);max-width:640px;text-wrap:pretty">{{ c.lead }}</p>
+</section>
+
+<section data-screen-label="Work · Cases" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:24px">
+<sc-for list="{{ projects }}" as="p" hint-placeholder-count="2"><a href="#" style="display:flex;flex-direction:column;border:var(--border-ink);background:var(--surface);color:var(--text);text-decoration:none;transition:border-color 200ms ease" style-hover="border-color:var(--accent)">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:var(--border-rule);font-family:var(--font-mono);font-size:13px;letter-spacing:1px"><span style="color:var(--accent)">{{ p.id }}</span><span style="display:flex;align-items:center;gap:8px;font-size:12px;border:var(--border-ink);padding:4px 8px"><span style="width:8px;height:8px;border-radius:50%;background:{{ p.dot }};border:1.5px solid var(--ok);box-sizing:border-box"></span>{{ p.status }}</span></div>
+<div style="aspect-ratio:16/10;background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 10px);border-bottom:var(--border-rule);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ c.shot }} · 16:10</div>
+<div style="padding:20px 16px;display:flex;flex-direction:column;gap:8px"><div style="font-stretch:110%;font-weight:700;font-size:clamp(28px,2.7cqi,34px);letter-spacing:-1px">{{ p.title }}</div><div style="font-size:16px;line-height:1.45;text-wrap:pretty">{{ p.summary }}</div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;border-top:var(--border-rule)"><sc-for list="{{ p.specs }}" as="r" hint-placeholder-count="4"><div style="padding:10px 16px;border-bottom:var(--border-rule);display:flex;flex-direction:column;gap:3px"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted)">{{ r.k }}</span><span style="font-size:15px">{{ r.v }}</span></div></sc-for></div>
+<div style="padding:14px 16px;margin-top:auto;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;color:var(--accent)">{{ c.readCaps }} →</div>
+</a></sc-for>
+</section>
+
+<section data-screen-label="Work · Other" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>{{ c.otherH }}</span><span style="color:var(--text-muted)">{{ c.otherNote }}</span></div>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ other }}" as="o" hint-placeholder-count="3"><a href="{{ o.repo }}" style="display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:8px 16px;padding:16px 0;border-bottom:var(--border-rule);color:var(--text);text-decoration:none;transition:color 200ms ease" style-hover="color:var(--accent)">
+<span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ o.id }}</span>
+<span style="display:flex;flex-direction:column;gap:6px;min-width:0"><span style="font-stretch:110%;font-weight:700;font-size:clamp(19px,1.8cqi,22px)">{{ o.title }}</span><span style="font-size:15px;line-height:1.45;color:var(--text-muted);text-wrap:pretty">{{ o.d }}</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">{{ o.stack }}</span></span>
+<span style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;color:var(--accent)">REPO ↗</span>
+</a></sc-for>
+</div>
+</section>
+
+<section data-screen-label="Work · CTA" style="border-top:var(--border-frame);padding-top:24px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap">
+<div style="font-stretch:110%;font-weight:700;font-size:clamp(26px,2.7cqi,34px);letter-spacing:-0.5px;text-wrap:balance">{{ c.ctaH }}</div>
+<a href="#" style="font-size:17px;font-weight:600;background:var(--accent);color:var(--accent-fg);padding:16px 24px;text-decoration:none;white-space:nowrap">{{ c.start }} →</a>
+</section>
+</main>
+
+<footer style="border-top:var(--border-ink);padding:20px clamp(20px,4cqi,48px);display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)"><span>FMYERS.DEV · REV 2026.10</span><span style="display:flex;gap:20px;flex-wrap:wrap"><a href="https://github.com/Solideomyers">GITHUB ↗</a><a href="https://linkedin.com/in/franciscomyers">LINKEDIN ↗</a><a href="https://wa.me/584249080683">WHATSAPP ↗</a><a href="#">{{ c.privacy }}</a></span><span>© 2026 · {{ c.langName }}</span></footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;es&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en'|'es'&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;},&quot;bp&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;tablet&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop'|'tablet'|'mobile'&quot;}}">
+const OTHER = [
+  { id: 'OW-01', title: 'Confession 1689 API', repo: 'https://github.com/Solideomyers/confesion1689-api', stack: 'NestJS · PostgreSQL · Swagger', en: 'REST API serving the 1689 Baptist Confession as structured data, documented with Swagger.', es: 'API REST que sirve la Confesión Bautista de 1689 como datos estructurados, documentada con Swagger.' },
+  { id: 'OW-02', title: 'Hymnal generator', repo: 'https://github.com/Solideomyers/hymns-church', stack: 'FastAPI · Tesseract OCR · Redis · Celery · PostgreSQL', en: 'Extracts hymns from two-column PDF hymnals with OCR and generates .docx songbooks.', es: 'Extrae himnos de himnarios PDF a dos columnas con OCR y genera himnarios en .docx.' },
+  { id: 'OW-03', title: 'Historical translation MCP', repo: 'https://github.com/Solideomyers/mcp_translate', stack: 'TypeScript · MCP · tesseract.js', en: 'MCP server that translates 17th-century English Baptist texts into contemporary Spanish.', es: 'Servidor MCP que traduce textos bautistas ingleses del siglo XVII al español actual.' }
+];
+const COPY = {
+  en: { startCaps: 'START A PROJECT', start: 'Start a project', menu: 'MENU', sheet: 'SHEET 01 — WORK', count: '02 CASE STUDIES · 03 REPOS', h1: 'Work', lead: 'Case studies of products in production, newest first. Below, smaller open-source pieces.', shot: 'SCREENSHOT', readCaps: 'READ CASE', otherH: 'OTHER WORK', otherNote: 'OPEN SOURCE · GITHUB', ctaH: 'Want yours on this sheet?', privacy: 'PRIVACY', langName: 'ENGLISH' },
+  es: { startCaps: 'INICIAR PROYECTO', start: 'Iniciar un proyecto', menu: 'MENÚ', sheet: 'LÁMINA 01 — PROYECTOS', count: '02 CASOS · 03 REPOS', h1: 'Proyectos', lead: 'Casos de productos en producción, del más reciente al más antiguo. Debajo, piezas open source más pequeñas.', shot: 'CAPTURA', readCaps: 'LEER CASO', otherH: 'OTROS TRABAJOS', otherNote: 'OPEN SOURCE · GITHUB', ctaH: '¿Quieres el tuyo en esta lámina?', privacy: 'PRIVACIDAD', langName: 'ESPAÑOL' }
+};
+class Component extends DCLogic {
+  renderVals() {
+    const lang = this.props.lang === 'es' ? 'es' : 'en', es = lang === 'es', c = COPY[lang];
+    const theme = this.props.theme === 'dark' ? 'dark' : 'light';
+    const bp = this.props.bp || 'desktop', isDesk = bp === 'desktop';
+    const on = { bg: 'var(--invert-bg)', fg: 'var(--invert-fg)' }, off = { bg: 'transparent', fg: 'var(--text)' };
+    const navL = es ? ['SERVICIOS', 'PROYECTOS', 'SOBRE MÍ', 'PRECIOS', 'CONTACTO'] : ['SERVICES', 'WORK', 'ABOUT', 'PRICING', 'CONTACT'];
+    return {
+      c, theme, isLight: theme === 'light', isDark: theme === 'dark', isDesk, notDesk: !isDesk, notMobile: bp !== 'mobile',
+      enBg: es ? off.bg : on.bg, enFg: es ? off.fg : on.fg, esBg: es ? on.bg : off.bg, esFg: es ? on.fg : off.fg,
+      nav: navL.map((label, i) => ({ id: '0' + (i + 1), label, cur: i === 1 ? 'page' : 'false', c: i === 1 ? 'var(--accent)' : 'var(--text)', bd: i === 1 ? '2px solid var(--accent)' : '2px solid transparent' })),
+      projects: [
+        { id: 'FM-02', title: 'Chapel', status: es ? 'EN USO' : 'IN USE', dot: 'transparent',
+          summary: es ? 'Inventario y distribución de una editorial sin fines de lucro en dos almacenes, sobre Google Workspace.' : 'Inventory and distribution for a nonprofit publisher across two warehouses, on Google Workspace.',
+          specs: [{ k: 'SECTOR', v: es ? 'Sin fines de lucro · Logística' : 'Nonprofit · Logistics' }, { k: 'STACK', v: 'Apps Script · Sheets' }, { k: es ? 'ROL' : 'ROLE', v: 'Fullstack' }, { k: es ? 'AÑO' : 'YEAR', v: '2025' }] },
+        { id: 'FM-01', title: 'ChurchApp', status: es ? 'EN VIVO' : 'LIVE', dot: 'var(--ok)',
+          summary: es ? 'Sistema de membresía para una iglesia local, desde la solicitud hasta el voto de la asamblea. Público en 10 días.' : 'Membership system for a local church, from application to congregational vote. Public in 10 days.',
+          specs: [{ k: 'SECTOR', v: es ? 'Fe · Sin fines de lucro' : 'Faith · Nonprofit' }, { k: 'STACK', v: 'Next.js · Supabase' }, { k: es ? 'ROL' : 'ROLE', v: es ? 'Diseño, fullstack, despliegue' : 'Design, fullstack, deploy' }, { k: es ? 'AÑO' : 'YEAR', v: '2026' }] }
+      ],
+      other: OTHER.map(o => ({ ...o, d: o[lang] }))
+    };
+  }
+}
+</script>
+</body>
+</html>

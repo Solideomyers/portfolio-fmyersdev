@@ -1,0 +1,49 @@
+---
+id: FM-01
+slug: churchapp
+lang: en
+title: ChurchApp
+summary: Membership system for a local church, from application to congregational vote. Public in 10 days.
+client: Gracia Eterna · local church
+sector: [Faith, Nonprofit]
+modules: [Applications, Cohorts, Attendance, Interviews, Member roll, Minutes, Sunday publications]
+stack: [Next.js, TypeScript, Supabase, Postgres, Vercel]
+status: live
+version: v1.2.0
+role: Design, fullstack and deployment
+timeline: First public release in 10 days, ongoing
+year: 2026
+cover: { src: /work/fm-01/churchapp.png, alt: ChurchApp public membership application page }
+shots:
+  - { src: /work/fm-01/churchapp.png, alt: ChurchApp public membership application page, caption: Public page — application and folio check }
+  - { src: /work/fm-01/churchapp-panel.jpg, alt: ChurchApp admin panel overview, caption: Staff panel — cohort overview }
+metrics:
+  - { label: First public release, value: 10 days, date: 2026-09 }
+  - { label: Candidates in cohort 3, value: "11", date: 2026-09 }
+  - { label: Average attendance, phase 1, value: 100%, date: 2026-09 }
+featured: true
+order: 1
+draft: false
+---
+
+## Context
+Gracia Eterna is a Reformed Baptist church. Becoming a member takes four phases: a formal application, five modules of doctrinal instruction taken with a cohort, a confirmation interview with the pastors, and a vote of the congregational assembly.
+
+## Problem
+The church needed one place to run that whole process: take applications, record attendance class by class, approve modules, schedule interviews and keep the member roll. It also needed a way for each applicant to see where their file stood without asking the office.
+
+## Constraints
+- The pastoral team works from their phones, and the member roll and bulletins are photocopied in black and white. Status is shown with letter codes and borders, never with background colour alone.
+- Production holds real personal data. Development runs on a separate database, and only a release touches production.
+- Staff access is by invitation only. There is no public sign-up.
+
+## Solution
+- **Public page:** explains membership and its four phases and takes the application with the applicant's testimony. The applicant receives a folio number by email and can check their progress with folio and ID at any time, with no password.
+- **Staff panel:** candidates, cohorts, attendance per class taken from the phone, module approval one by one (reversible), confirmation interviews, member roll, transfers, assembly minutes and hymnal.
+- **Sunday publications:** bulletin, mobile bulletin, liturgy and prayer service, with an order of worship the office configures without touching code.
+- **Roles:** Pastor, Secretary, Teacher, Treasury, Audiovisual and Administrator. Google sign-in works only for accounts that were already invited.
+- **Key decision:** no custom server. The client talks to Supabase directly, row-level security guards every table, and sensitive logic lives in database functions and Edge Functions.
+
+## Outcome
+- Public v1.0.0 shipped 10 days after the first commit (Aug 25 → Sep 4, 2026). v1.1.0 followed on Sep 9 and v1.2.0 on Sep 24.
+- The third cohort runs on the panel: 11 candidates in phase 1 with 100% average attendance (Sep 2026).

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="design-system/styles.css" rel="stylesheet"></link><script src="./doc-page.js"></script><style>doc-page:not(:defined){visibility:hidden}a{color:#2B55C8;text-decoration:none}a:hover{color:#15181C;text-decoration:underline}</style></helmet>
+<doc-page size="letter" margin="0.75in">
+<div style="font-family:'Archivo',sans-serif;color:#15181C;font-size:14.5px;line-height:1.6">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#2B55C8;margin-bottom:8px">FMYERS.DEV · SHEET D · MOTION SPEC · REV 2026.10</div>
+<h1 style="margin:0 0 10px;font-stretch:110%;font-weight:700;font-size:34px;letter-spacing:-0.03em;line-height:1.05">Motion and micro-interactions</h1>
+<p style="margin:0 0 20px;font-size:16px;color:#5B626A">How fmyers.dev moves. The personality is measured, like a plotter drawing a sheet: lines are traced and sheets slide into place, but feedback is never slow. Live demos are in Sheet D of the design system.</p>
+
+<h2 style="margin:24px 0 8px;font-stretch:110%;font-size:20px;border-bottom:2px solid #15181C;padding-bottom:4px">1. Principles</h2>
+<ol style="margin:0;padding-left:20px">
+<li><b>Measured, like a plotter.</b> Entries take 350ms, sheets 450ms and strokes 600ms. Nothing runs longer than 600ms.</li>
+<li><b>Feedback is always fast.</b> Press 160ms, hover 200ms, language 150ms. The personality never slows input.</li>
+<li><b>Lines get drawn.</b> Frames, checks and strike-throughs are stroked in. Nothing appears from <code>scale(0)</code>; the minimum is 0.6 with opacity.</li>
+<li><b>Motion never blocks.</b> Content is clickable during every animation, and nothing is hidden when JavaScript is off.</li>
+<li><b>Reduced motion means opacity only.</b> No translate and no scale, but fades remain.</li>
+<li><b>Only transform, opacity, clip-path and stroke-dashoffset.</b> Never animate layout properties.</li>
+</ol>
+
+<h2 style="margin:24px 0 8px;font-stretch:110%;font-size:20px;border-bottom:2px solid #15181C;padding-bottom:4px">2. Tokens</h2>
+<p style="margin:0 0 8px">These are defined in <code>design-system/tokens/motion.css</code>. Components only use these tokens.</p>
+<table style="width:100%;border-collapse:collapse;font-size:13px">
+<thead><tr><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">TOKEN</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">VALUE</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">USE</th></tr></thead>
+<tbody>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px"><code>--ease-out</code></td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px"><code>cubic-bezier(0.23,1,0.32,1)</code></td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px">Entries, feedback</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px"><code>--ease-in-out</code></td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px"><code>cubic-bezier(0.77,0,0.175,1)</code></td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px">On-screen movement: morph, theme, ruler</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px"><code>--ease-draw</code></td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px"><code>cubic-bezier(0.65,0,0.35,1)</code></td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px">Strokes: frame, check, 404</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px"><code>--dur-press / -hover / -fade</code></td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px">160 / 200 / 150ms</td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px">Feedback tier</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px"><code>--dur-exit / -enter</code></td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px">250 / 350ms</td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px">Exit ≈ 70% of entry</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px"><code>--dur-sheet / -draw</code></td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px">450 / 600ms</td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px">Page morph, theme reveal, strokes</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px"><code>--stagger</code></td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px">60ms (menu 30ms)</td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px">Up to 6 items, then 0</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px"><code>--rise / --shake / --press-scale</code></td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px">12px / 6px / 0.97</td><td style="border-bottom:1px solid #C4C9C1;padding:6px 4px">Set to 0 / 0 / 1 under reduced motion</td></tr>
+</tbody></table>
+
+<h2 style="margin:24px 0 8px;font-stretch:110%;font-size:20px;border-bottom:2px solid #15181C;padding-bottom:4px">3. Catalog</h2>
+<table style="width:100%;border-collapse:collapse;font-size:12.5px">
+<thead><tr><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#5B626A">#</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#5B626A">INTERACTION</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#5B626A">MOTION</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#5B626A">TIMING</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#5B626A">TOOL</th><th style="text-align:left;border-bottom:1px solid #15181C;padding:6px 4px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#5B626A">REDUCED</th></tr></thead>
+<tbody>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D01</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Press</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">scale(0.97)</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">160ms ease-out</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">CSS</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">No scale</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D02</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Hover</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Cobalt border, arrow 4px, underline, hatch, row tint</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">200ms ease</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">CSS, fine pointer only</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Color only</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D03</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Signature (home, first load)</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">4 frame sides drawn 130ms apart → ruler zones 30ms stagger → headline rise → cobalt corner</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">≈1s total, frame 600ms</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Motion <code>animate</code>; once per session (sessionStorage)</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Fade 150ms</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D04</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Scroll reveal</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Rise 12px + fade, children stagger 60ms, max 6</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">350ms ease-out</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Motion <code>inView</code>, <code>amount: 0.2</code>, once</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Fade</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D05</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Card → case study</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Card frame morphs into the case frame; the rest crossfades</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">450ms ease-in-out</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Astro <code>&lt;ClientRouter /&gt;</code> + <code>transition:name</code></td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Fade 150ms</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D06</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Theme</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">New theme revealed as a circle from the toggle</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">450ms ease-in-out</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px"><code>document.startViewTransition</code> + clip-path</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Instant</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D07</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Language</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Text fades in; scroll position and sheet are kept</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">150ms ease</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">View Transition (root fade)</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Same</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D08</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Mobile menu</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Panel clip-path from the top; rows rise with a 30ms stagger</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">350ms in / 250ms out</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">CSS transitions</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Fade</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D09</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Sending</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Label blur(2px) and opacity 0.7 → "Sending…"; button keeps its width</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">200ms ease</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">CSS class</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Same</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D10</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Field error</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Shake ±6px twice + alert bar + message</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">300ms ease-out</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">CSS keyframes</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Bar only</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D11</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Confirmation</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Panel rises; the check is drawn 200ms later</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">350ms + 400ms</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Motion <code>animate</code></td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Fade</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D12</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Copy email toast</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Enters and leaves by the bottom edge, <code>translateY(100%)</code></td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">350 / 250ms, 2.4s hold</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">CSS transitions (interruptible)</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Fade</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D13</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Live ruler</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Cobalt indicator slides to the zone of the section in view</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">450ms ease-in-out</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">IntersectionObserver + CSS transition</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Instant</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D14</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Hero crosshair</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Cross lines and X/Y/zone readout follow the pointer</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Spring: stiffness 520, damping 46, no bounce</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Motion; <code>(hover:hover) and (pointer:fine)</code></td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Hidden</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D15</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">404</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Two diagonal strokes cross out the sheet, 120ms apart</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">600ms ease-draw</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">SVG stroke-dashoffset</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Static</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D16</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Pagination</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Number turns cobalt on hover; prev/next arrow moves 4px. The page change itself is a normal navigation (crossfade from D05's router), with no sliding lists.</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">200ms ease</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">CSS; disabled ends get no hover</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Color only</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D17</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">FAQ open / close</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">+ rotates 45° into ×. Height changes instantly; the answer fades in and rises 6px. Closing is instant.</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Icon 200ms ease-out · answer 250ms ease-out</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px"><code>&lt;details&gt;</code> + <code>@starting-style</code></td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Fade only</td></tr>
+<tr><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px;color:#2B55C8">D18</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">TOC marker</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">2px cobalt marker slides to the heading in view; that item turns ink and semibold. Mobile block opens like D17 and closes on pick.</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">200ms ease-in-out</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">IntersectionObserver (<code>rootMargin: -30% 0 -60%</code>) + CSS transform</td><td style="border-bottom:1px solid #C4C9C1;padding:5px 4px">Instant</td></tr>
+</tbody></table>
+
+<h2 style="margin:24px 0 8px;font-stretch:110%;font-size:20px;border-bottom:2px solid #15181C;padding-bottom:4px">4. Never animate</h2>
+<ul style="margin:0;padding-left:20px">
+<li>Keyboard focus rings and keyboard-initiated actions</li>
+<li>Nav jumps between sheets. Use smooth scroll only, with no element motion.</li>
+<li>Content that has already been revealed, on its second pass</li>
+<li>The status dot (no pulse), prices, spec values or anything on a loop</li>
+<li>Elevation on hover (no lift, no shadow)</li>
+</ul>
+
+<h2 style="margin:24px 0 8px;font-stretch:110%;font-size:20px;border-bottom:2px solid #15181C;padding-bottom:4px">5. Implementation in Astro</h2>
+<p style="margin:0 0 8px"><b>Stack:</b> CSS for press, hover, toast, menu and ruler. Astro View Transitions for page morph, theme and language. Motion (<code>motion</code>, vanilla build) for the signature, <code>inView</code> reveals, the confirmation and the crosshair spring. Load Motion only on pages that use it.</p>
+<pre style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.55;background:#F8F9F6;border:1px solid #C4C9C1;padding:10px 12px;white-space:pre-wrap;margin:0 0 4px">// layouts/Base.astro
+import { ClientRouter } from 'astro:transitions';
+&lt;html class="js"&gt; … &lt;ClientRouter fallback="none" /&gt;
+
+// ProjectCard.astro  ·  pages/work/[slug].astro
+&lt;article transition:name={`sheet-${id}`}&gt; … &lt;/article&gt;
+
+// scripts/reveal.ts
+import { inView, animate, stagger } from 'motion';
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+inView('[data-reveal]', (el) =&gt; {
+  animate(el.querySelectorAll(':scope &gt; *'),
+    reduce ? { opacity: [0, 1] } : { opacity: [0, 1], transform: ['translateY(12px)', 'none'] },
+    { duration: 0.35, delay: stagger(0.06), ease: [0.23, 1, 0.32, 1] });
+}, { amount: 0.2 });</pre>
+<p style="margin:4px 0 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#5B626A">FIG. 1 — Base wiring. Shared CSS lives in design-system/motion.css.</p>
+<pre style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.55;background:#F8F9F6;border:1px solid #C4C9C1;padding:10px 12px;white-space:pre-wrap;margin:0 0 4px">// scripts/theme.ts — circular reveal from the toggle
+btn.addEventListener('click', (e) =&gt; {
+  const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  if (!document.startViewTransition || reduce) return apply(next);
+  const { x, y } = center(e.currentTarget);
+  const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+  root.classList.add('theme-reveal');
+  const vt = document.startViewTransition(() =&gt; apply(next));
+  vt.ready.then(() =&gt; root.animate(
+    { clipPath: [`circle(0 at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
+    { duration: 450, easing: 'cubic-bezier(0.77,0,0.175,1)', pseudoElement: '::view-transition-new(root)' }));
+  vt.finished.finally(() =&gt; root.classList.remove('theme-reveal'));
+});</pre>
+<p style="margin:4px 0 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#5B626A">FIG. 2 — Theme toggle. Persist the choice in localStorage and set data-theme inline in &lt;head&gt; to avoid a flash.</p>
+
+<h2 style="margin:24px 0 8px;font-stretch:110%;font-size:20px;border-bottom:2px solid #15181C;padding-bottom:4px">6. QA checklist</h2>
+<ul style="margin:0;padding-left:20px">
+<li>Play every animation at 4× slower in DevTools and check that properties stay in sync.</li>
+<li>Toggle <code>prefers-reduced-motion</code>. Only fades should remain, and all content must be visible.</li>
+<li>Disable JavaScript. Every <code>[data-reveal]</code> must stay visible.</li>
+<li>On a touch device: no crosshair, no hover states, and menu hit targets of at least 44px.</li>
+<li>Throttle the CPU 4×. The signature must stay smooth, so it uses transforms only.</li>
+<li>Check the theme and language swaps in Safari and Firefox. Without View Transitions, the swap is instant.</li>
+</ul>
+</div>
+</doc-page>
+</x-dc>
+</body>
+</html>

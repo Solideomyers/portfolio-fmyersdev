@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="design-system/styles.css" rel="stylesheet"></link><style>a{color:var(--accent);text-decoration:none}a:hover{color:var(--text);text-decoration:underline}button{font:inherit}</style></helmet>
+<div data-theme="{{ theme }}" style="container-type:inline-size;background:var(--bg);color:var(--text);font-family:var(--font-sans);width:100%">
+
+<header style="position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:var(--border-ink)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px clamp(20px,4cqi,48px)">
+<a href="#" aria-label="fmyers.dev home" style="display:flex;flex:none"><sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}"><img src="assets/wordmark-light.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if><sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><img src="assets/wordmark-dark.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if></a>
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><nav style="display:flex;gap:20px;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap"><sc-for list="{{ nav }}" as="n" hint-placeholder-count="6"><a href="#" aria-current="{{ n.cur }}" style="display:flex;gap:6px;color:{{ n.c }};text-decoration:none;padding:4px 0 2px;border-bottom:{{ n.bd }}"><span style="color:var(--text-muted)">{{ n.id }}</span>{{ n.label }}</a></sc-for></nav></sc-if>
+<div style="display:flex;gap:10px;align-items:center;flex:none">
+<sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}"><div style="display:flex;border:var(--border-ink)"><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ enBg }};color:{{ enFg }}">EN</span><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ esBg }};color:{{ esFg }}">ES</span></div><button aria-label="Toggle theme" style="font-family:var(--font-mono);font-size:14px;width:34px;height:34px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">◐</button></sc-if>
+<sc-if value="{{ notDesk }}" hint-placeholder-val="{{ false }}"><button style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;min-height:44px;padding:0 14px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">{{ c.menu }}</button></sc-if>
+</div>
+</div>
+</header>
+
+<main style="max-width:1280px;margin:0 auto;padding:clamp(24px,4cqi,48px) clamp(20px,4cqi,48px) clamp(56px,8cqi,96px);display:flex;flex-direction:column;gap:clamp(32px,5cqi,56px)">
+<section data-screen-label="Blog · Header" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>{{ c.sheet }}</span><a href="#" style="color:var(--accent)">RSS ↗</a></div>
+<h1 style="margin:0;font-stretch:110%;font-weight:700;font-size:clamp(40px,5.6cqi,72px);letter-spacing:-0.035em;line-height:0.95;text-wrap:balance">{{ c.h1 }}</h1>
+<p style="margin:0;font-size:clamp(17px,1.5cqi,19px);line-height:1.45;color:var(--text-muted);max-width:640px;text-wrap:pretty">{{ c.lead }}</p>
+</section>
+
+<div style="display:flex;flex-direction:column;gap:20px">
+<div role="group" aria-label="{{ c.filterLabel }}" style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ cats }}" as="t" hint-placeholder-count="5"><button onClick="{{ t.pick }}" aria-pressed="{{ t.on }}" style="font-family:var(--font-mono);font-size:13px;min-height:40px;padding:0 12px;border:var(--border-ink);background:{{ t.bg }};color:{{ t.fg }};cursor:pointer;display:flex;gap:8px;align-items:center;transition:background-color 160ms ease,transform 160ms var(--ease-out)" style-active="transform:scale(0.97)">{{ t.name }}<span style="opacity:0.6">{{ t.n }}</span></button></sc-for></div>
+<sc-if value="{{ hasPosts }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;border-top:var(--border-ink)"><sc-for list="{{ posts }}" as="p" hint-placeholder-count="2"><a href="#" style="display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;padding:20px 0;border-bottom:var(--border-rule);color:var(--text);text-decoration:none;transition:color 200ms ease" style-hover="color:var(--accent)">
+<span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted);line-height:1.6">{{ p.n }}<br></br>{{ p.date }}</span>
+<span style="display:flex;flex-direction:column;gap:8px;min-width:0"><span style="font-stretch:110%;font-weight:700;font-size:clamp(22px,2.2cqi,28px);letter-spacing:-0.3px;line-height:1.15;text-wrap:balance">{{ p.title }}</span><span style="font-size:16px;line-height:1.5;color:var(--text-muted);max-width:680px;text-wrap:pretty">{{ p.dek }}</span><span style="display:flex;gap:8px;flex-wrap:wrap;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)"><span>{{ p.cat }}</span><span>·</span><span>{{ p.min }}</span><sc-if value="{{ p.oneLang }}" hint-placeholder-val="{{ false }}"><span style="border:var(--border-rule);padding:0 6px">{{ c.onlyEn }}</span></sc-if></span></span>
+</a></sc-for></div></sc-if>
+<sc-if value="{{ noPosts }}" hint-placeholder-val="{{ false }}"><div style="border:1px dashed var(--text-muted);padding:clamp(24px,4cqi,40px);display:flex;flex-direction:column;gap:10px;align-items:flex-start"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ c.emptyK }}</span><span style="font-stretch:110%;font-weight:700;font-size:24px">{{ c.emptyH }}</span><button onClick="{{ reset }}" style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;color:var(--accent);background:transparent;border:0;padding:8px 0;cursor:pointer">← {{ c.showAll }}</button></div></sc-if>
+</div>
+</main>
+
+<footer style="border-top:var(--border-ink);padding:20px clamp(20px,4cqi,48px);display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)"><span>FMYERS.DEV · REV 2026.10</span><span style="display:flex;gap:20px;flex-wrap:wrap"><a href="https://github.com/Solideomyers">GITHUB ↗</a><a href="https://linkedin.com/in/franciscomyers">LINKEDIN ↗</a><a href="#">RSS ↗</a><a href="#">{{ c.privacy }}</a></span><span>© 2026 · {{ c.langName }}</span></footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;es&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en'|'es'&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;},&quot;bp&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;tablet&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop'|'tablet'|'mobile'&quot;},&quot;filter&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;all&quot;,&quot;empty&quot;],&quot;default&quot;:&quot;all&quot;,&quot;tsType&quot;:&quot;'all'|'empty'&quot;}}">
+const COPY = {
+  en: { menu: 'MENU', sheet: 'SHEET 07 — NOTES', h1: 'Notes', lead: 'How I scope, price and build small products and automations. Written when there is something worth saying.', filterLabel: 'Filter by category', cats: ['All', 'Process', 'Automation', 'Engineering', 'Cases'], onlyEn: 'ONLY IN SPANISH', emptyK: '0 NOTES', emptyH: 'Nothing in this category yet.', showAll: 'SHOW ALL NOTES', privacy: 'PRIVACY', langName: 'ENGLISH',
+    posts: [['N-02', '2026.11', 'Why every project starts with a one-page spec', 'A day of writing saves weeks of rework. What goes on the page, and what I leave out.', 1, '6 MIN', false], ['N-01', '2026.10', 'Apps Script as a backend for small teams', 'When a Google Sheet is the right database, and the three signs that you have outgrown it.', 2, '9 MIN', false]] },
+  es: { menu: 'MENÚ', sheet: 'LÁMINA 07 — NOTAS', h1: 'Notas', lead: 'Cómo defino, cotizo y construyo productos pequeños y automatizaciones. Escribo cuando hay algo que valga la pena.', filterLabel: 'Filtrar por categoría', cats: ['Todo', 'Proceso', 'Automatización', 'Ingeniería', 'Casos'], onlyEn: 'SOLO EN INGLÉS', emptyK: '0 NOTAS', emptyH: 'Aún no hay nada en esta categoría.', showAll: 'VER TODAS LAS NOTAS', privacy: 'PRIVACIDAD', langName: 'ESPAÑOL',
+    posts: [['N-02', '2026.11', 'Por qué todo proyecto empieza con una especificación de una página', 'Un día escribiendo ahorra semanas de retrabajo. Qué va en la página y qué dejo fuera.', 1, '6 MIN', false], ['N-01', '2026.10', 'Apps Script como backend para equipos pequeños', 'Cuándo una hoja de Google es la base de datos correcta, y las tres señales de que ya se quedó corta.', 2, '9 MIN', false]] }
+};
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { cat: p.filter === 'empty' ? 4 : 0 }; }
+  renderVals() {
+    const lang = this.props.lang === 'es' ? 'es' : 'en', es = lang === 'es', c = COPY[lang];
+    const theme = this.props.theme === 'dark' ? 'dark' : 'light';
+    const bp = this.props.bp || 'desktop', isDesk = bp === 'desktop';
+    const on = { bg: 'var(--invert-bg)', fg: 'var(--invert-fg)' }, off = { bg: 'transparent', fg: 'var(--text)' };
+    const navL = es ? ['SERVICIOS', 'PROYECTOS', 'SOBRE MÍ', 'PRECIOS', 'CONTACTO', 'NOTAS'] : ['SERVICES', 'WORK', 'ABOUT', 'PRICING', 'CONTACT', 'NOTES'];
+    const cat = this.state.cat;
+    const posts = c.posts.filter(p => cat === 0 || p[4] === cat).map(([n, date, title, dek, ci, min, oneLang]) => ({ n, date, title, dek, cat: c.cats[ci].toUpperCase(), min, oneLang }));
+    return {
+      c, theme, isLight: theme === 'light', isDark: theme === 'dark', isDesk, notDesk: !isDesk, notMobile: bp !== 'mobile',
+      enBg: es ? off.bg : on.bg, enFg: es ? off.fg : on.fg, esBg: es ? on.bg : off.bg, esFg: es ? on.fg : off.fg,
+      nav: navL.map((label, i) => ({ id: '0' + (i + 1), label, cur: i === 5 ? 'page' : 'false', c: i === 5 ? 'var(--accent)' : 'var(--text)', bd: i === 5 ? '2px solid var(--accent)' : '2px solid transparent' })),
+      cats: c.cats.map((name, i) => ({ name, n: String(i === 0 ? c.posts.length : c.posts.filter(p => p[4] === i).length), on: String(cat === i), bg: cat === i ? on.bg : 'transparent', fg: cat === i ? on.fg : 'var(--text)', pick: () => this.setState({ cat: i }) })),
+      posts, hasPosts: posts.length > 0, noPosts: posts.length === 0, reset: () => this.setState({ cat: 0 })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="design-system/styles.css" rel="stylesheet"></link><script src="./doc-page.js"></script><style>doc-page:not(:defined){visibility:hidden}a{color:#2B55C8;text-decoration:none}a:hover{color:#15181C;text-decoration:underline}</style></helmet>
+<doc-page size="letter" margin="0.7in">
+<div style="font-family:'Archivo',sans-serif;color:#15181C;font-size:13px;line-height:1.5">
+<div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#2B55C8;margin-bottom:8px">FMYERS.DEV · LÁMINA F · PREGUNTAS DE GAPS · REV 2026.10</div>
+<h1 style="margin:0 0 8px;font-stretch:110%;font-weight:700;font-size:32px;letter-spacing:-0.03em;line-height:1.05">Preguntas para cerrar los gaps</h1>
+<p style="margin:0 0 6px;font-size:15px;color:#5B626A;text-wrap:pretty">Cada pregunta trae alternativas con su impacto positivo (+) y negativo (−), y una recomendación. Responde con el ID de la pregunta y la letra de la opción (p. ej. <b>G1.1 B</b>). Lo que no respondas lo decido con la recomendación.</p>
+<p style="margin:0 0 6px;font-size:12px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;color:#2B55C8">ESTADO 2026-10-06 · 46/46 DECIDIDAS</p>
+<p style="margin:0 0 18px;font-size:12px;color:#5B626A">Fuera de alcance: FM-03 AquaPro (en pausa). Los gaps marcados como DERIVADO no estaban en el inventario, pero bloquean pantallas.</p>
+
+<sc-for list="{{ gaps }}" as="g" hint-placeholder-count="4">
+<div style="margin:22px 0 0">
+<div style="display:flex;gap:10px;align-items:baseline;border-bottom:2px solid #15181C;padding-bottom:4px;break-after:avoid">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;color:#2B55C8">{{ g.id }}</span>
+<h2 style="margin:0;font-stretch:110%;font-size:20px;flex:1">{{ g.title }}</h2>
+<span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#5B626A">{{ g.tag }}</span>
+</div>
+<p style="margin:6px 0 4px;color:#5B626A;font-size:12.5px;text-wrap:pretty">{{ g.why }}</p>
+<sc-for list="{{ g.qs }}" as="q" hint-placeholder-count="3">
+<div style="margin:12px 0 0;break-inside:avoid">
+<div style="display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;align-items:baseline">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#2B55C8">{{ q.id }}</span>
+<div style="font-weight:700;font-size:14px;text-wrap:pretty">{{ q.q }}</div>
+</div>
+<div style="margin:6px 0 0 52px;display:flex;flex-direction:column;border-top:1px solid #D5D1CA">
+<sc-for list="{{ q.opts }}" as="o" hint-placeholder-count="3">
+<div style="display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;padding:6px 0;border-bottom:1px solid #D5D1CA">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500">{{ o.k }}</span>
+<div style="display:flex;flex-direction:column;gap:2px">
+<div style="font-weight:600">{{ o.l }}</div>
+<div style="display:grid;grid-template-columns:14px minmax(0,1fr);gap:4px;font-size:12px"><span style="font-family:'JetBrains Mono',monospace">+</span><span style="text-wrap:pretty">{{ o.p }}</span></div>
+<div style="display:grid;grid-template-columns:14px minmax(0,1fr);gap:4px;font-size:12px;color:#5B626A"><span style="font-family:'JetBrains Mono',monospace">−</span><span style="text-wrap:pretty">{{ o.n }}</span></div>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="margin:6px 0 0 52px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:baseline;font-size:12.5px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#2B55C8">RECOMIENDO</span><span style="text-wrap:pretty">{{ q.rec }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:#15181C;font-weight:700">DECISIÓN</span><span style="text-wrap:pretty;font-weight:600">{{ q.dec }}</span></div>
+</div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</doc-page>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const o = (k, l, p, n) => ({ k, l, p, n });
+    const gaps = [
+      { id: 'G1', title: 'Precios y paquetes', tag: 'P04 · C09', why: 'Bloquea PackageCard, la página de Precios, los rangos de presupuesto del formulario y parte de la FAQ.', qs: [
+        { id: '1.1', q: '¿Publicas precios en el sitio?', opts: [
+          o('A', 'Precio fijo por paquete', 'Filtra a quien no puede pagarlo y te ahorra llamadas. A las pymes les da confianza.', 'Es rígido: un alcance raro queda mal cotizado y te puede atar a cifras bajas.'),
+          o('B', '“Desde $X” por paquete', 'Ancla la expectativa y te deja ajustar según el alcance. Es el estándar entre freelancers.', 'Es menos claro que un precio fijo; algunos clientes igual preguntan.'),
+          o('C', 'Sin precios, solo “Cotizar”', 'Máxima flexibilidad y no te comparan por precio.', 'Más fricción. Las pymes y ONG suelen irse sin escribir, y Precios se vuelve una página débil.')
+        ], rec: 'B. Mantiene P04 útil y no te ata a un número.' },
+        { id: '1.2', q: '¿En qué moneda?', opts: [
+          o('A', 'Solo USD en ambos idiomas', 'Un solo número que mantener; es la moneda en que cobras de verdad.', 'Al cliente local le toca convertir.'),
+          o('B', 'USD + moneda local en ES', 'Más cercano para clientes venezolanos.', 'La moneda local cambia rápido: te obliga a actualizar o a mostrar cifras viejas.'),
+          o('C', 'Moneda según idioma (EN USD, ES EUR/USD)', 'Se adapta a España y Latinoamérica.', 'Duplica la lista de precios y puede causar confusión al cambiar de idioma.')
+        ], rec: 'A, con una línea “Precios en USD; acepto pago en moneda local” en ES.' },
+        { id: '1.3', q: '¿Cuál es el modelo de cobro de cada paquete (SaaS MVP, Automatización, Fullstack por contrato)?', opts: [
+          o('A', 'Precio fijo por proyecto, cobrado por hitos', 'Es predecible para el cliente y encaja con MVP y Automatización.', 'Si el alcance crece sin control, absorbes el costo.'),
+          o('B', 'Por hora', 'Nunca pierdes por un cambio de alcance.', 'Al cliente le asusta lo abierto y es difícil de mostrar en una tarjeta.'),
+          o('C', 'Retainer mensual', 'Te da ingreso recurrente; ideal para “Fullstack por contrato”.', 'No sirve para proyectos cerrados.')
+        ], rec: 'A para MVP y Automatización, C para Fullstack por contrato. Cada PackageCard muestra su unidad (“por proyecto” / “por mes”).' },
+        { id: '1.4', q: '¿Tarifa especial para iglesias y ONG?', opts: [
+          o('A', 'Descuento publicado (p. ej. −20%)', 'Coherente con tu portafolio; atrae a ese nicho.', 'Atrae muchas solicitudes de bajo presupuesto y fija el descuento por escrito.'),
+          o('B', 'Nota discreta: “Trabajo con iglesias y ONG; pregúntame”', 'Abre la puerta sin comprometer una cifra.', 'Es menos concreta y algunos no preguntan.'),
+          o('C', 'Sin mención', 'El sitio se lee más corporativo.', 'Desaprovecha tu caso más fuerte (FM-01) como argumento de venta.')
+        ], rec: 'B, debajo de los tres paquetes.' },
+        { id: '1.5', q: '¿Qué incluye el soporte después del lanzamiento?', opts: [
+          o('A', '30 días de correcciones incluidos', 'Le da tranquilidad al cliente y es fácil de comunicar.', 'Hay que definir bien qué es una “corrección” para que no se vuelvan features.'),
+          o('B', 'Soporte aparte, por hora', 'Queda separado del precio del proyecto.', 'Se percibe como un costo oculto.'),
+          o('C', 'Plan mensual de mantenimiento opcional', 'Ingreso recurrente y una fila clara en la tabla comparativa.', 'Es un producto más que definir y sostener.')
+        ], rec: 'A + C: 30 días incluidos y un plan mensual opcional como cuarta fila de la comparativa.' },
+        { id: '1.6', q: '¿Qué paquete va destacado?', opts: [
+          o('A', 'SaaS MVP', 'Es el de mayor valor y coincide con tu titular (“I build SaaS products”).', 'Es el ticket más alto, y para las pymes la barrera de entrada también.'),
+          o('B', 'Automatización', 'Es la entrada más fácil para pymes e iglesias; es tu fuerte en Workspace.', 'Es de menor ticket y puede encasillarte.'),
+          o('C', 'Ninguno', 'Neutral.', 'La comparativa pierde jerarquía; cuesta más decidir.')
+        ], rec: 'A, alineado con el posicionamiento.' },
+        { id: '1.7', q: '¿Muestras las condiciones de pago?', opts: [
+          o('A', 'Sí: 50% al inicio, 50% en la entrega, y métodos aceptados', 'Responde la duda antes de la llamada.', 'Te compromete públicamente a un esquema.'),
+          o('B', 'Solo en la FAQ', 'Está disponible sin cargar la tarjeta.', 'Menos visible.'),
+          o('C', 'No, se ve en la propuesta', 'Flexible.', 'Más idas y vueltas.')
+        ], rec: 'B. Dime el esquema (50/50 o 40/30/30) y los métodos (Wise, PayPal, transferencia, cripto).' }
+      ]},
+      { id: 'G2', title: 'Formulario de contacto', tag: 'DERIVADO · P05 · C03', why: 'Astro genera un sitio estático, así que el formulario necesita un destino para los envíos. Esto define los estados de envío, el error y la confirmación.', qs: [
+        { id: '2.1', q: '¿A dónde se envía el formulario?', opts: [
+          o('A', 'Servicio externo (Formspree, Web3Forms)', 'Sin backend; se configura en minutos.', 'Límite mensual en el plan gratis y dependes de un tercero.'),
+          o('B', 'Función serverless + Resend', 'Control total; correos con tu marca y autorrespuesta al cliente.', 'Código y una API key que mantener; te ata a un hosting.'),
+          o('C', 'Google Apps Script → Sheet + Gmail', 'Gratis, es tu stack, y cada lead queda en una hoja. Además sirve de demostración de tu trabajo.', 'Cuotas diarias de Gmail, ~1–2 s de latencia y CORS que configurar.'),
+          o('D', 'Solo mailto:', 'Cero infraestructura.', 'Se pierden el formulario, la validación y la confirmación (P05b).')
+        ], rec: 'C. Encaja con tu oferta de automatización. Si más adelante necesitas más volumen, se migra a B sin cambiar el diseño.' },
+        { id: '2.2', q: '¿Dónde se aloja el sitio?', opts: [
+          o('A', 'Vercel', 'Lo conoces de ChurchApp; buenas previews por rama.', 'Plan gratis con límites para uso comercial.'),
+          o('B', 'Cloudflare Pages', 'Gratis, rápido, con Turnstile y analítica sin cookies integrados.', 'Las funciones tienen otro runtime (Workers).'),
+          o('C', 'Netlify', 'Trae formularios nativos (resolvería 2.1).', 'Límite de 100 envíos al mes en el plan gratis.')
+        ], rec: 'B si eliges 2.1 C; A si prefieres lo que ya conoces.' },
+        { id: '2.3', q: '¿Qué canales aparecen en Contacto?', opts: [
+          o('A', 'Formulario + WhatsApp + email', 'En Latinoamérica WhatsApp convierte más; ya está en tu README.', 'Los leads llegan por tres vías y cuesta más darles seguimiento.'),
+          o('B', 'Formulario + email', 'Todos los leads entran por un solo embudo.', 'Pierdes a quien no llena formularios.'),
+          o('C', 'Formulario principal y WhatsApp como enlace secundario', 'Conviertes por los dos lados sin dispersar.', 'Ninguno importante.')
+        ], rec: 'C. Confirma si el número es +58 424 908 0683.' },
+        { id: '2.4', q: '¿Qué campos pide el formulario?', opts: [
+          o('A', 'Nombre, email y mensaje', 'Mínima fricción.', 'Leads sin contexto; toca preguntar todo.'),
+          o('B', 'A + tipo de proyecto (chips) + presupuesto (rangos)', 'Califica el lead antes de responder; los rangos salen de G1.', 'Un poco más de fricción; el presupuesto incomoda a algunos.'),
+          o('C', 'B + plazo + enlace de referencia', 'Brief casi completo.', 'Formulario largo y menos envíos.')
+        ], rec: 'B, con el presupuesto opcional y un rango “No lo sé aún”.' },
+        { id: '2.5', q: '¿Cómo frenas el spam?', opts: [
+          o('A', 'Honeypot', 'Invisible y sin fricción.', 'Los bots avanzados lo saltan.'),
+          o('B', 'Honeypot + Cloudflare Turnstile', 'Casi invisible y efectivo.', 'Añade un script de terceros.'),
+          o('C', 'reCAPTCHA', 'Conocido.', 'Rastrea al usuario, es pesado y choca con la estética.')
+        ], rec: 'B.' },
+        { id: '2.6', q: '¿Qué tiempo de respuesta prometes en la confirmación (P05b)?', opts: [
+          o('A', '24 horas', 'Muy convincente.', 'Si fallas, pierdes credibilidad.'),
+          o('B', '2 días hábiles', 'Realista y sigue siendo bueno.', 'Algo menos atractivo.'),
+          o('C', 'No prometer', 'Sin riesgo.', 'P05b se siente genérica.')
+        ], rec: 'B. Dime también tu zona horaria para mostrarla.' },
+        { id: '2.7', q: '¿Cómo se controla el estado “Disponible”?', opts: [
+          o('A', 'Un booleano en la configuración', 'Simple.', 'Si olvidas cambiarlo, el sitio miente.'),
+          o('B', 'Fecha del próximo cupo (“Disponible desde noviembre”)', 'Más honesto; crea urgencia sin cerrar la puerta.', 'Hay que actualizarlo cada mes.'),
+          o('C', 'Sin estado', 'No requiere mantenimiento.', 'Pierdes un elemento de marca (el punto verde).')
+        ], rec: 'B; si la fecha ya pasó, se muestra “Disponible”.' }
+      ]},
+      { id: 'G3', title: 'Casos de estudio en español', tag: 'P02 · FM-01 · FM-02', why: 'El texto de FM-01 y FM-02 está en inglés y solo los títulos tienen versión en español. El sitio muestra un idioma a la vez, así que /es necesita el texto completo.', qs: [
+        { id: '3.1', q: '¿Quién escribe la versión en español?', opts: [
+          o('A', 'Tú, desde cero', 'Tu voz real; es tu idioma nativo.', 'Es lo que más tiempo te toma.'),
+          o('B', 'Yo la redacto desde el inglés y tú la revisas', 'Rápido y coherente con la guía de voz (tú, informal, concreto).', 'Requiere una revisión atenta de términos de iglesia y logística.'),
+          o('C', 'Solo inglés, con la etiqueta “Solo en inglés”', 'Cero trabajo.', 'El mercado hispano, tu cliente principal, lee en otro idioma.')
+        ], rec: 'B.' },
+        { id: '3.2', q: '¿En qué idioma escribes los casos futuros primero?', opts: [
+          o('A', 'Siempre en inglés', 'Un solo flujo.', 'Los casos locales pierden matices.'),
+          o('B', 'En el idioma del cliente', 'Más natural y preciso.', 'El idioma de origen varía y hay que marcarlo.'),
+          o('C', 'Siempre en español', 'Tu idioma nativo.', 'Tu audiencia de reclutadores y CTOs lee en inglés.')
+        ], rec: 'B. El esquema ya admite un archivo por idioma.' },
+        { id: '3.3', q: '¿Nombras a los clientes?', opts: [
+          o('A', 'Nombre y logo, con permiso escrito', 'Máxima credibilidad.', 'Depende de que te autoricen; el logo rompe la paleta.'),
+          o('B', 'Solo el nombre (Gracia Eterna) y la editorial anónima', 'Coincide con lo que ya publicaste.', 'Credibilidad desigual entre casos.'),
+          o('C', 'Todos anónimos por sector', 'Sin riesgo de privacidad.', 'Menos prueba social.')
+        ], rec: 'B por ahora, sin logos (tampoco existe ese componente).' },
+        { id: '3.4', q: '¿Agregas testimonios?', opts: [
+          o('A', 'Sí, una cita por caso (pastor, editorial)', 'Es la prueba más fuerte para pymes e iglesias.', 'Hay que pedirlas y añade un componente Quote (C18).'),
+          o('B', 'Más adelante', 'No bloquea el diseño.', 'Los casos lanzan con menos prueba social.'),
+          o('C', 'No', 'Mantiene el tono técnico.', 'Desaprovecha tu relación con esos clientes.')
+        ], rec: 'A si puedes conseguirlas en 2 semanas; si no, B dejando el componente diseñado.' },
+        { id: '3.5', q: 'Las capturas de ChurchApp muestran datos personales: ¿qué hacemos?', opts: [
+          o('A', 'Nuevas capturas con datos de ejemplo', 'Seguro y se ve limpio.', 'Hay que preparar datos de ejemplo.'),
+          o('B', 'Desenfocar o tapar', 'Rápido.', 'Se ve descuidado y choca con el estilo del sistema.'),
+          o('C', 'Usar las actuales', 'Cero trabajo.', 'Riesgo legal y de confianza; tu propio caso dice que producción tiene datos reales.')
+        ], rec: 'A, usando la base de desarrollo que ya existe.' },
+        { id: '3.6', q: '¿Qué pasa con las métricas con el tiempo (11 candidatos, 594 títulos…)?', opts: [
+          o('A', 'Foto fija con fecha', 'Honesto y sin mantenimiento; el modelo ya lleva `date`.', 'Envejecen.'),
+          o('B', 'Actualizarlas cada trimestre', 'Siempre vigentes.', 'Es una tarea recurrente.'),
+          o('C', 'Leerlas en vivo desde la app', 'Impresionante.', 'Acopla el portafolio a producción; es frágil.')
+        ], rec: 'A, y revisarlas cada vez que publiques una versión nueva.' }
+      ]},
+      { id: 'G4', title: 'Retrato y Sobre mí', tag: 'P06 · C12', why: 'Para P06 hacen falta la foto y el texto: bio, trayectoria y datos prácticos.', qs: [
+        { id: '4.1', q: '¿De dónde sale el retrato?', opts: [
+          o('A', 'Una foto existente, pasada a B/N de alto contraste', 'Inmediato.', 'Calidad y encuadre variables.'),
+          o('B', 'Sesión casera: móvil, luz de ventana, fondo liso', 'Consistente con la marca y gratis.', 'Requiere una hora de tu tiempo.'),
+          o('C', 'Sin foto, con monograma FM', 'Privacidad.', 'Pymes e iglesias contratan personas; baja la confianza.')
+        ], rec: 'B. Te paso una guía de encuadre si la eliges.' },
+        { id: '4.2', q: '¿Dónde aparece el retrato?', opts: [
+          o('A', 'Solo en P06', 'El trabajo protagoniza el Home.', 'El Home se siente impersonal.'),
+          o('B', 'P06 + un retrato pequeño en el hero del Home', 'Humaniza desde el primer vistazo.', 'Compite con el titular; un elemento más en mobile.'),
+          o('C', 'P06 + imagen OG para compartir', 'Las vistas previas al compartir llevan tu cara.', 'Hay que generar las OG.')
+        ], rec: 'A + C.' },
+        { id: '4.3', q: '¿Mencionas tu fe en Sobre mí?', opts: [
+          o('A', 'Sí, de forma explícita', 'Afinidad directa con iglesias y ONG, que son tu nicho más probado.', 'Algunos clientes corporativos o reclutadores pueden alejarse.'),
+          o('B', 'Implícita, a través de los proyectos', 'Los casos hablan por sí solos; neutral para el resto.', 'Menos conexión con ese nicho.'),
+          o('C', 'No', 'Totalmente neutral.', 'Los casos sin contexto pueden parecer casualidad.')
+        ], rec: 'B. Es una decisión personal; cualquiera funciona con el diseño.' },
+        { id: '4.4', q: '¿Cómo muestras tu trayectoria?', opts: [
+          o('A', 'Línea de tiempo (formación, empleos, freelance)', 'Útil para reclutadores.', 'Hay que mantenerla; los huecos se notan.'),
+          o('B', 'Solo bio en prosa y stack', 'Más corto y enfocado en clientes.', 'Los reclutadores buscan fechas.'),
+          o('C', 'A + CV descargable en PDF', 'Completo para reclutadores.', 'Es un documento más que mantener sincronizado.')
+        ], rec: 'A con 4–6 hitos. Dime cuáles son.' },
+        { id: '4.5', q: '¿Muestras datos prácticos (ubicación, zona horaria, idiomas, horario)?', opts: [
+          o('A', 'Sí, en una tabla de datos en P06', 'Responde dudas de trabajo remoto.', 'Expone tu ubicación.'),
+          o('B', 'Solo zona horaria e idiomas', 'Lo útil sin exponerte.', 'Ninguno importante.'),
+          o('C', 'No', 'Privacidad.', 'Más preguntas en la primera llamada.')
+        ], rec: 'B.' }
+      ]},
+      { id: 'G5', title: 'Blog', tag: 'P08 · P09 · C13 · C14', why: 'Hoy hay dos posts semilla (N-01, N-02). Estas decisiones definen si el blog sale al lanzar y cómo se estructura.', qs: [
+        { id: '5.1', q: '¿El blog sale con el lanzamiento?', opts: [
+          o('A', 'Sí, con los 2 posts', 'Suma SEO desde el día 1 y muestra cómo piensas.', 'Dos posts se ven poco; te compromete a seguir escribiendo.'),
+          o('B', 'Diseñarlo ahora y publicarlo con 3 posts o más', 'No se ve vacío y no bloquea el lanzamiento.', 'Retrasa el SEO.'),
+          o('C', 'Lanzar con un estado “Próximamente”', 'Anticipa contenido.', 'Una página vacía resta.')
+        ], rec: 'B. Diseñamos P08 y P09 completas; una variable de configuración oculta el enlace del menú.' },
+        { id: '5.2', q: '¿Con qué frecuencia realista vas a publicar?', opts: [
+          o('A', 'Mensual', 'Buen ritmo para SEO.', 'Exigente junto al trabajo con clientes.'),
+          o('B', 'Trimestral', 'Sostenible.', 'El bloque “Últimas notas” del Home se ve viejo; mejor mostrar el más reciente con fecha.'),
+          o('C', 'Sin calendario', 'Sin presión.', 'Lo más probable es que el blog quede abandonado.')
+        ], rec: 'B. Con esa frecuencia, el Home mostraría 1 post en vez de 2.' },
+        { id: '5.3', q: '¿Cómo se organizan los temas?', opts: [
+          o('A', '3–4 categorías fijas (Proceso, Automatización, Ingeniería, Casos)', 'El filtro queda limpio y estable.', 'Hay que encajar cada post en una.'),
+          o('B', 'Etiquetas libres', 'Flexible.', 'Se multiplican sin control y el filtro se rompe.'),
+          o('C', 'Sin taxonomía', 'Simple.', 'P08 pierde su filtro.')
+        ], rec: 'A.' },
+        { id: '5.4', q: '¿Cada post tiene que existir en los dos idiomas?', opts: [
+          o('A', 'Sí, siempre', 'Paridad total.', 'Duplica el trabajo; publicarás menos.'),
+          o('B', 'No: un idioma con etiqueta y el otro como alternativa', 'Escribes donde tiene sentido.', 'El listado de cada idioma mezcla idiomas.'),
+          o('C', 'Cada idioma tiene su propio listado, sin mezclar', 'Listados limpios.', 'Uno de los dos quedará más vacío.')
+        ], rec: 'B, igual que la regla de los proyectos.' },
+        { id: '5.5', q: '¿Markdown o MDX?', opts: [
+          o('A', 'Markdown', 'Portátil y simple.', 'No admite componentes (Figure, SpecTable) dentro del post.'),
+          o('B', 'MDX', 'Puedes usar componentes del sistema dentro del texto.', 'Algo más complejo; te ata a Astro.')
+        ], rec: 'B.' },
+        { id: '5.6', q: '¿Extras de distribución?', opts: [
+          o('A', 'Solo RSS', 'Gratis y estándar.', 'Lo usa poca gente.'),
+          o('B', 'RSS + newsletter', 'Crea audiencia propia.', 'Un componente y un proveedor más, y la obligación de enviar.'),
+          o('C', 'RSS + imágenes OG automáticas con el estilo de lámina', 'Los posts se ven bien al compartirlos en LinkedIn.', 'Hay que montar la generación de imágenes en el build.')
+        ], rec: 'C. La newsletter, más adelante.' },
+        { id: '5.7', q: '¿Comentarios?', opts: [
+          o('A', 'No', 'Sin moderación ni scripts.', 'Sin conversación en el sitio.'),
+          o('B', 'Giscus (GitHub Discussions)', 'Gratis y de público técnico.', 'Excluye a clientes no técnicos y añade un iframe.')
+        ], rec: 'A. Cerrar cada post con “Escríbeme” lleva la conversación al contacto.' }
+      ]},
+      { id: 'G6', title: 'FAQ: contenido y comportamiento', tag: 'P03 · P04 · C16', why: 'Hay que definir el texto de las preguntas y cómo se comporta el componente.', qs: [
+        { id: '6.1', q: '¿Una FAQ compartida o una por página?', opts: [
+          o('A', 'Una colección con un campo `page` (servicios / precios / ambas)', 'Una sola fuente y sin duplicados.', 'Hay que etiquetar cada pregunta.'),
+          o('B', 'Dos listas separadas', 'Simple.', 'Se duplican respuestas, como las de pagos o plazos.'),
+          o('C', 'Una página FAQ propia', 'Todo en un lugar.', 'Otra pantalla más, y la respuesta queda lejos del momento de la duda.')
+        ], rec: 'A.' },
+        { id: '6.2', q: '¿Qué temas cubre? (marca los que quieras)', opts: [
+          o('—', 'Plazos típicos · Propiedad del código · Hosting y costos mensuales · Qué necesito tener listo', 'Son las dudas más comunes antes de contratar.', 'Cada una requiere una respuesta con tus cifras.'),
+          o('—', 'Cambios de alcance · Pagos · Soporte post-lanzamiento · Reuniones y zona horaria', 'Evita malentendidos en la propuesta.', 'Compromete condiciones por escrito.'),
+          o('—', 'NDA · Trabajo con agencias (marca blanca) · Proyectos existentes o rescates · Por qué Workspace vs. app propia', 'Abre los segmentos de agencias y CTOs.', 'Alarga la lista; hay que priorizar.')
+        ], rec: '6 en Precios y 4 en Servicios. Yo redacto los borradores y tú corriges las cifras.' },
+        { id: '6.3', q: '¿Cómo se comporta al abrir y cerrar?', opts: [
+          o('A', 'Todas cerradas; se pueden abrir varias a la vez', 'Escaneable.', 'Al entrar no se ve ninguna respuesta.'),
+          o('B', 'La primera abierta; se pueden abrir varias', 'Muestra el patrón y responde la duda principal.', 'Ninguno importante.'),
+          o('C', 'Acordeón exclusivo (abrir una cierra la otra)', 'Ordenado.', 'Molesta si quieres comparar respuestas.')
+        ], rec: 'B, con details/summary nativo y datos estructurados FAQPage para SEO.' }
+      ]},
+      { id: 'G7', title: 'Paginación', tag: 'C15 · P08 · P09 · P10 · P02', why: 'Define cómo se navega entre listados y entre piezas individuales.', qs: [
+        { id: '7.1', q: '¿Qué tipo de paginación usan los listados?', opts: [
+          o('A', 'Numerada, con URLs /page/2', 'Funciona en un sitio estático, sin JS, y es buena para SEO.', 'Implica un clic y una carga por página.'),
+          o('B', 'Botón “Cargar más”', 'Fluida.', 'Necesita JS; las páginas siguientes no tienen URL.'),
+          o('C', 'Sin paginar hasta 10 elementos', 'No hay que diseñar nada de momento.', 'Hay que diseñar igual para cuando crezca.')
+        ], rec: 'A, activa a partir de 10 elementos (antes no se muestra).' },
+        { id: '7.2', q: '¿Qué enlaza el anterior/siguiente de un post?', opts: [
+          o('A', 'Orden cronológico', 'Predecible.', 'Puede saltar entre temas.'),
+          o('B', 'Misma categoría', 'Lectura temática.', 'En categorías con un solo post, queda vacío.')
+        ], rec: 'A. Los relacionados (2 PostRows) ya cubren el tema.' },
+        { id: '7.3', q: '¿Qué muestra “Siguiente proyecto” en el caso de estudio?', opts: [
+          o('A', 'El siguiente FM-ID, y del último vuelve al primero', 'Siempre hay un siguiente.', 'Con 2 proyectos, alterna entre los mismos.'),
+          o('B', 'El siguiente destacado', 'Muestra lo mejor.', 'Los no destacados nunca aparecen.'),
+          o('C', 'Anterior y siguiente', 'Navegación completa.', 'Doble tarjeta; pesa en mobile.')
+        ], rec: 'A.' }
+      ]},
+      { id: 'G8', title: 'Índice del post (TOC)', tag: 'C17 · P09 · P02', why: 'Define cuándo aparece el índice y cómo se adapta a cada breakpoint.', qs: [
+        { id: '8.1', q: '¿Cuándo se muestra?', opts: [
+          o('A', 'Siempre', 'Consistente.', 'Sobra en posts cortos.'),
+          o('B', 'Con 3 o más títulos h2', 'Aparece solo cuando ayuda.', 'Algunas páginas lo tienen y otras no.')
+        ], rec: 'B. Los casos (5 secciones) siempre lo tendrán.' },
+        { id: '8.2', q: '¿Qué niveles de título incluye?', opts: [
+          o('A', 'Solo h2', 'Corto y claro.', 'Menos preciso en posts largos.'),
+          o('B', 'h2 + h3', 'Detallado.', 'Ocupa más espacio y en mobile se vuelve largo.')
+        ], rec: 'A en mobile y tablet, B en desktop.' },
+        { id: '8.3', q: '¿Dónde va en cada breakpoint?', opts: [
+          o('A', 'Barra lateral sticky en desktop y bloque plegable en tablet/mobile', 'Siempre a mano; el ancho (680 + 240) cabe en 1280.', 'Dos variantes que construir.'),
+          o('B', 'Bloque inline arriba en todos los tamaños', 'Una sola variante.', 'Se pierde al hacer scroll.'),
+          o('C', 'Botón flotante que abre el índice', 'Ahorra espacio.', 'Es un patrón oculto y choca con “sin sombras”.')
+        ], rec: 'A, con un marcador que sigue la sección actual. Sin barra de progreso de lectura.' }
+      ]},
+      { id: 'G9', title: 'Índice de proyectos y contenido', tag: 'DERIVADO · P10 · P01', why: 'P10 fue una propuesta mía. Confírmala y define cómo crece el portafolio.', qs: [
+        { id: '9.1', q: '¿Aprobamos P10 (índice de proyectos)?', opts: [
+          o('A', 'Sí', 'Escala sin tocar el Home y da una URL para compartir “todo mi trabajo”.', 'Es una pantalla más (3 frames).'),
+          o('B', 'No: el Home lista todos los proyectos', 'Una pantalla menos.', 'El Home se alarga con cada proyecto nuevo.'),
+          o('C', 'Más adelante, a partir de 4 proyectos', 'Ahorra diseño hoy.', 'Habrá que diseñarla después, fuera del sistema actual.')
+        ], rec: 'A.' },
+        { id: '9.2', q: '¿P10 tiene filtro?', opts: [
+          o('A', 'Por sector', 'Útil para que iglesias o pymes encuentren lo suyo.', 'Con pocos proyectos, los filtros quedan casi vacíos.'),
+          o('B', 'Por stack', 'Útil para CTOs y reclutadores.', 'Muchas opciones.'),
+          o('C', 'Sin filtro hasta 6 proyectos', 'Honesto con el volumen actual.', 'Hay que diseñar el filtro igual, oculto.')
+        ], rec: 'C, con el filtro por sector ya diseñado.' },
+        { id: '9.3', q: '¿Incluyes proyectos menores u open source (confesion1689-api, hymns-church, mcp_translate)?', opts: [
+          o('A', 'Sí, como lista secundaria “Otros trabajos” en P10 (una fila por proyecto, enlace al repo)', 'Muestra amplitud y actividad sin diluir los casos.', 'Cada fila necesita una descripción de una línea.'),
+          o('B', 'No', 'Portafolio enfocado.', 'Se pierde evidencia de backend y APIs.'),
+          o('C', 'Como casos completos', 'Más contenido.', 'Diluye la calidad; muchos no tienen resultado medible.')
+        ], rec: 'A. Reutiliza PostRow, no hace falta un componente nuevo.' }
+      ]},
+      { id: 'G10', title: 'Idioma, dominio y legal', tag: 'DERIVADO · GLOBAL', why: 'Decisiones que afectan a todas las pantallas y al footer.', qs: [
+        { id: '10.1', q: '¿Qué pasa al entrar a la raíz “/”?', opts: [
+          o('A', 'Detectar el idioma del navegador y redirigir', 'Cada visitante cae en su idioma.', 'Necesita una función en el servidor o JS; a veces adivina mal.'),
+          o('B', 'Siempre /en', 'Predecible.', 'Tu público hispano entra en inglés.'),
+          o('C', 'Una página de selección de idioma', 'Explícito.', 'Un clic extra para todos.')
+        ], rec: 'A, recordando la elección del LangSwitch.' },
+        { id: '10.2', q: 'El email es Gmail. ¿Pasas a un correo con el dominio?', opts: [
+          o('A', 'Mantener fmyersdev@gmail.com', 'Gratis y ya funciona.', 'Se ve menos profesional junto a fmyers.dev.'),
+          o('B', 'Reenvío gratis de hola@fmyers.dev a Gmail (Cloudflare Email Routing)', 'Imagen profesional sin costo; los correos siguen en Gmail.', 'Responder “como” hola@ requiere configurar SMTP.'),
+          o('C', 'Google Workspace con el dominio', 'Profesional del todo.', 'Pago mensual.')
+        ], rec: 'B. Publicas hola@fmyers.dev y lo recibes en tu Gmail.' },
+        { id: '10.3', q: '¿Analítica?', opts: [
+          o('A', 'Ninguna', 'Cero scripts y cero aviso de cookies.', 'No sabes qué funciona.'),
+          o('B', 'Sin cookies (Cloudflare Web Analytics, Umami, Plausible)', 'Datos básicos sin banner.', 'Menos detalle; Plausible es de pago.'),
+          o('C', 'GA4', 'Completa.', 'Exige banner de cookies, que rompe la estética, y pesa más.')
+        ], rec: 'B.' },
+        { id: '10.4', q: '¿Página de privacidad?', opts: [
+          o('A', 'Sí, una página corta (P11) enlazada desde el formulario y el footer', 'Correcto si recoges datos personales; da confianza.', 'Una pantalla más (solo Prose).'),
+          o('B', 'Una nota debajo del formulario', 'Mínimo.', 'Puede quedarse corta legalmente si llegan clientes de la UE.')
+        ], rec: 'A. Es solo Prose, no necesita diseño nuevo.' }
+      ]}
+    ];
+    const R = 'Recomendación.';
+    const dec = {
+      '1.1': 'B. Montos de referencia: MVP desde $4,500 · Automatización desde $900 · Contrato desde $2,800/mes · Mantenimiento desde $150/mes. Definitivos en desarrollo.', '1.2': 'A. Solo USD, sin nota de moneda local.', '1.3': R, '1.4': R, '1.5': R, '1.6': R,
+      '1.7': 'B. 50% al inicio / 50% en la entrega. Métodos: transferencia, cripto y Zelle.',
+      '2.1': R, '2.2': 'A. Vercel. Turnstile y la analítica de Cloudflare funcionan igual.', '2.3': 'C. WhatsApp +58 424 908 0683 confirmado.', '2.4': R, '2.5': R,
+      '2.6': 'B. 2 días hábiles · hora de Venezuela (VET, UTC−4).', '2.7': 'B. Referencia: “Disponible desde nov 2026”; fecha real en desarrollo.',
+      '3.1': R, '3.2': R, '3.3': R, '3.4': 'B. Testimonios más adelante; no entra componente Quote ahora.', '3.5': 'A. Placeholders con trama en el diseño; capturas con datos de ejemplo en desarrollo.', '3.6': 'A. Foto fija con fecha.',
+      '4.1': 'B. Sesión casera. Placeholder con trama en el diseño; foto definitiva en desarrollo.', '4.2': R, '4.3': R, '4.4': R, '4.5': R,
+      '5.1': R, '5.2': R, '5.3': R, '5.4': R, '5.5': R, '5.6': R, '5.7': R,
+      '6.1': R, '6.2': R, '6.3': R, '7.1': R, '7.2': R, '7.3': R, '8.1': R, '8.2': R, '8.3': R,
+      '9.1': R, '9.2': R, '9.3': R, '10.1': R, '10.2': 'B. Público: hola@fmyers.dev → reenvía a fmyersdev@gmail.com.', '10.3': R, '10.4': R
+    };
+    gaps.forEach(g => g.qs.forEach(q => { q.dec = dec[q.id] || 'Pendiente'; }));
+    return { gaps };
+  }
+}
+</script>
+</body>
+</html>

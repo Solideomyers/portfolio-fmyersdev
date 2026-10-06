@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="design-system/styles.css" rel="stylesheet"></link><style>a{color:var(--accent);text-decoration:none}a:hover{color:var(--text);text-decoration:underline}button{font:inherit}</style></helmet>
+<div data-theme="{{ theme }}" style="container-type:inline-size;background:var(--bg);color:var(--text);font-family:var(--font-sans);width:100%">
+
+<header style="position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:var(--border-ink)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px clamp(20px,4cqi,48px)">
+<a href="#" aria-label="fmyers.dev home" style="display:flex;flex:none"><sc-if value="{{ isLight }}" hint-placeholder-val="{{ true }}"><img src="assets/wordmark-light.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if><sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><img src="assets/wordmark-dark.svg" alt="fmyers.dev" style="height:24px;display:block"></img></sc-if></a>
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><nav style="display:flex;gap:22px;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap"><sc-for list="{{ nav }}" as="n" hint-placeholder-count="5"><a href="#" aria-current="{{ n.cur }}" style="display:flex;gap:6px;color:{{ n.c }};text-decoration:none;padding:4px 0 2px;border-bottom:{{ n.bd }}"><span style="color:var(--text-muted)">{{ n.id }}</span>{{ n.label }}</a></sc-for></nav></sc-if>
+<div style="display:flex;gap:10px;align-items:center;flex:none">
+<sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}"><div style="display:flex;border:var(--border-ink)"><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ enBg }};color:{{ enFg }}">EN</span><span style="font-family:var(--font-mono);font-size:12px;padding:7px 10px;background:{{ esBg }};color:{{ esFg }}">ES</span></div><button aria-label="Toggle theme" style="font-family:var(--font-mono);font-size:14px;width:34px;height:34px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">◐</button></sc-if>
+<sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}"><a href="#" style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;white-space:nowrap;background:var(--accent);color:var(--accent-fg);padding:10px 16px;text-decoration:none">{{ c.startCaps }}</a></sc-if>
+<sc-if value="{{ notDesk }}" hint-placeholder-val="{{ false }}"><button style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px;min-height:44px;padding:0 14px;border:var(--border-ink);background:transparent;color:var(--text);cursor:pointer">{{ c.menu }}</button></sc-if>
+</div>
+</div>
+</header>
+
+<main style="max-width:1280px;margin:0 auto;padding:clamp(24px,4cqi,48px) clamp(20px,4cqi,48px) clamp(56px,8cqi,96px);display:flex;flex-direction:column;gap:clamp(48px,7cqi,80px)">
+
+<section data-screen-label="Pricing · Header" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>{{ c.sheet }}</span><span style="color:var(--text-muted)">USD · REV 2026.10</span></div>
+<h1 style="margin:0;font-stretch:110%;font-weight:700;font-size:clamp(40px,5.6cqi,72px);letter-spacing:-0.035em;line-height:0.95;max-width:900px;text-wrap:balance">{{ c.h1 }}</h1>
+<p style="margin:0;font-size:clamp(17px,1.5cqi,19px);line-height:1.45;color:var(--text-muted);max-width:640px;text-wrap:pretty">{{ c.lead }}</p>
+</section>
+
+<section data-screen-label="Pricing · Packages" style="display:flex;flex-direction:column;gap:14px">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:24px;align-items:stretch">
+<sc-for list="{{ packages }}" as="k" hint-placeholder-count="3"><div style="position:relative;display:flex;flex-direction:column;border:{{ k.bd }};background:{{ k.bg }}">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:var(--border-rule);font-family:var(--font-mono);font-size:13px"><span style="color:var(--accent)">{{ k.id }}</span><sc-if value="{{ k.feat }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;letter-spacing:1px;background:var(--invert-bg);color:var(--invert-fg);padding:3px 6px">{{ c.common }}</span></sc-if></div>
+<div style="padding:24px 20px;display:flex;flex-direction:column;gap:16px;flex:1">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-stretch:110%;font-weight:700;font-size:28px;line-height:1.05">{{ k.name }}</div><div style="font-size:15px;line-height:1.45;color:var(--text-muted);text-wrap:pretty">{{ k.for }}</div></div>
+<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;border-bottom:1px dashed var(--text-muted);padding-bottom:10px"><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">{{ c.from }}</span><span style="font-stretch:110%;font-weight:700;font-size:44px;letter-spacing:-1px;line-height:1">{{ k.price }}</span><span style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">{{ k.unit }}</span></div>
+<div style="display:flex;flex-direction:column;gap:10px"><sc-for list="{{ k.inc }}" as="i" hint-placeholder-count="5"><div style="font-size:15px;line-height:1.4;display:grid;grid-template-columns:18px minmax(0,1fr);gap:6px;text-wrap:pretty"><span style="font-family:var(--font-mono);color:var(--text-muted)">—</span>{{ i }}</div></sc-for></div>
+<div style="margin-top:auto;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted);padding-top:8px"><span>{{ k.time }}</span></div>
+<a href="#" style="font-size:16px;font-weight:600;text-align:center;padding:14px 20px;text-decoration:none;background:{{ k.btnBg }};color:{{ k.btnFg }};border:var(--border-ink)">{{ c.choose }} →</a>
+</div>
+<sc-if value="{{ k.feat }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;right:-2px;bottom:-2px;width:20px;height:20px;background:var(--accent)"></div></sc-if>
+</div></sc-for>
+</div>
+<p style="margin:0;font-size:15px;color:var(--text-muted);text-wrap:pretty">{{ c.ngo }}</p>
+</section>
+
+<section data-screen-label="Pricing · Compare" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;letter-spacing:1px;border-bottom:var(--border-ink);padding-bottom:10px"><span>{{ c.compareH }}</span><sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}"><span style="color:var(--text-muted)">{{ c.swipe }} →</span></sc-if></div>
+<div style="overflow-x:auto">
+<div style="min-width:620px;display:grid;grid-template-columns:minmax(150px,1.2fr) repeat(3,minmax(0,1fr));border:var(--border-ink);background:var(--line);gap:1px">
+<div style="background:var(--surface);padding:12px 14px"></div>
+<sc-for list="{{ compareHead }}" as="h" hint-placeholder-count="3"><div style="background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--accent)">{{ h.id }}</span><span style="font-weight:700;font-size:15px">{{ h.name }}</span></div></sc-for>
+<sc-for list="{{ compare }}" as="r" hint-placeholder-count="7"><div style="display:contents"><div style="background:var(--bg);padding:12px 14px;font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--text-muted);display:flex;align-items:center">{{ r.k }}</div><sc-for list="{{ r.v }}" as="v" hint-placeholder-count="3"><div style="background:var(--bg);padding:12px 14px;font-size:15px;line-height:1.35;text-wrap:pretty">{{ v }}</div></sc-for></div></sc-for>
+</div>
+</div>
+</section>
+
+<section data-screen-label="Pricing · FAQ" style="display:flex;flex-wrap:wrap;gap:24px 64px;align-items:flex-start">
+<div style="flex:1 1 280px;display:flex;flex-direction:column;gap:12px">
+<span style="font-family:var(--font-mono);font-size:13px;letter-spacing:1px">FAQ · 06</span>
+<h2 style="margin:0;font-stretch:110%;font-weight:700;font-size:clamp(32px,4.1cqi,52px);letter-spacing:-0.03em;line-height:1;text-wrap:balance">{{ c.faqH }}</h2>
+<p style="margin:0;font-size:16px;line-height:1.5;color:var(--text-muted);text-wrap:pretty">{{ c.faqP }}</p>
+</div>
+<div style="flex:2 1 460px;min-width:0;display:flex;flex-direction:column;border-top:var(--border-ink)">
+<sc-for list="{{ faq }}" as="f" hint-placeholder-count="6"><div style="border-bottom:var(--border-rule)">
+<button onClick="{{ f.toggle }}" aria-expanded="{{ f.openS }}" style="width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) 24px;gap:8px;align-items:baseline;min-height:52px;padding:14px 0;border:0;background:transparent;color:var(--text);text-align:left;cursor:pointer;font-family:var(--font-sans)" style-hover="color:var(--accent)"><span style="font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)">{{ f.id }}</span><span style="font-weight:600;font-size:17px;text-wrap:pretty">{{ f.q }}</span><span aria-hidden="true" style="font-family:var(--font-mono);font-size:20px;line-height:1;justify-self:end;transform:{{ f.rot }};transition:transform 200ms var(--ease-out)">+</span></button>
+<sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}"><div style="padding:0 32px 16px 52px;font-size:15px;line-height:1.55;color:var(--text-muted);text-wrap:pretty">{{ f.a }}</div></sc-if>
+</div></sc-for>
+</div>
+</section>
+
+<section data-screen-label="Pricing · CTA" style="border-top:var(--border-frame);padding-top:24px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font-stretch:110%;font-weight:700;font-size:clamp(26px,2.7cqi,34px);letter-spacing:-0.5px;text-wrap:balance">{{ c.ctaH }}</div><div style="font-size:15px;color:var(--text-muted)">{{ c.ctaP }}</div></div>
+<a href="#" style="font-size:17px;font-weight:600;background:var(--accent);color:var(--accent-fg);padding:16px 24px;text-decoration:none;white-space:nowrap">{{ c.start }} →</a>
+</section>
+</main>
+
+<footer style="border-top:var(--border-ink);padding:20px clamp(20px,4cqi,48px);display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--text-muted)"><span>FMYERS.DEV · REV 2026.10</span><span style="display:flex;gap:20px;flex-wrap:wrap"><a href="https://github.com/Solideomyers">GITHUB ↗</a><a href="https://linkedin.com/in/franciscomyers">LINKEDIN ↗</a><a href="https://wa.me/584249080683">WHATSAPP ↗</a><a href="#">{{ c.privacy }}</a></span><span>© 2026 · {{ c.langName }}</span></footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;es&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;'en'|'es'&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;},&quot;bp&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desktop&quot;,&quot;tablet&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;desktop&quot;,&quot;tsType&quot;:&quot;'desktop'|'tablet'|'mobile'&quot;}}">
+const COPY = {
+  en: {
+    startCaps: 'START A PROJECT', start: 'Start a project', menu: 'MENU', sheet: 'SHEET 05 — PRICING', from: 'FROM', common: 'MOST CHOSEN', choose: 'Start with this',
+    h1: 'Clear starting prices. A fixed quote after the spec.', lead: 'Every project starts with a one-page spec. Once it is signed, the price is fixed. Prices in USD.',
+    ngo: 'I work with churches and nonprofits; ask me about it. Payment: 50% to start, 50% on delivery, by bank transfer, Zelle or crypto.',
+    compareH: 'COMPARE', swipe: 'SWIPE', faqH: 'Before you ask.', faqP: 'Anything else goes in the brief. I reply within 2 business days.',
+    ctaH: 'Not sure which one fits?', ctaP: 'Describe the problem and I will suggest a package.', privacy: 'PRIVACY', langName: 'ENGLISH',
+    pk: [
+      ['SaaS MVP', 'For founders and teams with a validated idea that needs a real product.', '$4,500', 'PER PROJECT', ['One-page spec and data model', 'Web app, API and database', 'Auth, roles and admin panel', 'Weekly builds on a live link', 'Deploy, docs and 30 days of fixes'], '4–6 WEEKS'],
+      ['Automation', 'For teams on Google Workspace drowning in spreadsheets and manual steps.', '$900', 'PER PROJECT', ['Process review and spec', 'Apps Script on your Workspace', 'Reports, alerts and approvals', 'No server costs', 'Handover and 30 days of fixes'], '1–2 WEEKS'],
+      ['Fullstack contract', 'For teams that need a senior pair of hands on an existing product.', '$2,800', 'PER MONTH', ['~20 hours a week', 'Joins your repo, board and standups', 'Code review and tests', 'Weekly written report', 'Cancel with 30 days notice'], 'MONTHLY']
+    ],
+    rows: [['TIMELINE', ['4–6 weeks', '1–2 weeks', 'Ongoing']], ['SPEC', ['Included', 'Included', 'Per task']], ['WEEKLY BUILDS', ['Yes', 'Yes', 'Weekly report']], ['CODE OWNERSHIP', ['Yours from day one', 'Yours, on your Workspace', 'Your repo']], ['FIXES AFTER LAUNCH', ['30 days', '30 days', 'Covered while active']], ['MAINTENANCE PLAN', ['From $150/month', 'From $150/month', '—']], ['PAYMENT', ['50% / 50%', '50% / 50%', 'Monthly, in advance']]],
+    faq: [['Q-01', 'How long does an MVP take?', '4 to 6 weeks from the signed spec. You get a working build to click through every week, so there are no surprises at the end.'], ['Q-02', 'Who owns the code?', 'You do. The repository lives in your account from day one, and at handover you get every access, the documentation and a short walkthrough video.'], ['Q-03', 'What does it cost to run each month?', 'For small projects, hosting and services usually run $0–25 a month. Automations on Google Workspace add nothing if you already pay for it. The proposal lists every recurring cost.'], ['Q-04', 'How do payments work?', '50% to start and 50% on delivery. I accept bank transfer, Zelle and crypto. All prices are in USD.'], ['Q-05', 'What if the scope changes?', 'It happens. Small adjustments fit within the project. Anything new gets a short written estimate before I build it, so you approve the cost first.'], ['Q-06', "What's included after launch?", '30 days of bug fixes at no cost. After that, an optional maintenance plan from $150 a month covers updates, monitoring and small changes.']]
+  },
+  es: {
+    startCaps: 'INICIAR PROYECTO', start: 'Iniciar un proyecto', menu: 'MENÚ', sheet: 'LÁMINA 05 — PRECIOS', from: 'DESDE', common: 'MÁS ELEGIDO', choose: 'Empezar con este',
+    h1: 'Precios de partida claros. Cotización fija tras la especificación.', lead: 'Todo proyecto empieza con una especificación de una página. Una vez firmada, el precio queda fijo. Precios en USD.',
+    ngo: 'Trabajo con iglesias y ONG; pregúntame. Pago: 50% al iniciar y 50% en la entrega, por transferencia, Zelle o cripto.',
+    compareH: 'COMPARAR', swipe: 'DESLIZA', faqH: 'Antes de que preguntes.', faqP: 'Lo demás va en el resumen. Respondo en 2 días hábiles.',
+    ctaH: '¿No sabes cuál te sirve?', ctaP: 'Describe el problema y te sugiero un paquete.', privacy: 'PRIVACIDAD', langName: 'ESPAÑOL',
+    pk: [
+      ['SaaS MVP', 'Para fundadores y equipos con una idea validada que necesita un producto real.', '$4,500', 'POR PROYECTO', ['Especificación de una página y modelo de datos', 'App web, API y base de datos', 'Autenticación, roles y panel', 'Versiones semanales en un enlace en vivo', 'Despliegue, documentación y 30 días de correcciones'], '4–6 SEMANAS'],
+      ['Automatización', 'Para equipos en Google Workspace ahogados en hojas de cálculo y pasos manuales.', '$900', 'POR PROYECTO', ['Revisión del proceso y especificación', 'Apps Script en tu Workspace', 'Reportes, alertas y aprobaciones', 'Sin costos de servidor', 'Entrega y 30 días de correcciones'], '1–2 SEMANAS'],
+      ['Fullstack por contrato', 'Para equipos que necesitan manos senior en un producto existente.', '$2,800', 'AL MES', ['~20 horas por semana', 'Me sumo a tu repo, tablero y reuniones', 'Revisión de código y tests', 'Reporte semanal por escrito', 'Cancelas con 30 días de aviso'], 'MENSUAL']
+    ],
+    rows: [['PLAZO', ['4–6 semanas', '1–2 semanas', 'Continuo']], ['ESPECIFICACIÓN', ['Incluida', 'Incluida', 'Por tarea']], ['VERSIONES SEMANALES', ['Sí', 'Sí', 'Reporte semanal']], ['PROPIEDAD DEL CÓDIGO', ['Tuyo desde el día uno', 'Tuyo, en tu Workspace', 'Tu repo']], ['CORRECCIONES', ['30 días', '30 días', 'Mientras esté activo']], ['MANTENIMIENTO', ['Desde $150/mes', 'Desde $150/mes', '—']], ['PAGO', ['50% / 50%', '50% / 50%', 'Mensual, por adelantado']]],
+    faq: [['Q-01', '¿Cuánto tarda un MVP?', 'Entre 4 y 6 semanas desde la especificación firmada. Cada semana recibes una versión navegable, así que no hay sorpresas al final.'], ['Q-02', '¿De quién es el código?', 'Tuyo. El repositorio vive en tu cuenta desde el primer día y en la entrega recibes todos los accesos, la documentación y un video corto de recorrido.'], ['Q-03', '¿Cuánto cuesta mantenerlo cada mes?', 'En proyectos pequeños, el hosting y los servicios suelen costar entre $0 y $25 al mes. Las automatizaciones en Google Workspace no suman nada si ya lo pagas. La propuesta detalla cada costo recurrente.'], ['Q-04', '¿Cómo se paga?', '50% al iniciar y 50% en la entrega. Acepto transferencia, Zelle y cripto. Todos los precios están en USD.'], ['Q-05', '¿Y si cambia el alcance?', 'Pasa. Los ajustes pequeños entran en el proyecto. Lo nuevo recibe un presupuesto corto por escrito antes de construirlo, para que apruebes el costo primero.'], ['Q-06', '¿Qué incluye después del lanzamiento?', '30 días de corrección de errores sin costo. Después, un plan de mantenimiento opcional desde $150 al mes cubre actualizaciones, monitoreo y cambios pequeños.']]
+  }
+};
+class Component extends DCLogic {
+  state = { open: { 0: true } };
+  renderVals() {
+    const lang = this.props.lang === 'es' ? 'es' : 'en', es = lang === 'es', c = COPY[lang];
+    const theme = this.props.theme === 'dark' ? 'dark' : 'light';
+    const bp = this.props.bp || 'desktop', isDesk = bp === 'desktop';
+    const on = { bg: 'var(--invert-bg)', fg: 'var(--invert-fg)' }, off = { bg: 'transparent', fg: 'var(--text)' };
+    const navL = es ? ['SERVICIOS', 'PROYECTOS', 'SOBRE MÍ', 'PRECIOS', 'CONTACTO'] : ['SERVICES', 'WORK', 'ABOUT', 'PRICING', 'CONTACT'];
+    return {
+      c, theme, isLight: theme === 'light', isDark: theme === 'dark', isDesk, notDesk: !isDesk, notMobile: bp !== 'mobile', isMobile: bp === 'mobile',
+      enBg: es ? off.bg : on.bg, enFg: es ? off.fg : on.fg, esBg: es ? on.bg : off.bg, esFg: es ? on.fg : off.fg,
+      nav: navL.map((label, i) => ({ id: '0' + (i + 1), label, cur: i === 3 ? 'page' : 'false', c: i === 3 ? 'var(--accent)' : 'var(--text)', bd: i === 3 ? '2px solid var(--accent)' : '2px solid transparent' })),
+      packages: c.pk.map(([name, f, price, unit, inc, time], i) => {
+        const feat = i === 0;
+        return { id: 'P-0' + (i + 1), name, for: f, price, unit, inc, time, feat, bd: feat ? 'var(--border-frame)' : 'var(--border-ink)', bg: feat ? 'var(--surface)' : 'var(--bg)', btnBg: feat ? 'var(--accent)' : 'transparent', btnFg: feat ? 'var(--accent-fg)' : 'var(--text)' };
+      }),
+      compareHead: c.pk.map(([name], i) => ({ id: 'P-0' + (i + 1), name })),
+      compare: c.rows.map(([k, v]) => ({ k, v })),
+      faq: c.faq.map(([id, q, a], i) => {
+        const open = !!this.state.open[i];
+        return { id, q, a, open, openS: String(open), rot: open ? 'rotate(45deg)' : 'none', toggle: () => this.setState(s => ({ open: { ...s.open, [i]: !s.open[i] } })) };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>
