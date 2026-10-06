@@ -56,6 +56,8 @@ CLAUDE.md · CONTRIBUTING.md · README.md
 ### Merge policy
 
 - Squash only (merge commits and rebase merges disabled in repo settings). Delete branch on merge enabled.
+- Squash commit title = PR title, body = PR body (`squash_merge_commit_title=PR_TITLE`, `squash_merge_commit_message=PR_BODY`); otherwise a single-commit PR lands with its commit message instead of the validated title.
+- **Open decision before the first `release/*`:** squash-merging `develop` → `main` makes the two histories diverge and later releases conflict. Recommended: allow merge commits for PRs into `main` only (branch ruleset `allowed_merge_methods`), squash for `develop`. Decide in the SP that ships the first release.
 - PR title = final commit message, validated by CI.
 - The agent proposes commit messages; it never commits or pushes without explicit confirmation.
 

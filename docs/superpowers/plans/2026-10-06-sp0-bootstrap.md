@@ -120,6 +120,7 @@ Expected: both branches on the remote.
 gh repo edit Solideomyers/portfolio-fmyersdev --default-branch develop \
   --enable-squash-merge --enable-merge-commit=false --enable-rebase-merge=false \
   --delete-branch-on-merge
+gh api -X PATCH repos/Solideomyers/portfolio-fmyersdev -f squash_merge_commit_title=PR_TITLE -f squash_merge_commit_message=PR_BODY
 gh api repos/Solideomyers/portfolio-fmyersdev \
   --jq '{default_branch, allow_squash_merge, allow_merge_commit, allow_rebase_merge, delete_branch_on_merge}'
 ```
