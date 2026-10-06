@@ -1,0 +1,60 @@
+/* fmyers.dev — color tokens. Light is default; dark via [data-theme="dark"] or OS preference. */
+:root {
+  --fm-paper: #F2F3EF;
+  --fm-paper-raised: #F8F9F6;
+  --fm-hatch: #E4E7E1;
+  --fm-rule: #C4C9C1;
+  --fm-graphite: #5B626A;
+  --fm-ink: #15181C;
+  --fm-cobalt: #2B55C8;
+  --fm-on-cobalt: #FFFFFF;
+  --fm-signal: #1F8A4C;
+  --fm-alert: #B3362B;
+
+  color-scheme: light;
+}
+:root, [data-theme] {
+  --bg: var(--fm-paper);
+  --surface: var(--fm-paper-raised);
+  --hatch: var(--fm-hatch);
+  --line: var(--fm-rule);
+  --line-strong: var(--fm-ink);
+  --text: var(--fm-ink);
+  --text-muted: var(--fm-graphite);
+  --accent: var(--fm-cobalt);
+  --accent-fg: var(--fm-on-cobalt);
+  --ok: var(--fm-signal);
+  --danger: var(--fm-alert);
+  --invert-bg: var(--fm-ink);
+  --invert-fg: var(--fm-paper);
+}
+[data-theme="dark"] {
+  --fm-paper: #0E1114;
+  --fm-paper-raised: #151A1F;
+  --fm-hatch: #1E242A;
+  --fm-rule: #353C44;
+  --fm-graphite: #98A0A8;
+  --fm-ink: #E9EBE6;
+  --fm-cobalt: #86A4F2;
+  --fm-on-cobalt: #0E1114;
+  --fm-signal: #4CC47F;
+  --fm-alert: #F08A80;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fm-paper: #0E1114; --fm-paper-raised: #151A1F; --fm-hatch: #1E242A; --fm-rule: #353C44;
+    --fm-graphite: #98A0A8; --fm-ink: #E9EBE6; --fm-cobalt: #86A4F2; --fm-on-cobalt: #0E1114;
+    --fm-signal: #4CC47F; --fm-alert: #F08A80; color-scheme: dark;
+  }
+}
+[data-theme="light"] {
+  --fm-paper: #F2F3EF; --fm-paper-raised: #F8F9F6; --fm-hatch: #E4E7E1; --fm-rule: #C4C9C1;
+  --fm-graphite: #5B626A; --fm-ink: #15181C; --fm-cobalt: #2B55C8; --fm-on-cobalt: #FFFFFF;
+  --fm-signal: #1F8A4C; --fm-alert: #B3362B; color-scheme: light;
+}
+[data-theme="dark"] {
+  --fm-paper: #0E1114; --fm-paper-raised: #151A1F; --fm-hatch: #1E242A; --fm-rule: #353C44;
+  --fm-graphite: #98A0A8; --fm-ink: #E9EBE6; --fm-cobalt: #86A4F2; --fm-on-cobalt: #0E1114;
+  --fm-signal: #4CC47F; --fm-alert: #F08A80; color-scheme: dark;
+}

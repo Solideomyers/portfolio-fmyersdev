@@ -1,0 +1,9 @@
+dist
+.astro
+docs/handoff
+src/styles/tokens
+src/styles/motion.css
+package-lock.json
+.worktrees
+test-results
+playwright-report

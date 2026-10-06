@@ -1,0 +1,19 @@
+
+# type(scope): subject            ← imperative, lowercase, no period, ≤ 72 chars
+#
+# Why this change (not what — the diff shows that). Wrap at 72.
+#
+# Refs: SP<N>
+# BREAKING CHANGE: <what breaks and how to migrate>
+#
+# Types:  feat · fix · refactor · test  (scope REQUIRED)
+#         docs · chore · ci · build · style · perf · revert  (scope optional)
+# Scopes: ui · layout · i18n · content · pages · contact · motion · blog
+#         config · ci · deps · docs   (source: scripts/scopes.cjs)
+#
+# Valid:   feat(ui): add Button component
+#          chore: bump astro
+# Invalid: feat: add button        (feat needs a scope)
+#          feat(header): add nav   (header is not a scope; use layout)
+#
+# Lines starting with # are ignored. An empty message aborts the commit.
