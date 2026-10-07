@@ -1,0 +1,93 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import SheetHeader from './SheetHeader.astro';
+import ProjectCard from './ProjectCard.astro';
+import PostRow from './PostRow.astro';
+import CtaRow from './CtaRow.astro';
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { caseUrl, listCases, pad2 } from '../lib/work';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang].work;
+const cases = listCases(await getCollection('work'), lang);
+const other = (await getCollection('otherWork')).sort((a, b) => a.data.id.localeCompare(b.data.id));
+---
+
+<Base lang={lang} title={ui[lang].h1.work}>
+  <div class="page">
+    <section class="header">
+      <SheetHeader>
+        {t.sheet}
+        <span slot="meta">
+          {pad2(cases.length)} {t.cases} · {pad2(other.length)} {t.repos}
+        </span>
+      </SheetHeader>
+      <h1 class="h1-page">{ui[lang].h1.work}</h1>
+      <p class="lead">{t.lead}</p>
+    </section>
+
+    <section class="cases">
+      {cases.map(({ entry }) => (
+        <ProjectCard data={entry.data} href={caseUrl(lang, entry.data.slug)} lang={lang} />
+      ))}
+    </section>
+
+    <section class="other">
+      <SheetHeader>
+        {t.otherH}
+        <span slot="meta">{t.otherNote}</span>
+      </SheetHeader>
+      <div>
+        {other.map(({ data }) => (
+          <PostRow
+            href={data.repo}
+            meta={data.id}
+            title={data.title}
+            dek={data[lang]}
+            foot={data.stack.join(' · ')}
+            action="REPO ↗"
+            external
+          />
+        ))}
+      </div>
+    </section>
+
+    <CtaRow lang={lang} heading={t.ctaH} />
+  </div>
+</Base>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(48px, 7cqi, 80px);
+  }
+  .header,
+  .other {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .header h1 {
+    max-width: 900px;
+    text-wrap: balance;
+  }
+  .lead {
+    margin: 0;
+    font-size: clamp(17px, 1.5cqi, 19px);
+    line-height: 1.45;
+    color: var(--text-muted);
+    max-width: 640px;
+    text-wrap: pretty;
+  }
+  .cases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
+    gap: 24px;
+  }
+</style>
