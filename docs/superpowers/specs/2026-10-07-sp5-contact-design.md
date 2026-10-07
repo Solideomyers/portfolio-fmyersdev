@@ -217,3 +217,9 @@ The `CLAUDE.md` stack line becomes: "Astro (static output; the only on-demand ro
 - Apps Script accepts only known `type`/`budget` values and flattens newlines in `name`.
 - Client: with no Turnstile token (widget blocked or unfinished after 8s), the form falls back to a native post (the no-JS path). `aria-describedby` points at the error text only while the field is invalid. A bfcache restore resets the sending state.
 - A Vercel Firewall rate-limit rule on `/api/contact` is part of the deploy steps.
+
+## Amendment: HTML emails (2026-10-07)
+
+- Both emails (sender copy EN/ES and owner notification) are HTML, designed in Superdesign (project "fmyers.dev — Emails") from `.superdesign/design-system.md` and approved by the owner. Plain text stays as the fallback part.
+- Templates live in `apps-script/Email.gs` (pure functions `renderSender`, `renderOwner`); `Code.gs` passes `htmlBody`. Light only; Archivo/JetBrains Mono with Helvetica/Arial and Courier fallbacks; tables and inline styles only. The corner mark is a 28px cobalt cell inside the frame (email clients drop positioning).
+- Every user value is HTML-escaped. `tests/email.spec.ts` renders both templates in a Node vm and checks copy, escaping and email-safe markup.

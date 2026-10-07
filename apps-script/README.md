@@ -5,7 +5,7 @@ The site's `/api/contact` (Vercel function) validates the form, checks Turnstile
 ## 1. Sheet and script
 
 1. Create a Google Sheet named **fmyers.dev — Briefs** (the script creates the `Briefs` tab and its header).
-2. **Extensions → Apps Script**. Replace the default code with [`Code.gs`](Code.gs). Save.
+2. **Extensions → Apps Script**. Replace the default code with [`Code.gs`](Code.gs). Then **Files → + → Script**, name it `Email`, and paste [`Email.gs`](Email.gs) (the HTML email templates; both files share one scope). Save.
 
 ## 2. Script properties
 
@@ -52,4 +52,4 @@ Submit the form on the preview. Expected: a row in `Briefs`, an email to `NOTIFY
 
 ## Updating the script
 
-Edit `Code.gs` in the repo first, paste it into the editor, then **Deploy → Manage deployments → Edit → New version**. The URL stays the same.
+Edit `Code.gs` / `Email.gs` in the repo first, paste them into the editor, then **Deploy → Manage deployments → Edit → New version**. The URL stays the same.

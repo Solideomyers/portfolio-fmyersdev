@@ -69,6 +69,18 @@ function doPost(e) {
 
     // The row is the source of truth: email failures are logged, never reported as a failed
     // submission (that would make the visitor retry and duplicate the row).
+    // HTML templates live in Email.gs; the plain-text body stays as the fallback part.
+    const brief = {
+      lang,
+      name,
+      email,
+      type,
+      budget,
+      message,
+      noJs,
+      when: Utilities.formatDate(new Date(), 'America/Caracas', 'yyyy-MM-dd · HH:mm') + ' VET',
+      sheetUrl: SpreadsheetApp.getActiveSpreadsheet().getUrl(),
+    };
     try {
       MailApp.sendEmail({
         to: props.getProperty('NOTIFY_TO'),
@@ -83,6 +95,7 @@ function doPost(e) {
           '',
           message,
         ].join('\n'),
+        htmlBody: renderOwner(brief),
       });
     } catch (err) {
       console.error('notify failed', err);
@@ -95,6 +108,7 @@ function doPost(e) {
           name: 'Francisco Myers',
           subject: COPY[lang].subject,
           body: COPY[lang].body + '\n\n— — —\n\n' + message,
+          htmlBody: renderSender(brief),
         });
       } catch (err) {
         console.error('copy failed', err);
