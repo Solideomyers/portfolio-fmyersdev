@@ -1,0 +1,104 @@
+---
+import '../styles/global.css';
+import HeadCommon from '../components/HeadCommon.astro';
+import SiteNav from '../components/SiteNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { LANGS, other, path } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+// Vercel serves one 404.html for every path, so it carries both languages.
+// The head script picks one from the URL prefix before paint; without JS, English shows.
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <HeadCommon title="404 · fmyers.dev" noindex />
+    <script is:inline>
+      (function () {
+        const r = document.documentElement;
+        const es = location.pathname === '/es' || location.pathname.indexOf('/es/') === 0;
+        r.lang = es ? 'es' : 'en';
+        r.dataset.lang = r.lang;
+        document.addEventListener('DOMContentLoaded', function () {
+          document.querySelectorAll('[data-path]').forEach(function (el) {
+            el.textContent = location.pathname;
+          });
+        });
+      })();
+    </script>
+  </head>
+  <body>
+    {LANGS.map((lang) => {
+      const t = ui[lang].notFound;
+      return (
+        <div class={`l-${lang}`}>
+          <SiteNav lang={lang} alternate={path('home', other(lang))} menuId={`site-menu-${lang}`} />
+          <main>
+            <p class="label">
+              {t.sheet} · <span data-path>/{lang}/…</span> · {t.missing}
+            </p>
+            <h1 class="h1-page">{t.h1}</h1>
+            <p class="lead">{t.p}</p>
+            <p class="actions">
+              <a class="btn" href={path('home', lang)}>
+                {t.home}
+              </a>
+              <a class="link" href={path('work', lang)}>
+                {t.links[0]} →
+              </a>
+              <a class="link" href={path('contact', lang)}>
+                {t.links[1]} →
+              </a>
+            </p>
+          </main>
+          <SiteFooter lang={lang} />
+        </div>
+      );
+    })}
+  </body>
+</html>
+
+<style is:global>
+  html[data-lang='es'] .l-en,
+  html:not([data-lang='es']) .l-es {
+    display: none;
+  }
+</style>
+
+<style>
+  .label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--ls-label);
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 var(--space-6);
+  }
+  .lead {
+    font-size: var(--fs-body-l);
+    line-height: 1.45;
+    max-width: var(--prose-max);
+    margin: var(--space-6) 0;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4) var(--space-6);
+    align-items: center;
+  }
+  .btn {
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-size: 17px;
+    font-weight: 600;
+    padding: 16px 24px;
+    text-decoration: none;
+  }
+  .link {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+</style>
