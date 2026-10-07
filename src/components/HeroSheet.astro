@@ -1,0 +1,142 @@
+---
+import Button from './Button.astro';
+import SpecGrid from './SpecGrid.astro';
+import { path, type Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { site } from '../config/site';
+import { availability } from '../lib/home';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const h = ui[lang].home;
+const a = availability(site.availableFrom, new Date(), lang);
+// Static build: if the visitor's clock is already past the month, show the dateless sentence.
+const switchScript = `document.querySelectorAll('.available[data-from]').forEach(function (el) {
+  const p = el.dataset.from.split('-');
+  if (Date.now() >= Date.UTC(+p[0], +p[1] - 1, 1)) el.querySelector('.text').textContent = el.dataset.now;
+});`;
+---
+
+<section class="hero">
+  <div class="ruler" aria-hidden="true">
+    {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+      <div class:list={['zone', { on: n === 1 }]}>{n}</div>
+    ))}
+  </div>
+  <div class="body">
+    <div class="intro">
+      <span class="sheet">{h.sheet00}</span>
+      <h1>{ui[lang].h1.home}</h1>
+      <p class="lead">{h.lead}</p>
+      <div
+        class="available"
+        data-from={a.dated ? site.availableFrom : undefined}
+        data-now={h.availableNow}
+      >
+        <span class="dot" aria-hidden="true"></span>
+        <span class="text">{a.text}</span>
+      </div>
+      {a.dated && <script is:inline set:html={switchScript} />}
+      <div class="actions">
+        <Button href={path('contact', lang)} glyph="→">
+          {ui[lang].work.start}
+        </Button>
+        <Button href={path('work', lang)} variant="secondary">
+          {h.see}
+        </Button>
+      </div>
+    </div>
+    <SpecGrid variant="rows" items={h.facts} />
+  </div>
+  <div class="corner" aria-hidden="true"></div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    border: var(--border-frame);
+  }
+  .ruler {
+    height: 32px;
+    border-bottom: var(--border-rule);
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+  }
+  .zone {
+    border-right: var(--border-rule);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .zone.on {
+    color: var(--accent);
+  }
+  .body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+    gap: 32px 48px;
+    padding: clamp(24px, 4cqi, 48px);
+    align-items: end;
+  }
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .sheet {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    text-wrap: pretty;
+  }
+  h1 {
+    margin: 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(40px, 6.6cqi, 84px);
+    letter-spacing: var(--ls-display);
+    line-height: var(--lh-display);
+    text-wrap: balance;
+  }
+  .lead {
+    margin: 0;
+    font-size: clamp(17px, 1.5cqi, 19px);
+    line-height: 1.45;
+    color: var(--text-muted);
+    max-width: 560px;
+    text-wrap: pretty;
+  }
+  .available {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+  }
+  /* The status dot: the only round element; it never pulses. */
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ok);
+    flex: none;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .corner {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: var(--corner-mark);
+    height: var(--corner-mark);
+    background: var(--accent);
+  }
+</style>

@@ -1,0 +1,104 @@
+---
+import Button from './Button.astro';
+import { path, type Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { site } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const h = ui[lang].home;
+const whatsapp = `https://wa.me/${site.whatsapp.replace(/\D/g, '')}`;
+---
+
+<section class="contact-block">
+  <div class="text">
+    <span class="sheet">{h.sheet04}</span>
+    <h2>{h.contactH}</h2>
+    <p>{h.contactP}</p>
+  </div>
+  <div class="actions">
+    <Button href={path('contact', lang)} glyph="→">
+      {ui[lang].work.start}
+    </Button>
+    <div class="links">
+      <a href={whatsapp} rel="noopener">
+        WHATSAPP ↗
+      </a>
+      <a href={`mailto:${site.email}`}>{site.email.toUpperCase()}</a>
+    </div>
+  </div>
+  <div class="corner" aria-hidden="true"></div>
+</section>
+
+<style>
+  .contact-block {
+    position: relative;
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+    padding: clamp(28px, 5cqi, 64px);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: 32px;
+    align-items: end;
+  }
+  .text,
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .actions {
+    align-items: flex-start;
+  }
+  .sheet {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    opacity: 0.85;
+  }
+  h2 {
+    margin: 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(32px, 4.1cqi, 52px);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+  p {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.5;
+    opacity: 0.85;
+    max-width: 480px;
+    text-wrap: pretty;
+  }
+  .links {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+  .links a {
+    color: var(--invert-fg);
+    text-decoration: underline;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .links a:hover {
+      color: var(--invert-fg);
+      text-decoration: none;
+    }
+  }
+  .corner {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: var(--corner-mark);
+    height: var(--corner-mark);
+    background: var(--accent);
+  }
+</style>

@@ -1,7 +1,11 @@
 ---
+interface Props {
+  variant?: 'case' | 'page';
+}
+const { variant = 'case' } = Astro.props;
 ---
 
-<div class="prose">
+<div class:list={['prose', variant]}>
   <slot />
 </div>
 
@@ -88,5 +92,23 @@
   }
   .prose :global(.metrics) {
     margin-top: 14px;
+  }
+  /* Privacy-style page: smaller numbered h2, each section ruled on top. */
+  .page :global(h2) {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: var(--border-rule);
+    font-size: clamp(21px, 2cqi, 24px);
+    letter-spacing: -0.3px;
+  }
+  .page :global(p) {
+    margin-top: 8px;
+    line-height: 1.65;
+  }
+  .page :global(p:first-child) {
+    margin-top: 0;
+    font-size: clamp(17px, 1.5cqi, 19px);
+    line-height: 1.5;
+    color: var(--text-muted);
   }
 </style>

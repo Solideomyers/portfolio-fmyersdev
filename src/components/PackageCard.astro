@@ -7,38 +7,59 @@ import { formatUsd, unitLabel } from '../lib/offer';
 interface Props {
   pkg: CollectionEntry<'pricing'>['data'];
   lang: Lang;
+  variant?: 'full' | 'compact';
 }
-const { pkg, lang } = Astro.props;
+const { pkg, lang, variant = 'full' } = Astro.props;
 const o = ui[lang].offer;
 ---
 
-<article class:list={['package-card', { featured: pkg.featured }]}>
-  <div class="head">
-    <span class="id">{pkg.id}</span>
-    {pkg.featured && <span class="badge-common">{o.common}</span>}
-  </div>
-  <div class="body">
-    <div class="intro">
-      <h2 class="name">{pkg.name}</h2>
-      <p class="for">{pkg.for}</p>
+{variant === 'full' ? (
+  <article class:list={['package-card', { featured: pkg.featured }]}>
+    <div class="head">
+      <span class="id">{pkg.id}</span>
+      {pkg.featured && <span class="badge-common">{o.common}</span>}
     </div>
-    <div class="price">
+    <div class="body">
+      <div class="intro">
+        <h2 class="name">{pkg.name}</h2>
+        <p class="for">{pkg.for}</p>
+      </div>
+      <div class="price">
+        <span class="mono">{o.from}</span>
+        <span class="amount">{formatUsd(pkg.from)}</span>
+        <span class="mono">{unitLabel(pkg.billing, lang)}</span>
+      </div>
+      <ul class="includes">
+        {pkg.includes.map((i) => (
+          <li>{i}</li>
+        ))}
+      </ul>
+      <div class="timeline">{pkg.timeline}</div>
+      <a class="choose" href={path('contact', lang)} data-press>
+        {ui[lang].pricing.choose} →
+      </a>
+    </div>
+    {pkg.featured && <div class="corner" aria-hidden="true" />}
+  </article>
+) : (
+  <div class:list={['package-card', 'compact', { featured: pkg.featured }]}>
+    <div class="c-head">
+      <span class="id">{pkg.id}</span>
+      {pkg.featured && <span class="badge-common">{o.common}</span>}
+    </div>
+    <h3 class="c-name">{pkg.name}</h3>
+    <div class="c-price">
       <span class="mono">{o.from}</span>
-      <span class="amount">{formatUsd(pkg.from)}</span>
+      <span class="c-amount">{formatUsd(pkg.from)}</span>
       <span class="mono">{unitLabel(pkg.billing, lang)}</span>
     </div>
-    <ul class="includes">
-      {pkg.includes.map((i) => (
+    <ul class="c-teaser">
+      {pkg.teaser.map((i) => (
         <li>{i}</li>
       ))}
     </ul>
-    <div class="timeline">{pkg.timeline}</div>
-    <a class="choose" href={path('contact', lang)} data-press>
-      {ui[lang].pricing.choose} →
-    </a>
   </div>
-  {pkg.featured && <div class="corner" aria-hidden="true" />}
-</article>
+)}
 
 <style>
   .package-card {
@@ -180,5 +201,62 @@ const o = ui[lang].offer;
       color: var(--accent-fg);
       background: var(--accent);
     }
+  }
+  .compact {
+    border: 0;
+    background: var(--bg);
+    padding: 24px;
+    gap: 14px;
+  }
+  .compact.featured {
+    border: 0;
+    background: var(--surface);
+  }
+  .c-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .c-name {
+    margin: 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.1;
+  }
+  .c-price {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-bottom: 1px dashed var(--text-muted);
+    padding-bottom: 8px;
+  }
+  .c-amount {
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: -0.5px;
+  }
+  .c-teaser {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .c-teaser li {
+    display: flex;
+    gap: 10px;
+    font-size: 15px;
+    text-wrap: pretty;
+  }
+  .c-teaser li::before {
+    content: '—';
+    font-family: var(--font-mono);
+    color: var(--text-muted);
   }
 </style>
