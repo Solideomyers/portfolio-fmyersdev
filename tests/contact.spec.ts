@@ -124,3 +124,14 @@ for (const s of [
     await expect(page.locator('.sent .corner')).toHaveCount(1);
   });
 }
+
+test('selected chip is inverted (ink background)', async ({ page }) => {
+  await page.route('**/challenges.cloudflare.com/**', (r) => r.abort());
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.goto('/en/contact');
+  const chip = page.locator('label.chip', { hasText: 'SaaS MVP' });
+  await chip.click();
+  await page.mouse.move(0, 0);
+  await expect(chip).toHaveCSS('background-color', 'rgb(21, 24, 28)');
+  await expect(chip).toHaveCSS('color', 'rgb(242, 243, 239)');
+});
