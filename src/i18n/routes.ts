@@ -1,7 +1,7 @@
 export type Lang = 'en' | 'es';
 export const LANGS: readonly Lang[] = ['en', 'es'];
 
-// The only place URLs are written. Grows per sub-project (contact/sent in SP4, notes in SP6).
+// The only place URLs are written. Grows per sub-project (contact/sent in SP5, notes in SP7).
 export const ROUTES = {
   home: { en: '/en', es: '/es' },
   services: { en: '/en/services', es: '/es/servicios' },

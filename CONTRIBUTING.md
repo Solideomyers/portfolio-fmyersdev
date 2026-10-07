@@ -74,7 +74,7 @@ Hooks are the fast layer. CI repeats lint, typecheck, build, tests, secrets scan
 | Message          | `v0.N.0 — <squash commit subject>`, tagger `github-actions[bot]`                        |
 | Re-runs          | A commit that already has a `v0.*` tag is skipped (idempotent)                          |
 | `main`           | No new tags. A release PR promotes an existing `develop` tag and names it in its title. |
-| `v1.0.0`         | Reserved for the public launch (SP7)                                                    |
+| `v1.0.0`         | Reserved for the public launch (SP8)                                                    |
 | Missed tag       | Never backfilled. The sequence continues forward.                                       |
 
 ## Design rules
