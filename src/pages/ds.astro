@@ -12,17 +12,26 @@ import Metrics from '../components/Metrics.astro';
 import CtaRow from '../components/CtaRow.astro';
 import PostRow from '../components/PostRow.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import PackageCard from '../components/PackageCard.astro';
+import Faq from '../components/Faq.astro';
+import CompareTable from '../components/CompareTable.astro';
+import ProcessRows from '../components/ProcessRows.astro';
 import { caseUrl } from '../lib/work';
+import { byOrder, faqFor } from '../lib/offer';
 
 const work = await getCollection('work', (e) => e.data.lang === 'en');
 const chapel = work.find((e) => e.data.id === 'FM-02')!.data;
 const church = work.find((e) => e.data.id === 'FM-01')!.data;
 const other = (await getCollection('otherWork'))[0].data;
+const packages = byOrder(await getCollection('pricing', (e) => e.data.lang === 'en')).map(
+  (e) => e.data,
+);
+const faqItems = faqFor(await getCollection('faq'), 'pricing', 'en').map((e) => e.data);
 ---
 
 <Base lang="en" title="Design system specimens" noindex>
   <div class="ds">
-    <h1 class="h1-page">Specimens · SP2</h1>
+    <h1 class="h1-page">Specimens · SP2–SP3</h1>
     <section id="status">
       <SheetHeader>C06 — STATUS</SheetHeader>
       <div class="row">
@@ -96,6 +105,31 @@ const other = (await getCollection('otherWork'))[0].data;
       </div>
       <ProjectCard data={chapel} href={caseUrl('en', chapel.slug)} lang="en" variant="next" />
     </section>
+    <section id="button-secondary">
+      <SheetHeader>C01 — BUTTON SECONDARY</SheetHeader>
+      <div class="row">
+        <Button href="/en/pricing" variant="secondary">
+          See pricing
+        </Button>
+      </div>
+    </section>
+    <section id="package-card">
+      <SheetHeader>C09 — PACKAGE CARD</SheetHeader>
+      <div class="three">
+        {packages.map((p) => (
+          <PackageCard pkg={p} lang="en" />
+        ))}
+      </div>
+    </section>
+    <section id="process">
+      <ProcessRows lang="en" />
+    </section>
+    <section id="compare">
+      <CompareTable packages={packages} lang="en" />
+    </section>
+    <section id="faq">
+      <Faq items={faqItems} lang="en" heading="Before you ask." />
+    </section>
     <section id="cta-row">
       <CtaRow lang="en" heading="Want yours on this sheet?" />
     </section>
@@ -118,6 +152,11 @@ const other = (await getCollection('otherWork'))[0].data;
     gap: 12px;
     flex-wrap: wrap;
     align-items: center;
+  }
+  .three {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 24px;
   }
   .two {
     display: grid;

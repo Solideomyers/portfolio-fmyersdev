@@ -1,7 +1,7 @@
 ---
 interface Props {
   href: string;
-  variant?: 'primary' | 'link';
+  variant?: 'primary' | 'secondary' | 'link';
   glyph?: '→' | '↗' | '←';
   glyphFirst?: boolean;
 }
@@ -9,7 +9,12 @@ const { href, variant = 'primary', glyph, glyphFirst = false } = Astro.props;
 const external = glyph === '↗';
 ---
 
-<a class:list={['btn', variant]} href={href} data-press rel={external ? 'noopener' : undefined}>
+<a
+  class:list={['btn', variant, { 'btn-secondary': variant === 'secondary' }]}
+  href={href}
+  data-press
+  rel={external ? 'noopener' : undefined}
+>
   {glyph && glyphFirst && <span class="glyph">{glyph}</span>}
   <slot />
   {glyph && !glyphFirst && <span class="glyph">{glyph}</span>}
@@ -31,6 +36,13 @@ const external = glyph === '↗';
     color: var(--accent-fg);
     padding: 16px 24px;
   }
+  .secondary {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    border: var(--border-ink);
+    padding: 15px 24px;
+  }
   .link {
     gap: 1ch; /* a word space in JetBrains Mono */
     font-family: var(--font-mono);
@@ -41,6 +53,11 @@ const external = glyph === '↗';
   @media (hover: hover) and (pointer: fine) {
     .primary:hover {
       color: var(--accent-fg);
+      text-decoration: none;
+    }
+    /* background hatch comes from .btn-secondary:hover in motion.css */
+    .secondary:hover {
+      color: var(--text);
       text-decoration: none;
     }
   }

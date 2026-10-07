@@ -1,0 +1,220 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Tag from './Tag.astro';
+import { path, type Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { priceShort } from '../lib/offer';
+
+interface Props {
+  pkg: CollectionEntry<'pricing'>['data'];
+  lang: Lang;
+}
+const { pkg, lang } = Astro.props;
+const o = ui[lang].offer;
+const s = ui[lang].services;
+---
+
+<section class:list={['service-sheet', { featured: pkg.featured }]}>
+  <div class="left">
+    <div class="head">
+      <span class="id">{pkg.id}</span>
+      {pkg.featured && <span class="badge-common">{o.common}</span>}
+    </div>
+    <h2>{pkg.name}</h2>
+    <p class="for">{pkg.service.for}</p>
+    <div class="facts">
+      <div class="fact">
+        <span class="k">{o.from}</span>
+        <span class="price">{priceShort(pkg, lang)}</span>
+      </div>
+      <div class="fact">
+        <span class="k">{s.timing}</span>
+        <span class="time">{pkg.timeline}</span>
+      </div>
+    </div>
+    <a class="see" href={path('pricing', lang)}>
+      {s.seePrice} →
+    </a>
+  </div>
+  <div class="right">
+    <div class="lists">
+      <div class="list">
+        <span class="k">{s.scope}</span>
+        <ul class="dash">
+          {pkg.service.scope.map((i) => (
+            <li>{i}</li>
+          ))}
+        </ul>
+      </div>
+      <div class="list">
+        <span class="k">{s.deliver}</span>
+        <ul class="check">
+          {pkg.service.deliver.map((i) => (
+            <li>{i}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    <div class="stack">
+      {pkg.service.stack.map((t) => (
+        <Tag>{t}</Tag>
+      ))}
+    </div>
+    <div class="proof">{pkg.service.proof}</div>
+  </div>
+  {pkg.featured && <div class="corner" aria-hidden="true" />}
+</section>
+
+<style>
+  .service-sheet {
+    position: relative;
+    border: var(--border-ink);
+    background: var(--surface);
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .featured {
+    border: var(--border-frame);
+  }
+  .left,
+  .right {
+    padding: clamp(20px, 3cqi, 32px);
+    display: flex;
+    flex-direction: column;
+  }
+  .left {
+    flex: 1 1 300px;
+    gap: 14px;
+    border-right: var(--border-rule);
+  }
+  .right {
+    flex: 2 1 420px;
+    min-width: 0;
+    gap: 20px;
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .id {
+    color: var(--accent);
+  }
+  .badge-common {
+    font-size: 11px;
+    letter-spacing: 1px;
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+    padding: 3px 6px;
+  }
+  h2 {
+    margin: 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(28px, 3cqi, 38px);
+    letter-spacing: -0.5px;
+    line-height: 1.05;
+  }
+  .for {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: var(--border-rule);
+    background: var(--bg);
+  }
+  .fact {
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .fact + .fact {
+    border-left: var(--border-rule);
+  }
+  .k {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  .price {
+    font-weight: 700;
+    font-size: 20px;
+  }
+  .time {
+    font-size: 15px;
+  }
+  .see {
+    margin-top: auto;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--accent);
+  }
+  .lists {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 20px 32px;
+  }
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  li {
+    position: relative;
+    padding-left: 24px;
+    font-size: 15px;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+  li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--font-mono);
+  }
+  .dash li::before {
+    content: '—';
+    color: var(--text-muted);
+  }
+  .check li::before {
+    content: '✓';
+    color: var(--ok);
+  }
+  .stack {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-top: 16px;
+    border-top: var(--border-rule);
+  }
+  .proof {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+  .corner {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 20px;
+    height: 20px;
+    background: var(--accent);
+  }
+</style>

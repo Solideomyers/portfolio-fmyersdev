@@ -6,15 +6,27 @@ import { ui } from '../i18n/ui';
 interface Props {
   lang: Lang;
   heading: string;
+  sub?: string;
+  secondary?: { href: string; label: string };
 }
-const { lang, heading } = Astro.props;
+const { lang, heading, sub, secondary } = Astro.props;
 ---
 
 <section class="cta-row">
-  <div class="h">{heading}</div>
-  <Button href={path('contact', lang)} glyph="→">
-    {ui[lang].work.start}
-  </Button>
+  <div class="text">
+    <div class="h">{heading}</div>
+    {sub && <div class="sub">{sub}</div>}
+  </div>
+  <div class="actions">
+    {secondary && (
+      <Button href={secondary.href} variant="secondary">
+        {secondary.label}
+      </Button>
+    )}
+    <Button href={path('contact', lang)} glyph="→">
+      {ui[lang].work.start}
+    </Button>
+  </div>
 </section>
 
 <style>
@@ -27,11 +39,25 @@ const { lang, heading } = Astro.props;
     gap: 20px;
     flex-wrap: wrap;
   }
+  .text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
   .h {
     font-stretch: var(--stretch-display);
     font-weight: 700;
     font-size: clamp(26px, 2.7cqi, 34px);
     letter-spacing: -0.5px;
     text-wrap: balance;
+  }
+  .sub {
+    font-size: 15px;
+    color: var(--text-muted);
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
   }
 </style>
