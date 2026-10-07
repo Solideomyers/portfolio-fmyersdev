@@ -118,6 +118,36 @@ interface Ui {
     stack: { k: string; v: string }[];
   };
   privacyPage: { sheet: string; updated: string; email: string };
+  contact: {
+    sheet: string;
+    meta: string;
+    sentMeta: string;
+    lead: string;
+    fName: string;
+    phName: string;
+    fEmail: string;
+    phEmail: string;
+    errEmail: string;
+    errMsg: string;
+    fType: string;
+    fBudget: string;
+    fMsg: string;
+    phMsg: string;
+    privacyNote: string;
+    privacyLink: string;
+    send: string;
+    sending: string;
+    netErr: string;
+    turnstile: string;
+    received: string;
+    sentP: string;
+    home: string;
+    whileWait: string;
+    types: Record<'saas' | 'automation' | 'contract' | 'other', string>;
+    budgets: Record<'lt1k' | '1-5k' | '5-10k' | '10k+' | 'unsure', string>;
+    channels: { k: string; v: string; g: string }[];
+    spec: { k: string; v: string }[];
+  };
 }
 
 // Copy is verbatim from docs/handoff/design/*.dc.html COPY objects.
@@ -145,6 +175,7 @@ export const ui: Record<Lang, Ui> = {
       about: 'Francisco Myers',
       pricing: 'Clear starting prices. A fixed quote after the spec.',
       contact: "Tell me what you're building.",
+      contactSent: "Thanks. I'll reply within 2 business days.",
       privacy: 'Privacy',
     },
     notFound: {
@@ -358,6 +389,51 @@ export const ui: Record<Lang, Ui> = {
       ],
     },
     privacyPage: { sheet: 'SHEET 08 — PRIVACY', updated: 'UPDATED', email: 'HOLA@FMYERS.DEV' },
+    contact: {
+      sheet: 'SHEET 06 — CONTACT',
+      meta: 'REPLY IN 2 BUSINESS DAYS',
+      sentMeta: '06b',
+      lead: 'A few lines are enough. I reply within 2 business days with questions or a first estimate.',
+      fName: 'NAME',
+      phName: 'Your name',
+      fEmail: 'EMAIL',
+      phEmail: 'you@company.com',
+      errEmail: 'Write the full address, e.g. you@company.com',
+      errMsg: 'Write a few lines about the project.',
+      fType: 'PROJECT TYPE',
+      fBudget: 'BUDGET · OPTIONAL',
+      fMsg: 'MESSAGE',
+      phMsg: 'What problem should it solve? Who uses it?',
+      privacyNote: 'I only use this to reply to you.',
+      privacyLink: 'Privacy',
+      send: 'Send brief →',
+      sending: 'Sending…',
+      netErr: "The message didn't go through. Try again, or write to hola@fmyers.dev.",
+      turnstile: 'Spam check',
+      received: 'BRIEF RECEIVED',
+      sentP:
+        'A copy of your message is on its way to your inbox. If it is urgent, WhatsApp is the fastest way to reach me.',
+      home: 'Back home',
+      whileWait: 'SEE SELECTED WORK',
+      types: { saas: 'SaaS MVP', automation: 'Automation', contract: 'Contract', other: 'Other' },
+      budgets: {
+        lt1k: '< $1k',
+        '1-5k': '$1–5k',
+        '5-10k': '$5–10k',
+        '10k+': '$10k+',
+        unsure: 'Not sure yet',
+      },
+      channels: [
+        { k: 'WHATSAPP', v: '+58 424 908 0683', g: '↗' },
+        { k: 'EMAIL', v: 'hola@fmyers.dev', g: '→' },
+        { k: 'LINKEDIN', v: 'in/franciscomyers', g: '↗' },
+      ],
+      spec: [
+        { k: 'REPLY BY', v: '2 business days' },
+        { k: 'TIME ZONE', v: 'VET · UTC−4' },
+        { k: 'FROM', v: 'hola@fmyers.dev' },
+      ],
+    },
   },
   es: {
     nav: {
@@ -382,6 +458,7 @@ export const ui: Record<Lang, Ui> = {
       about: 'Francisco Myers',
       pricing: 'Precios de partida claros. Cotización fija tras la especificación.',
       contact: 'Cuéntame qué estás construyendo.',
+      contactSent: 'Gracias. Te respondo en 2 días hábiles.',
       privacy: 'Privacidad',
     },
     notFound: {
@@ -599,6 +676,56 @@ export const ui: Record<Lang, Ui> = {
       sheet: 'LÁMINA 08 — PRIVACIDAD',
       updated: 'ACTUALIZADO',
       email: 'HOLA@FMYERS.DEV',
+    },
+    contact: {
+      sheet: 'LÁMINA 06 — CONTACTO',
+      meta: 'RESPUESTA EN 2 DÍAS HÁBILES',
+      sentMeta: '06b',
+      lead: 'Unas líneas bastan. Respondo en 2 días hábiles con preguntas o una primera estimación.',
+      fName: 'NOMBRE',
+      phName: 'Tu nombre',
+      fEmail: 'CORREO',
+      phEmail: 'tu@empresa.com',
+      errEmail: 'Escribe la dirección completa, p. ej. tu@empresa.com',
+      errMsg: 'Escribe unas líneas sobre el proyecto.',
+      fType: 'TIPO DE PROYECTO',
+      fBudget: 'PRESUPUESTO · OPCIONAL',
+      fMsg: 'MENSAJE',
+      phMsg: '¿Qué problema debe resolver? ¿Quién lo usa?',
+      privacyNote: 'Solo lo uso para responderte.',
+      privacyLink: 'Privacidad',
+      send: 'Enviar resumen →',
+      sending: 'Enviando…',
+      netErr: 'El mensaje no se envió. Inténtalo de nuevo o escribe a hola@fmyers.dev.',
+      turnstile: 'Verificación antispam',
+      received: 'RESUMEN RECIBIDO',
+      sentP:
+        'Te llega una copia de tu mensaje al correo. Si es urgente, WhatsApp es la vía más rápida.',
+      home: 'Volver al inicio',
+      whileWait: 'VER PROYECTOS',
+      types: {
+        saas: 'SaaS MVP',
+        automation: 'Automatización',
+        contract: 'Contrato',
+        other: 'Otro',
+      },
+      budgets: {
+        lt1k: '< $1k',
+        '1-5k': '$1–5k',
+        '5-10k': '$5–10k',
+        '10k+': '$10k+',
+        unsure: 'No lo sé aún',
+      },
+      channels: [
+        { k: 'WHATSAPP', v: '+58 424 908 0683', g: '↗' },
+        { k: 'CORREO', v: 'hola@fmyers.dev', g: '→' },
+        { k: 'LINKEDIN', v: 'in/franciscomyers', g: '↗' },
+      ],
+      spec: [
+        { k: 'RESPUESTA', v: '2 días hábiles' },
+        { k: 'ZONA HORARIA', v: 'VET · UTC−4' },
+        { k: 'DESDE', v: 'hola@fmyers.dev' },
+      ],
     },
   },
 };

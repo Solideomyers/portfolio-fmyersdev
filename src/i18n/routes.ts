@@ -9,6 +9,7 @@ export const ROUTES = {
   about: { en: '/en/about', es: '/es/sobre-mi' },
   pricing: { en: '/en/pricing', es: '/es/precios' },
   contact: { en: '/en/contact', es: '/es/contacto' },
+  contactSent: { en: '/en/contact/sent', es: '/es/contacto/enviado' },
   privacy: { en: '/en/privacy', es: '/es/privacidad' },
 } as const satisfies Record<string, Record<Lang, string>>;
 
