@@ -12,8 +12,9 @@ interface Props {
   description?: string;
   /** This page in the other language; null = not translated. Omit for pages in the route map. */
   alternate?: string | null;
+  noindex?: boolean;
 }
-const { lang, title, description, alternate } = Astro.props;
+const { lang, title, description, alternate, noindex } = Astro.props;
 const pathname = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const currentKey = routeKeyOf(pathname);
 const alt = alternateOf(pathname, alternate);
@@ -27,7 +28,7 @@ const fullTitle = currentKey === 'home' ? `fmyers.dev — ${title}` : `${title} 
 <!doctype html>
 <html lang={lang}>
   <head>
-    <HeadCommon title={fullTitle} description={description} />
+    <HeadCommon title={fullTitle} description={description} noindex={noindex} />
     <link rel="canonical" href={site.url + pathname} />
     {hasTwin && (
       <>

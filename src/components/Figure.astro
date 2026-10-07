@@ -1,0 +1,105 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  shot?: { src: string; alt: string; caption?: string };
+  n?: number;
+  lang: Lang;
+  frame?: boolean;
+  placeholder?: string;
+  eager?: boolean;
+  sizes?: string;
+}
+const {
+  shot,
+  n,
+  lang,
+  frame = true,
+  placeholder = '1600×1000',
+  eager = false,
+  sizes = '(min-width: 1280px) 1184px, 100vw',
+} = Astro.props;
+
+// Content paths like /work/fm-02/chapel.png live in src/assets/work/...; missing files render the hatch.
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/work/**/*.{png,jpg,jpeg,webp}',
+);
+const loader = shot ? images[`/src/assets${shot.src}`] : undefined;
+const img = loader ? (await loader()).default : undefined;
+---
+
+{shot && (
+  <figure class:list={['figure', { framed: frame }]}>
+    <div class="media">
+      {img ? (
+        <Image
+          src={img}
+          alt={shot.alt}
+          widths={[640, 960, 1280, 1600]}
+          sizes={sizes}
+          loading={eager ? 'eager' : 'lazy'}
+        />
+      ) : (
+        <div class="hatch" role="img" aria-label={shot.alt}>
+          {ui[lang].work.shot} · {placeholder}
+        </div>
+      )}
+    </div>
+    {n && shot.caption && (
+      <figcaption>
+        <span class="n">FIG. {n}</span>
+        <span>{shot.caption}</span>
+      </figcaption>
+    )}
+  </figure>
+)}
+
+<style>
+  .figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .media {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+  .framed .media {
+    border: var(--border-ink);
+  }
+  .media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+  .hatch {
+    height: 100%;
+    background: repeating-linear-gradient(135deg, var(--hatch) 0 1px, transparent 1px 10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  figcaption {
+    display: flex;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+  .n {
+    color: var(--accent);
+    flex: none;
+  }
+</style>

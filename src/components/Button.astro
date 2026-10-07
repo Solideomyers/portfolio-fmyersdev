@@ -1,0 +1,43 @@
+---
+interface Props {
+  href: string;
+  variant?: 'primary' | 'link';
+  glyph?: '→' | '↗' | '←';
+  glyphFirst?: boolean;
+}
+const { href, variant = 'primary', glyph, glyphFirst = false } = Astro.props;
+const external = glyph === '↗';
+---
+
+<a class:list={['btn', variant]} href={href} data-press rel={external ? 'noopener' : undefined}>
+  {glyph && glyphFirst && <span class="glyph">{glyph} </span>}
+  <slot />
+  {glyph && !glyphFirst && <span class="glyph"> {glyph}</span>}
+</a>
+
+<style>
+  .btn {
+    display: inline-block;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .primary {
+    font-size: 17px;
+    font-weight: 600;
+    background: var(--accent);
+    color: var(--accent-fg);
+    padding: 16px 24px;
+  }
+  .link {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--accent);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .primary:hover {
+      color: var(--accent-fg);
+      text-decoration: none;
+    }
+  }
+</style>

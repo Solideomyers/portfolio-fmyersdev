@@ -1,0 +1,127 @@
+---
+// Unlisted specimen page (noindex). Astro doesn't route files starting with "_", hence /ds.
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import SheetHeader from '../components/SheetHeader.astro';
+import SpecGrid from '../components/SpecGrid.astro';
+import Status from '../components/Status.astro';
+import Tag from '../components/Tag.astro';
+import Figure from '../components/Figure.astro';
+import Metrics from '../components/Metrics.astro';
+import CtaRow from '../components/CtaRow.astro';
+import PostRow from '../components/PostRow.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { caseUrl } from '../lib/work';
+
+const work = await getCollection('work', (e) => e.data.lang === 'en');
+const chapel = work.find((e) => e.data.id === 'FM-02')!.data;
+const church = work.find((e) => e.data.id === 'FM-01')!.data;
+const other = (await getCollection('otherWork'))[0].data;
+---
+
+<Base lang="en" title="Design system specimens" noindex>
+  <div class="ds">
+    <h1 class="h1-page">Specimens · SP2</h1>
+    <section id="status">
+      <SheetHeader>C06 — STATUS</SheetHeader>
+      <div class="row">
+        <Status status="live" lang="en" variant="badge" />
+        <Status status="in-use" lang="en" variant="badge" />
+        <Status status="wip" lang="en" variant="badge" />
+      </div>
+    </section>
+    <section id="tag">
+      <SheetHeader>C07 — TAG</SheetHeader>
+      <div class="row">
+        <Tag>NEXT.JS</Tag>
+        <Tag>SUPABASE</Tag>
+      </div>
+    </section>
+    <section id="button">
+      <SheetHeader>C01 — BUTTON</SheetHeader>
+      <div class="row">
+        <Button href="/en/contact" glyph="→">
+          Start a project
+        </Button>
+        <Button href="/en/work" variant="link" glyph="←" glyphFirst>
+          ALL WORK
+        </Button>
+      </div>
+    </section>
+    <section id="sheet-header">
+      <SheetHeader>
+        SHEET 01 — WORK<span slot="meta">02 CASE STUDIES · 03 REPOS</span>
+      </SheetHeader>
+    </section>
+    <section id="spec-grid">
+      <SheetHeader>C05 — SPEC GRID (EMPTY ROW OMITTED)</SheetHeader>
+      <SpecGrid
+        items={[
+          { k: 'SECTOR', v: 'Nonprofit · Logistics' },
+          { k: 'MODULES', v: '' },
+          { k: 'STACK', v: 'Google Apps Script · Google Sheets' },
+          { k: 'STATUS', v: 'In use' },
+        ]}
+      />
+    </section>
+    <section id="figure">
+      <SheetHeader>C12 — FIGURE (IMAGE / HATCH)</SheetHeader>
+      <div class="two">
+        <Figure shot={chapel.shots[0]} n={1} lang="en" />
+        <Figure shot={church.shots[0]} n={2} lang="en" />
+      </div>
+    </section>
+    <section id="metrics">
+      <SheetHeader>METRICS</SheetHeader>
+      <Metrics items={chapel.metrics} lang="en" />
+    </section>
+    <section id="post-row">
+      <SheetHeader>C13 — POST ROW</SheetHeader>
+      <PostRow
+        href={other.repo}
+        meta={other.id}
+        title={other.title}
+        dek={other.en}
+        foot={other.stack.join(' · ')}
+        action="REPO ↗"
+        external
+      />
+    </section>
+    <section id="project-card">
+      <SheetHeader>C08 — PROJECT CARD (GRID / NEXT)</SheetHeader>
+      <div class="two">
+        <ProjectCard data={chapel} href={caseUrl('en', chapel.slug)} lang="en" />
+        <ProjectCard data={church} href={caseUrl('en', church.slug)} lang="en" />
+      </div>
+      <ProjectCard data={chapel} href={caseUrl('en', chapel.slug)} lang="en" variant="next" />
+    </section>
+    <section id="cta-row">
+      <CtaRow lang="en" heading="Want yours on this sheet?" />
+    </section>
+  </div>
+</Base>
+
+<style>
+  .ds {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .two {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
+    gap: 24px;
+  }
+</style>
