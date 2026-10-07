@@ -41,7 +41,7 @@ const otherWork = defineCollection({
   schema: z.object({
     id: z.string().regex(/^OW-\d{2}$/),
     title: z.string(),
-    repo: z.string().url(),
+    repo: z.url(),
     stack: z.array(z.string()),
     en: z.string(),
     es: z.string(),

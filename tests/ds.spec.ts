@@ -51,3 +51,27 @@ test('spec grid omits empty values', async ({ page }) => {
   await page.goto('/ds');
   await expect(page.locator('#spec-grid .cell')).toHaveCount(3);
 });
+
+// Rendered gap between the glyph and the label (textContent keeps the space even when layout trims it).
+const glyphGap = (el: Element, side: string) => {
+  const glyph = el.querySelector('.glyph')!;
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const texts: Text[] = [];
+  while (walker.nextNode()) {
+    const t = walker.currentNode as Text;
+    if (!glyph.contains(t) && t.data.trim()) texts.push(t);
+  }
+  const range = document.createRange();
+  range.selectNodeContents(texts[0]);
+  const g = glyph.getBoundingClientRect();
+  const t = range.getBoundingClientRect();
+  return side === 'before' ? t.left - g.right : g.left - t.right;
+};
+
+test('button glyphs keep a visible space, also inside flex layouts', async ({ page }) => {
+  await page.goto('/en/work/chapel');
+  expect(await page.locator('.head .btn.link').evaluate(glyphGap, 'before')).toBeGreaterThanOrEqual(
+    4,
+  );
+  expect(await page.locator('.cta-row .btn').evaluate(glyphGap, 'after')).toBeGreaterThanOrEqual(4);
+});
