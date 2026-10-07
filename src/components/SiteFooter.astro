@@ -1,0 +1,59 @@
+---
+import { path, type Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { site } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+const whatsapp = `https://wa.me/${site.whatsapp.replace(/\D/g, '')}`;
+---
+
+<footer class="site-footer">
+  <span>FMYERS.DEV · REV {site.rev}</span>
+  <span class="links">
+    <a href={site.github} rel="noopener">
+      GITHUB ↗
+    </a>
+    <a href={site.linkedin} rel="noopener">
+      LINKEDIN ↗
+    </a>
+    <a href={whatsapp} rel="noopener">
+      WHATSAPP ↗
+    </a>
+    <a href={path('privacy', lang)}>{t.privacy}</a>
+  </span>
+  <span>© 2026 · {t.langName}</span>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: var(--border-ink);
+    padding: 20px var(--gutter);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  .links {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    a:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+</style>

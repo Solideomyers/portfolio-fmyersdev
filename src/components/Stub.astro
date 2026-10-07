@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import { ui } from '../i18n/ui';
+import type { Lang, RouteKey } from '../i18n/routes';
+
+interface Props {
+  lang: Lang;
+  page: RouteKey;
+}
+const { lang, page } = Astro.props;
+const h1 = ui[lang].h1[page];
+---
+
+<Base lang={lang} title={h1}>
+  <h1 class:list={['h1-page', { 'h1-xl': page === 'home' }]}>{h1}</h1>
+</Base>

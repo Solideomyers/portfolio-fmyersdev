@@ -1,0 +1,48 @@
+---
+interface Props {
+  label: string;
+  size?: 'sm' | 'lg';
+}
+const { label, size = 'sm' } = Astro.props;
+---
+
+<button type="button" class:list={['theme-toggle', size]} aria-label={label}>
+  ◐
+</button>
+
+<script>
+  const root = document.documentElement;
+  for (const btn of document.querySelectorAll('.theme-toggle')) {
+    btn.addEventListener('click', () => {
+      const current =
+        root.dataset.theme ??
+        (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      const next = current === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try {
+        localStorage.setItem('theme', next);
+      } catch {
+        // storage blocked: the choice lasts for this page only
+      }
+    });
+  }
+</script>
+
+<style>
+  .theme-toggle {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: var(--border-ink);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .lg {
+    font-size: 15px;
+    width: 44px;
+    height: 44px;
+  }
+</style>

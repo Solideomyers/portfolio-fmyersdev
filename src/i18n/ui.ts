@@ -11,13 +11,26 @@ interface Ui {
   homeLabel: string;
   navLabel: string;
   h1: Record<RouteKey, string>;
-  notFound: { sheet: string; missing: string; h1: string; p: string; home: string; links: [string, string] };
+  notFound: {
+    sheet: string;
+    missing: string;
+    h1: string;
+    p: string;
+    home: string;
+    links: [string, string];
+  };
 }
 
 // Copy is verbatim from docs/handoff/design/*.dc.html COPY objects.
 export const ui: Record<Lang, Ui> = {
   en: {
-    nav: { services: 'SERVICES', work: 'WORK', about: 'ABOUT', pricing: 'PRICING', contact: 'CONTACT' },
+    nav: {
+      services: 'SERVICES',
+      work: 'WORK',
+      about: 'ABOUT',
+      pricing: 'PRICING',
+      contact: 'CONTACT',
+    },
     menu: 'MENU',
     close: 'CLOSE',
     startCaps: 'START A PROJECT',
@@ -45,7 +58,13 @@ export const ui: Record<Lang, Ui> = {
     },
   },
   es: {
-    nav: { services: 'SERVICIOS', work: 'PROYECTOS', about: 'SOBRE MÍ', pricing: 'PRECIOS', contact: 'CONTACTO' },
+    nav: {
+      services: 'SERVICIOS',
+      work: 'PROYECTOS',
+      about: 'SOBRE MÍ',
+      pricing: 'PRECIOS',
+      contact: 'CONTACTO',
+    },
     menu: 'MENÚ',
     close: 'CERRAR',
     startCaps: 'INICIAR PROYECTO',

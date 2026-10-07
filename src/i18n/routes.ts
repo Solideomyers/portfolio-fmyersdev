@@ -14,7 +14,13 @@ export const ROUTES = {
 
 export type RouteKey = keyof typeof ROUTES;
 
-export const NAV = ['services', 'work', 'about', 'pricing', 'contact'] as const satisfies readonly RouteKey[];
+export const NAV = [
+  'services',
+  'work',
+  'about',
+  'pricing',
+  'contact',
+] as const satisfies readonly RouteKey[];
 export type NavKey = (typeof NAV)[number];
 
 export const path = (key: RouteKey, lang: Lang): string => ROUTES[key][lang];

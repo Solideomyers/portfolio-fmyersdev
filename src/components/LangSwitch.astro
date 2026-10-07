@@ -1,0 +1,68 @@
+---
+import { LANGS, type Lang } from '../i18n/routes';
+
+interface Props {
+  lang: Lang;
+  alternate: string | null;
+  size?: 'sm' | 'lg';
+}
+const { lang, alternate, size = 'sm' } = Astro.props;
+---
+
+<div class:list={['lang-switch', size]}>
+  {LANGS.map((l) =>
+    l === lang ? (
+      <span class="cell on" aria-current="true" lang={l}>
+        {l.toUpperCase()}
+      </span>
+    ) : alternate ? (
+      <a class="cell" href={alternate} hreflang={l} lang={l} data-lang={l}>
+        {l.toUpperCase()}
+      </a>
+    ) : (
+      <span class="cell off" aria-disabled="true" lang={l}>
+        {l.toUpperCase()}
+      </span>
+    ),
+  )}
+</div>
+
+<script>
+  for (const a of document.querySelectorAll<HTMLAnchorElement>('.lang-switch a[data-lang]')) {
+    a.addEventListener('click', () => {
+      try {
+        localStorage.setItem('lang', a.dataset.lang ?? 'en');
+      } catch {
+        // storage blocked: the link still navigates
+      }
+    });
+  }
+</script>
+
+<style>
+  .lang-switch {
+    display: flex;
+    border: var(--border-ink);
+  }
+  .cell {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 7px 10px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .lg .cell {
+    font-size: 13px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+  }
+  .on {
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+  }
+  .off {
+    color: var(--text-muted);
+  }
+</style>
