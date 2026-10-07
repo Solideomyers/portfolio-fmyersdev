@@ -1,22 +1,15 @@
 ---
 import Button from './Button.astro';
 import SpecGrid from './SpecGrid.astro';
+import Availability from './Availability.astro';
 import { path, type Lang } from '../i18n/routes';
 import { ui } from '../i18n/ui';
-import { site } from '../config/site';
-import { availability } from '../lib/home';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 const h = ui[lang].home;
-const a = availability(site.availableFrom, new Date(), lang);
-// Static build: if the visitor's clock is already past the month, show the dateless sentence.
-const switchScript = `document.querySelectorAll('.available[data-from]').forEach(function (el) {
-  const p = el.dataset.from.split('-');
-  if (Date.now() >= Date.UTC(+p[0], +p[1] - 1, 1)) el.querySelector('.text').textContent = el.dataset.now;
-});`;
 ---
 
 <section class="hero">
@@ -30,15 +23,7 @@ const switchScript = `document.querySelectorAll('.available[data-from]').forEach
       <span class="sheet">{h.sheet00}</span>
       <h1>{ui[lang].h1.home}</h1>
       <p class="lead">{h.lead}</p>
-      <div
-        class="available"
-        data-from={a.dated ? site.availableFrom : undefined}
-        data-now={h.availableNow}
-      >
-        <span class="dot" aria-hidden="true"></span>
-        <span class="text">{a.text}</span>
-      </div>
-      {a.dated && <script is:inline set:html={switchScript} />}
+      <Availability lang={lang} />
       <div class="actions">
         <Button href={path('contact', lang)} glyph="→">
           {ui[lang].work.start}
@@ -111,20 +96,6 @@ const switchScript = `document.querySelectorAll('.available[data-from]').forEach
     color: var(--text-muted);
     max-width: 560px;
     text-wrap: pretty;
-  }
-  .available {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 16px;
-  }
-  /* The status dot: the only round element; it never pulses. */
-  .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--ok);
-    flex: none;
   }
   .actions {
     display: flex;

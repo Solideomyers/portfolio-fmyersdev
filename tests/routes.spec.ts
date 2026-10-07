@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { ROUTES, LANGS, NAV, type RouteKey } from '../src/i18n/routes';
+import { ROUTES, LANGS, navKeyOf, type RouteKey } from '../src/i18n/routes';
 import { ui } from '../src/i18n/ui';
 
 for (const key of Object.keys(ROUTES) as RouteKey[]) {
@@ -11,7 +11,7 @@ for (const key of Object.keys(ROUTES) as RouteKey[]) {
       await expect(page.locator('html')).toHaveAttribute('lang', lang);
       await expect(page.locator('h1')).toHaveText(ui[lang].h1[key]);
       await expect(page.locator('header nav a[aria-current="page"]')).toHaveCount(
-        (NAV as readonly string[]).includes(key) ? 1 : 0,
+        navKeyOf(url) ? 1 : 0,
       );
       const hrefs = await page
         .locator('link[rel="alternate"], link[rel="canonical"]')

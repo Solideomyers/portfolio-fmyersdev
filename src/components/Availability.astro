@@ -1,0 +1,44 @@
+---
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { site } from '../config/site';
+import { availability } from '../lib/home';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const a = availability(site.availableFrom, new Date(), lang);
+// Static build: if the visitor's clock is already past the month, show the dateless sentence.
+const switchScript = `document.querySelectorAll('.available[data-from]').forEach(function (el) {
+  const p = el.dataset.from.split('-');
+  if (Date.now() >= Date.UTC(+p[0], +p[1] - 1, 1)) el.querySelector('.text').textContent = el.dataset.now;
+});`;
+---
+
+<div
+  class="available"
+  data-from={a.dated ? site.availableFrom : undefined}
+  data-now={ui[lang].home.availableNow}
+>
+  <span class="dot" aria-hidden="true"></span>
+  <span class="text">{a.text}</span>
+</div>
+{a.dated && <script is:inline set:html={switchScript} />}
+
+<style>
+  .available {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+  }
+  /* The status dot: the only round element; it never pulses. */
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ok);
+    flex: none;
+  }
+</style>

@@ -7,3 +7,4 @@ package-lock.json
 .worktrees
 test-results
 playwright-report
+.vercel

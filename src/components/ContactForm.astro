@@ -1,0 +1,371 @@
+---
+import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
+import { path, type Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { BUDGETS, TYPES } from '../lib/contact';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = ui[lang].contact;
+---
+
+<form class="contact-form" method="post" action="/api/contact">
+  <input type="hidden" name="lang" value={lang} />
+
+  <label class="field">
+    <span class="lab">{c.fName}</span>
+    <input name="name" autocomplete="name" maxlength="200" placeholder={c.phName} />
+  </label>
+
+  <label class="field" data-field="email">
+    <span class="lab">{c.fEmail}</span>
+    <input
+      name="email"
+      type="email"
+      required
+      autocomplete="email"
+      maxlength="254"
+      placeholder={c.phEmail}
+    />
+    <span class="field-error" id="err-email" role="alert" hidden>
+      {c.errEmail}
+    </span>
+  </label>
+
+  <fieldset class="chips">
+    <legend class="lab">{c.fType}</legend>
+    <div class="row">
+      {TYPES.map((t) => (
+        <label class="chip">
+          <input type="radio" name="type" value={t} />
+          {c.types[t]}
+        </label>
+      ))}
+    </div>
+  </fieldset>
+
+  <fieldset class="chips">
+    <legend class="lab">{c.fBudget}</legend>
+    <div class="row">
+      {BUDGETS.map((b) => (
+        <label class="chip">
+          <input type="radio" name="budget" value={b} />
+          {c.budgets[b]}
+        </label>
+      ))}
+    </div>
+  </fieldset>
+
+  <label class="field" data-field="message">
+    <span class="lab">{c.fMsg}</span>
+    <textarea name="message" rows="4" required maxlength="5000" placeholder={c.phMsg}></textarea>
+    <span class="field-error" id="err-message" role="alert" hidden>
+      {c.errMsg}
+    </span>
+  </label>
+
+  <div class="foot">
+    <div
+      class="cf-turnstile"
+      data-sitekey={PUBLIC_TURNSTILE_SITE_KEY}
+      data-size="flexible"
+      data-theme="auto"
+      data-language={lang}
+      aria-label={c.turnstile}
+    ></div>
+    <div class="send-row">
+      <span class="note">
+        {c.privacyNote} <a href={path('privacy', lang)}>{c.privacyLink}</a>.
+      </span>
+      <button type="submit" class="btn primary" data-press data-sending={c.sending}>
+        <span class="label">{c.send}</span>
+      </button>
+    </div>
+    <div class="err" id="send-error" role="alert">
+      <span class="err-tag">ERR</span>
+      {c.netErr}
+    </div>
+  </div>
+
+  <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+</form>
+
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<script>
+  import { parseBrief, sentUrl, type Errors } from '../lib/contact';
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('form.contact-form')) {
+    form.noValidate = true; // the script validates; without JS the browser's native validation applies
+    const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    const label = btn.querySelector<HTMLElement>('.label')!;
+    const idle = label.textContent ?? '';
+    const err = form.querySelector<HTMLElement>('#send-error')!;
+    const lang = (form.elements.namedItem('lang') as HTMLInputElement).value === 'es' ? 'es' : 'en';
+
+    // Chips: clicking the selected chip clears it (handoff C02).
+    for (const chip of form.querySelectorAll<HTMLLabelElement>('label.chip')) {
+      const radio = chip.querySelector('input')!;
+      let wasChecked = false;
+      chip.addEventListener('pointerdown', () => (wasChecked = radio.checked));
+      radio.addEventListener('click', () => {
+        if (wasChecked) radio.checked = false;
+        wasChecked = false;
+      });
+    }
+
+    const showErrors = (errors: Errors) => {
+      let first: HTMLElement | null = null;
+      for (const name of ['email', 'message'] as const) {
+        const field = form.querySelector<HTMLElement>(`.field[data-field="${name}"]`)!;
+        const control = field.querySelector<HTMLInputElement | HTMLTextAreaElement>(
+          'input, textarea',
+        )!;
+        const bad = Boolean(errors[name]);
+        field.classList.toggle('is-error', bad);
+        const message = field.querySelector<HTMLElement>('.field-error')!;
+        message.hidden = !bad;
+        control.setAttribute('aria-invalid', String(bad));
+        // Describe the control by its error only while it's invalid (hidden text is still read).
+        if (bad) control.setAttribute('aria-describedby', message.id);
+        else control.removeAttribute('aria-describedby');
+        if (bad && !first) first = control;
+      }
+      first?.focus();
+      return first !== null;
+    };
+
+    const setSending = (on: boolean) => {
+      btn.classList.toggle('is-sending', on);
+      btn.setAttribute('aria-disabled', String(on));
+      label.textContent = on ? (btn.dataset.sending ?? idle) : idle;
+    };
+
+    const turnstile = () => (window as unknown as { turnstile?: { reset: () => void } }).turnstile;
+    const token = () => new FormData(form).get('cf-turnstile-response');
+
+    // Wait briefly for a pending challenge; resolves false if no token shows up.
+    const waitForToken = async (ms: number) => {
+      for (let waited = 0; waited < ms; waited += 250) {
+        if (token()) return true;
+        await new Promise((r) => setTimeout(r, 250));
+      }
+      return Boolean(token());
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (btn.getAttribute('aria-disabled') === 'true') return;
+      err.classList.remove('is-visible');
+      const parsed = parseBrief(new FormData(form));
+      if (showErrors(parsed.ok ? {} : parsed.errors)) return;
+      setSending(true);
+      // No Turnstile token (widget blocked or challenge unfinished): fall back to the native
+      // post, which the server accepts as the no-JS path, instead of a dead-end 403.
+      if (!token() && !(turnstile() && (await waitForToken(8000)))) {
+        HTMLFormElement.prototype.submit.call(form);
+        return;
+      }
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        const out = (await res.json().catch(() => ({}))) as {
+          ok?: boolean;
+          copy?: boolean;
+          errors?: Errors;
+        };
+        if (res.ok && out.ok) {
+          location.assign(`${sentUrl(lang)}${out.copy ? '' : '#no-copy'}`);
+          return;
+        }
+        if (!(res.status === 422 && out.errors && showErrors(out.errors)))
+          err.classList.add('is-visible');
+      } catch {
+        err.classList.add('is-visible');
+      }
+      setSending(false);
+      turnstile()?.reset();
+    });
+
+    // Back from the sent page restores this page from the bfcache with a stale sending state.
+    addEventListener('pageshow', (e) => {
+      if (e.persisted) {
+        setSending(false);
+        turnstile()?.reset();
+      }
+    });
+  }
+</script>
+
+<style>
+  .contact-form {
+    flex: 1.4 1 420px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    border: var(--border-frame);
+    background: var(--surface);
+    position: relative;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 20px;
+    border-bottom: var(--border-rule);
+  }
+  .lab {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    padding: 0;
+  }
+  input:not([type='radio']):not([type='hidden']),
+  textarea {
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-size: 17px;
+    outline: none;
+    color: var(--text);
+    padding: 2px 0;
+    min-height: 28px;
+  }
+  textarea {
+    line-height: 1.5;
+    resize: vertical;
+  }
+  input:focus-visible,
+  textarea:focus-visible {
+    box-shadow: inset 0 -2px 0 var(--accent);
+  }
+  .field.is-error {
+    box-shadow: inset 3px 0 0 var(--danger);
+  }
+  .field.is-error .lab,
+  .field-error {
+    color: var(--danger);
+  }
+  .field-error {
+    font-size: 14px;
+  }
+  .chips {
+    margin: 0;
+    border: 0;
+    border-bottom: var(--border-rule);
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+  .chips legend {
+    float: left;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    clear: both;
+  }
+  .chip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    min-height: 40px;
+    padding: 0 12px;
+    border: var(--border-ink);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .chip input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+  }
+  .chip:has(input:checked) {
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+  }
+  .chip:has(input:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  @media (pointer: coarse) {
+    .chip {
+      min-height: 44px;
+    }
+  }
+  .foot {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .send-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .note {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-wrap: pretty;
+    flex: 1 1 200px;
+  }
+  .btn.primary {
+    font-size: 17px;
+    font-weight: 600;
+    background: var(--accent);
+    color: var(--accent-fg);
+    border: 0;
+    padding: 16px 24px;
+    min-width: 200px;
+    cursor: pointer;
+  }
+  .btn.primary[aria-disabled='true'] {
+    cursor: progress;
+  }
+  .err {
+    display: none;
+    gap: 10px;
+    align-items: baseline;
+    border: 1px solid var(--danger);
+    padding: 10px 12px;
+    font-size: 15px;
+    color: var(--danger);
+    text-wrap: pretty;
+  }
+  .err:target,
+  .err.is-visible {
+    display: flex;
+  }
+  .err-tag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    flex: none;
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+</style>

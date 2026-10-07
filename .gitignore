@@ -10,3 +10,7 @@ dist/
 test-results/
 playwright-report/
 .DS_Store
+
+# Superdesign scratch
+.superdesign/tmp/
+.superdesign/init/
