@@ -4,7 +4,7 @@ import HeadCommon from '../components/HeadCommon.astro';
 import SiteNav from '../components/SiteNav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import { site } from '../config/site';
-import { alternateOf, other, routeKeyOf, type Lang } from '../i18n/routes';
+import { alternateOf, navKeyOf, other, routeKeyOf, type Lang } from '../i18n/routes';
 
 interface Props {
   lang: Lang;
@@ -13,13 +13,16 @@ interface Props {
   /** This page in the other language; null = not translated. Omit for pages in the route map. */
   alternate?: string | null;
   noindex?: boolean;
+  /** Override hreflang emission (case pages decide it with caseLinks). */
+  hreflang?: boolean;
 }
-const { lang, title, description, alternate, noindex } = Astro.props;
+const { lang, title, description, alternate, noindex, hreflang } = Astro.props;
 const pathname = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const currentKey = routeKeyOf(pathname);
 const alt = alternateOf(pathname, alternate);
 // hreflang only for a real twin, never for the home fallback.
-const hasTwin = alternate !== undefined ? alternate !== null : currentKey !== undefined;
+const hasTwin =
+  hreflang ?? (alternate !== undefined ? alternate !== null : currentKey !== undefined);
 const byLang: Record<Lang, string> =
   lang === 'en' ? { en: pathname, es: alt ?? '' } : { en: alt ?? '', es: pathname };
 const fullTitle = currentKey === 'home' ? `fmyers.dev — ${title}` : `${title} · fmyers.dev`;
@@ -39,7 +42,7 @@ const fullTitle = currentKey === 'home' ? `fmyers.dev — ${title}` : `${title} 
     )}
   </head>
   <body>
-    <SiteNav lang={lang} currentKey={currentKey} alternate={alt} />
+    <SiteNav lang={lang} currentKey={navKeyOf(pathname)} alternate={alt} />
     <main>
       <slot />
     </main>

@@ -26,7 +26,8 @@ const work = defineCollection({
     timeline: z.string(),
     year: z.number(),
     cover: z.object({ src: z.string(), alt: z.string() }),
-    shots: z.array(z.object({ src: z.string(), alt: z.string(), caption: z.string() })),
+    // strict: an unquoted comma in a YAML flow mapping splits the value into a stray key; fail instead.
+    shots: z.array(z.object({ src: z.string(), alt: z.string(), caption: z.string() }).strict()),
     metrics: z
       .array(z.object({ label: z.string(), value: z.string(), date: z.string() }))
       .default([]),

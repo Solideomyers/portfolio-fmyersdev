@@ -12,9 +12,9 @@ import Prose from './Prose.astro';
 import Toc from './Toc.astro';
 import ProjectCard from './ProjectCard.astro';
 import CtaRow from './CtaRow.astro';
-import { other, path, type Lang } from '../i18n/routes';
+import { path, type Lang } from '../i18n/routes';
 import { ui } from '../i18n/ui';
-import { caseUrl, listCases, nextCase, pad2, statusLabel, twinOf } from '../lib/work';
+import { caseLinks, caseUrl, listCases, nextCase, pad2, statusText } from '../lib/work';
 
 interface Props {
   lang: Lang;
@@ -25,19 +25,20 @@ const { lang, entry, fallback } = Astro.props;
 const d = entry.data;
 const c = ui[lang].case;
 const all = await getCollection('work');
-const twin = twinOf(all, entry);
-// The other language always has a page (its own twin or a fallback), except for drafts without a twin.
-const alternate = twin
-  ? caseUrl(other(lang), twin.data.slug)
-  : d.draft
-    ? null
-    : caseUrl(other(lang), d.slug);
+const links = caseLinks(all, entry, lang, fallback);
 const next = nextCase(listCases(all, lang), d.id);
 const { Content, headings } = await render(entry);
 const version = d.version ? ` · ${d.version}` : '';
 ---
 
-<Base lang={lang} title={d.title} description={d.summary} alternate={alternate}>
+<Base
+  lang={lang}
+  title={d.title}
+  description={d.summary}
+  alternate={links.alternate}
+  hreflang={links.hreflang}
+  noindex={links.noindex}
+>
   <div class="page">
     <div class="head">
       <Button href={path('work', lang)} variant="link" glyph="←" glyphFirst>
@@ -64,7 +65,7 @@ const version = d.version ? ` · ${d.version}` : '';
               { k: c.keys.sector, v: d.sector.join(' · ') },
               { k: c.keys.modules, v: d.modules.join(' · ') },
               { k: c.keys.stack, v: d.stack.join(' · ') },
-              { k: c.keys.status, v: `${statusLabel(d.status, lang)}${version}` },
+              { k: c.keys.status, v: `${statusText(d.status, lang)}${version}` },
             ]}
           />
         </div>

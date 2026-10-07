@@ -109,3 +109,44 @@ test.describe('without JavaScript', () => {
     await expect(page.locator('.toc-block a').first()).toBeVisible();
   });
 });
+
+test('Chapel FIG. 1 caption is complete (YAML comma)', async ({ page }) => {
+  await page.goto('/en/work/chapel');
+  await expect(page.locator('.fig1 figcaption')).toContainText(
+    'Mobile — dashboard, batch entry and activity',
+  );
+});
+
+test('case pages mark WORK as current in the nav', async ({ page }) => {
+  await page.goto('/es/proyectos/chapel');
+  await expect(page.locator('header nav a[aria-current="page"]')).toHaveAttribute(
+    'href',
+    '/es/proyectos',
+  );
+});
+
+test('STATUS spec cell is sentence case, as in the design', async ({ page }) => {
+  await page.goto('/en/work/churchapp');
+  await expect(page.locator('.case-frame .spec-grid .cell').nth(3).locator('.v')).toHaveText(
+    'Live · v1.2.0',
+  );
+});
+
+test('case pages with a twin emit hreflang for both languages', async ({ page }) => {
+  await page.goto('/en/work/chapel');
+  await expect(page.locator('link[rel="alternate"][hreflang="es"]')).toHaveAttribute(
+    'href',
+    /\/es\/proyectos\/chapel$/,
+  );
+});
+
+test('TOC: a deep link and the End key mark the reached section', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/en/work/churchapp#outcome');
+  const links = page.locator('.toc-side a');
+  await expect(links.nth(4)).toHaveAttribute('aria-current', 'location');
+  await page.goto('/en/work/churchapp');
+  await expect(links.nth(0)).toHaveAttribute('aria-current', 'location');
+  await page.keyboard.press('End');
+  await expect(links.nth(4)).toHaveAttribute('aria-current', 'location');
+});

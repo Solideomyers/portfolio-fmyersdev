@@ -42,3 +42,9 @@ export function alternateOf(pathname: string, alternate?: string | null): string
   const key = routeKeyOf(pathname);
   return key ? ROUTES[key][target] : ROUTES.home[target];
 }
+
+/** Nav section for a path, including its sub-pages (/en/work/chapel → work). Home never matches. */
+export function navKeyOf(pathname: string): NavKey | undefined {
+  const p = trim(pathname);
+  return NAV.find((k) => LANGS.some((l) => p === ROUTES[k][l] || p.startsWith(ROUTES[k][l] + '/')));
+}

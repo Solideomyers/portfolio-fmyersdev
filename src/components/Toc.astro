@@ -84,8 +84,19 @@ const total = pad2(items.length);
     btn.setAttribute('aria-expanded', String(open));
   };
 
-  // A click wins over the observer until the scroll it triggers settles: short sections would
-  // otherwise hand the active state to the next heading in the band.
+  // Active = the last heading that has passed 30% of the viewport. Computed from positions (not
+  // only from headings crossing a band), so deep links, the End key and scrollbar drags work too.
+  const current = () => {
+    const line = innerHeight * 0.3;
+    let idx = 0;
+    headings.forEach((h, k) => {
+      if (h.getBoundingClientRect().top <= line) idx = k;
+    });
+    return idx;
+  };
+
+  // A click wins until the scroll it triggers settles: a short section would otherwise hand the
+  // active state to the next heading that passes the line.
   let locked = false;
   let release: ReturnType<typeof setTimeout> | undefined;
   const unlockSoon = (ms: number) => {
@@ -94,16 +105,21 @@ const total = pad2(items.length);
   };
 
   if (headings.length) {
-    setActive(0);
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (locked) return;
-        for (const e of entries)
-          if (e.isIntersecting) setActive(headings.indexOf(e.target as HTMLElement));
-      },
-      { rootMargin: '-30% 0px -60% 0px' },
-    );
-    headings.forEach((h) => io.observe(h));
+    let queued = false;
+    const update = () => {
+      queued = false;
+      if (!locked) setActive(current());
+    };
+    const schedule = () => {
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(update);
+      }
+    };
+    update();
+    addEventListener('scroll', schedule, { passive: true });
+    addEventListener('load', schedule);
+    addEventListener('hashchange', schedule);
     for (const a of links)
       a.addEventListener('click', () => {
         locked = true;
@@ -111,7 +127,7 @@ const total = pad2(items.length);
         setActive(Number(a.dataset.tocLink));
         setOpen(false);
       });
-    window.addEventListener('scrollend', () => {
+    addEventListener('scrollend', () => {
       if (locked) unlockSoon(150);
     });
     btn?.addEventListener('click', () => setOpen(rows?.hidden !== false));

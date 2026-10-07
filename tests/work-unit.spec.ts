@@ -1,3 +1,4 @@
+import { caseLinks, statusText } from '../src/lib/work';
 import { test, expect } from '@playwright/test';
 import {
   listCases,
@@ -69,4 +70,60 @@ test('twinOf, caseUrl, statusLabel, asOf, pad2', () => {
   expect(asOf([{ date: '2026-08' }], 'es')).toBe('DATOS A AGO 2026');
   expect(asOf([], 'en')).toBe('');
   expect(pad2(3)).toBe('03');
+});
+
+// --- review fixes: pairing, drafts, collisions, labels ---
+
+test('twinOf ignores drafts', () => {
+  const list = [e('FM-03', 'en', 'x'), e('FM-03', 'es', 'x-es', true)];
+  expect(twinOf(list, list[0])).toBeUndefined();
+});
+
+test('casePaths: a draft never takes over a listed slug; distinct-slug drafts stay routable', () => {
+  const same = [e('FM-03', 'en', 'foo'), e('FM-03', 'es', 'foo', true)];
+  const es = casePaths(same, 'es');
+  expect(es).toHaveLength(1);
+  expect(es[0].props.fallback).toBe(true);
+  const distinct = [e('FM-03', 'en', 'foo'), e('FM-03', 'es', 'foo-es', true)];
+  expect(casePaths(distinct, 'es').map((p) => p.params.slug)).toEqual(['foo', 'foo-es']);
+});
+
+test('casePaths fails loudly on duplicate slugs within a language', () => {
+  const dup = [e('FM-03', 'en', 'foo'), e('FM-04', 'en', 'foo')];
+  expect(() => casePaths(dup, 'en')).toThrow(/duplicate/i);
+});
+
+test('caseLinks: hreflang only for real twins; fallbacks and drafts are noindex', () => {
+  const list = [
+    e('FM-01', 'en', 'a'),
+    e('FM-01', 'es', 'a'),
+    e('FM-04', 'en', 'only-en'),
+    e('FM-05', 'en', 'draft', true),
+  ];
+  expect(caseLinks(list, list[0], 'en', false)).toEqual({
+    alternate: '/es/proyectos/a',
+    hreflang: true,
+    noindex: false,
+  });
+  expect(caseLinks(list, list[2], 'en', false)).toEqual({
+    alternate: '/es/proyectos/only-en',
+    hreflang: false,
+    noindex: false,
+  });
+  // /es/proyectos/only-en shows the EN content: it points back to the original and isn't indexed.
+  expect(caseLinks(list, list[2], 'es', true)).toEqual({
+    alternate: '/en/work/only-en',
+    hreflang: false,
+    noindex: true,
+  });
+  expect(caseLinks(list, list[3], 'en', false)).toEqual({
+    alternate: null,
+    hreflang: false,
+    noindex: true,
+  });
+});
+
+test('statusText is sentence case for spec cells', () => {
+  expect(statusText('live', 'en')).toBe('Live');
+  expect(statusText('in-use', 'es')).toBe('En uso');
 });

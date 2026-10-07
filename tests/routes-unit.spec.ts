@@ -1,3 +1,4 @@
+import { navKeyOf } from '../src/i18n/routes';
 import { test, expect } from '@playwright/test';
 import { ROUTES, LANGS, path, langOf, routeKeyOf, alternateOf } from '../src/i18n/routes';
 import { ui } from '../src/i18n/ui';
@@ -37,4 +38,12 @@ test('every route has an h1 in both languages', () => {
       expect(ui[lang].h1[key], `${lang}.${key}`).toBeTruthy();
     }
   }
+});
+
+test('navKeyOf matches section prefixes but never home', () => {
+  expect(navKeyOf('/en/work/chapel')).toBe('work');
+  expect(navKeyOf('/es/proyectos/chapel/')).toBe('work');
+  expect(navKeyOf('/es/servicios')).toBe('services');
+  expect(navKeyOf('/en/nope')).toBeUndefined();
+  expect(navKeyOf('/en')).toBeUndefined();
 });
