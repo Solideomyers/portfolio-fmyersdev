@@ -1,0 +1,47 @@
+---
+import '../styles/global.css';
+import HeadCommon from '../components/HeadCommon.astro';
+import SiteNav from '../components/SiteNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { site } from '../config/site';
+import { alternateOf, other, routeKeyOf, type Lang } from '../i18n/routes';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description?: string;
+  /** This page in the other language; null = not translated. Omit for pages in the route map. */
+  alternate?: string | null;
+}
+const { lang, title, description, alternate } = Astro.props;
+const pathname = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const currentKey = routeKeyOf(pathname);
+const alt = alternateOf(pathname, alternate);
+// hreflang only for a real twin, never for the home fallback.
+const hasTwin = alternate !== undefined ? alternate !== null : currentKey !== undefined;
+const byLang: Record<Lang, string> =
+  lang === 'en' ? { en: pathname, es: alt ?? '' } : { en: alt ?? '', es: pathname };
+const fullTitle = currentKey === 'home' ? `fmyers.dev — ${title}` : `${title} · fmyers.dev`;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <HeadCommon title={fullTitle} description={description} />
+    <link rel="canonical" href={site.url + pathname} />
+    {hasTwin && (
+      <>
+        <link rel="alternate" hreflang={lang} href={site.url + byLang[lang]} />
+        <link rel="alternate" hreflang={other(lang)} href={site.url + byLang[other(lang)]} />
+        <link rel="alternate" hreflang="x-default" href={site.url + byLang.en} />
+      </>
+    )}
+  </head>
+  <body>
+    <SiteNav lang={lang} currentKey={currentKey} alternate={alt} />
+    <main>
+      <slot />
+    </main>
+    <SiteFooter lang={lang} />
+  </body>
+</html>

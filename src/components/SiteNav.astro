@@ -1,0 +1,278 @@
+---
+import LangSwitch from './LangSwitch.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { NAV, path, type Lang, type RouteKey } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  currentKey?: RouteKey;
+  alternate: string | null;
+  menuId?: string;
+}
+const { lang, currentKey, alternate, menuId = 'site-menu' } = Astro.props;
+const t = ui[lang];
+// NOTES (06) is appended in SP6 when site.blogEnabled is true.
+const links = NAV.map((key, i) => ({
+  key,
+  href: path(key, lang),
+  num: String(i + 1).padStart(2, '0'),
+  label: t.nav[key],
+}));
+---
+
+<header class="site-nav">
+  <div class="row">
+    <a class="wordmark" href={path('home', lang)} aria-label={t.homeLabel}>
+      <img class="wm-light" src="/wordmark-light.svg" alt="" height="24" />
+      <img class="wm-dark" src="/wordmark-dark.svg" alt="" height="24" />
+    </a>
+    <nav class="links" aria-label={t.navLabel}>
+      {links.map((l) => (
+        <a href={l.href} aria-current={l.key === currentKey ? 'page' : undefined}>
+          <span class="num">{l.num}</span>
+          {l.label}
+        </a>
+      ))}
+    </nav>
+    <div class="tools">
+      <div class="switches">
+        <LangSwitch lang={lang} alternate={alternate} />
+        <ThemeToggle label={t.themeLabel} />
+      </div>
+      <a class="cta" href={path('contact', lang)}>
+        {t.startCaps}
+      </a>
+      <button
+        class="menu-btn"
+        type="button"
+        aria-expanded="false"
+        aria-controls={menuId}
+        data-open={t.close}
+        data-closed={t.menu}
+      >
+        {t.menu}
+      </button>
+    </div>
+  </div>
+  <div id={menuId} class="menu" hidden>
+    {links.map((l) => (
+      <a href={l.href} aria-current={l.key === currentKey ? 'page' : undefined}>
+        <span class="num">{l.num}</span>
+        {l.label}
+      </a>
+    ))}
+    <div class="menu-foot">
+      <div class="menu-switches">
+        <LangSwitch lang={lang} alternate={alternate} size="lg" />
+        <ThemeToggle label={t.themeLabel} size="lg" />
+      </div>
+      <a class="menu-cta" href={path('contact', lang)}>
+        {t.startCaps}
+      </a>
+    </div>
+  </div>
+  <noscript>
+    <style>
+      @media (max-width: 1199.98px) {
+        .menu[hidden] {
+          display: flex !important;
+        }
+      }
+      .menu-btn {
+        display: none !important;
+      }
+    </style>
+  </noscript>
+</header>
+
+<script>
+  const desktop = window.matchMedia('(min-width: 1200px)');
+  for (const btn of document.querySelectorAll<HTMLButtonElement>('.menu-btn')) {
+    const panel = document.getElementById(btn.getAttribute('aria-controls') ?? '');
+    if (!panel) continue;
+    const set = (open: boolean) => {
+      panel.hidden = !open;
+      btn.setAttribute('aria-expanded', String(open));
+      btn.textContent = (open ? btn.dataset.open : btn.dataset.closed) ?? '';
+    };
+    btn.addEventListener('click', () => set(panel.hidden !== false));
+    panel.addEventListener('click', (e) => {
+      if ((e.target as Element).closest('a')) set(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.hidden) {
+        set(false);
+        btn.focus();
+      }
+    });
+    desktop.addEventListener('change', (e) => {
+      if (e.matches) set(false);
+    });
+  }
+</script>
+
+<style>
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg);
+    border-bottom: var(--border-ink);
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 12px var(--gutter);
+  }
+  .wordmark {
+    display: flex;
+    flex: none;
+  }
+  .wordmark img {
+    display: block;
+    height: 24px;
+    width: auto;
+  }
+  .wm-dark {
+    display: none !important;
+  }
+  :global([data-theme='dark']) .wm-light {
+    display: none !important;
+  }
+  :global([data-theme='dark']) .wm-dark {
+    display: block !important;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .wm-light {
+      display: none !important;
+    }
+    :global(:root:not([data-theme='light'])) .wm-dark {
+      display: block !important;
+    }
+  }
+  .links {
+    display: none;
+    gap: 22px;
+  }
+  .links a,
+  .menu > a {
+    display: flex;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    color: var(--text);
+    text-decoration: none;
+    padding: 4px 0;
+  }
+  .num {
+    color: var(--text-muted);
+  }
+  .links a[aria-current='page'] {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .links a:hover {
+      color: var(--accent);
+    }
+  }
+  .tools {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex: none;
+  }
+  .switches {
+    display: none;
+    gap: 10px;
+    align-items: center;
+  }
+  .cta {
+    display: none;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    background: var(--accent);
+    color: var(--accent-fg);
+    padding: 10px 16px;
+    text-decoration: none;
+  }
+  .menu-btn {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    min-height: 44px;
+    padding: 0 14px;
+    border: var(--border-ink);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .menu {
+    display: flex;
+    flex-direction: column;
+    border-top: var(--border-rule);
+  }
+  .menu[hidden] {
+    display: none;
+  }
+  .menu > a {
+    align-items: center;
+    gap: 12px;
+    min-height: 52px;
+    padding: 0 var(--gutter);
+    border-bottom: var(--border-rule);
+    font-size: 15px;
+  }
+  .menu > a[aria-current='page'] {
+    color: var(--accent);
+  }
+  .menu-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px var(--gutter);
+  }
+  .menu-switches {
+    display: flex;
+    gap: 8px;
+  }
+  .menu-cta {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    text-decoration: none;
+  }
+  @media (min-width: 640px) {
+    .switches {
+      display: flex;
+    }
+  }
+  @media (min-width: 1200px) {
+    .links {
+      display: flex;
+    }
+    .cta {
+      display: inline-block;
+    }
+    .menu-btn,
+    .menu {
+      display: none !important;
+    }
+  }
+</style>

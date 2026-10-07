@@ -1,0 +1,201 @@
+---
+import '../styles/global.css';
+import HeadCommon from '../components/HeadCommon.astro';
+import SiteNav from '../components/SiteNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { LANGS, other, path } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+// Vercel serves one 404.html for every path, so it carries both languages.
+// The head script picks one from the URL prefix before paint; without JS, English shows.
+// Values from docs/handoff/design/Not Found.dc.html. The diagonals are static here; their
+// drawing animation (D15) comes in SP5.
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <HeadCommon title="404 · fmyers.dev" noindex />
+    <script is:inline>
+      (function () {
+        const r = document.documentElement;
+        const es = location.pathname === '/es' || location.pathname.indexOf('/es/') === 0;
+        r.lang = es ? 'es' : 'en';
+        r.dataset.lang = r.lang;
+        document.addEventListener('DOMContentLoaded', function () {
+          document.querySelectorAll('[data-path]').forEach(function (el) {
+            el.textContent = location.pathname;
+          });
+        });
+      })();
+    </script>
+  </head>
+  <body>
+    {LANGS.map((lang) => {
+      const t = ui[lang].notFound;
+      return (
+        <div class={`l-${lang}`}>
+          <SiteNav lang={lang} alternate={path('home', other(lang))} menuId={`site-menu-${lang}`} />
+          <main class="nf">
+            <div class="sheet-head">
+              <span>{t.sheet}</span>
+              <span class="path" data-path>
+                /{lang}/…
+              </span>
+            </div>
+            <section class="sheet">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M0 0L100 100" vector-effect="non-scaling-stroke" />
+                <path d="M100 0L0 100" vector-effect="non-scaling-stroke" />
+              </svg>
+              <span class="tag">404 · {t.missing}</span>
+              <h1>{t.h1}</h1>
+              <p class="lead">{t.p}</p>
+              <div class="actions">
+                <a class="btn" href={path('home', lang)}>
+                  ← {t.home}
+                </a>
+                <a class="sheet-link" href={path('work', lang)}>
+                  {t.links[0]} →
+                </a>
+                <a class="sheet-link" href={path('contact', lang)}>
+                  {t.links[1]} →
+                </a>
+              </div>
+              <div class="corner" />
+            </section>
+          </main>
+          <SiteFooter lang={lang} />
+        </div>
+      );
+    })}
+  </body>
+</html>
+
+<style is:global>
+  html[data-lang='es'] .l-en,
+  html:not([data-lang='es']) .l-es {
+    display: none;
+  }
+</style>
+
+<style>
+  .nf {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .sheet-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    border-bottom: var(--border-ink);
+    padding-bottom: 10px;
+  }
+  .path {
+    color: var(--text-muted);
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .sheet {
+    position: relative;
+    border: var(--border-frame);
+    min-height: clamp(380px, 42cqi, 520px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: clamp(20px, 4cqi, 48px);
+    gap: 16px;
+  }
+  svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--text-muted);
+  }
+  svg path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+  }
+  .tag,
+  h1,
+  .lead {
+    position: relative;
+    align-self: flex-start;
+    background: var(--bg);
+    margin: 0;
+  }
+  .tag {
+    padding: 2px 6px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+  }
+  h1 {
+    padding: 0 6px;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(36px, 5.6cqi, 72px);
+    letter-spacing: var(--ls-display);
+    line-height: 1;
+    max-width: 820px;
+    text-wrap: balance;
+  }
+  .lead {
+    padding: 2px 6px;
+    font-size: 17px;
+    line-height: 1.5;
+    max-width: 520px;
+    text-wrap: pretty;
+  }
+  .actions {
+    position: relative;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn {
+    font-size: 17px;
+    font-weight: 600;
+    background: var(--accent);
+    color: var(--accent-fg);
+    padding: 16px 24px;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .sheet-link {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    background: var(--bg);
+    border: var(--border-ink);
+    color: var(--text);
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .sheet-link:hover {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .btn:hover {
+      color: var(--accent-fg);
+      text-decoration: none;
+    }
+  }
+  .corner {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: var(--corner-mark);
+    height: var(--corner-mark);
+    background: var(--accent);
+  }
+</style>

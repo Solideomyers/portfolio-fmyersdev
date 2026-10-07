@@ -1,0 +1,45 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+}
+const { title, description, noindex } = Astro.props;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+{description && <meta name="description" content={description} />}
+{noindex && <meta name="robots" content="noindex" />}
+<script is:inline>
+  (function () {
+    const apply = function () {
+      try {
+        const t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        else delete document.documentElement.dataset.theme;
+      } catch {
+        // storage blocked: follow the OS theme
+      }
+    };
+    apply();
+    // Pages restored from the back/forward cache don't re-run this script.
+    window.addEventListener('pageshow', function (e) {
+      if (e.persisted) apply();
+    });
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=JetBrains+Mono:wght@500&display=swap"
+/>
+<link
+  rel="icon"
+  type="image/svg+xml"
+  href="/logo-light.svg"
+  media="(prefers-color-scheme: light)"
+/>
+<link rel="icon" type="image/svg+xml" href="/logo-dark.svg" media="(prefers-color-scheme: dark)" />
