@@ -84,6 +84,40 @@ interface Ui {
     maintenance: string;
     payment: string;
   };
+  home: {
+    sheet00: string;
+    lead: string;
+    see: string;
+    available: string;
+    availableNow: string;
+    sheet01: string;
+    allWork: string;
+    sheet02: string;
+    pricing: string;
+    servicesH: string;
+    ngo: string;
+    sheet03: string;
+    steps: string;
+    sheet04: string;
+    contactH: string;
+    contactP: string;
+    facts: { k: string; v: string; accent?: boolean }[];
+    process: { n: string; time: string; t: string; d: string }[];
+  };
+  about: {
+    sheet: string;
+    role: string;
+    portrait: string;
+    caption: string;
+    timelineH: string;
+    ctaH: string;
+    work: string;
+    bio: string[];
+    facts: { k: string; v: string }[];
+    timeline: { y: string; m: string; d: string }[];
+    stack: { k: string; v: string }[];
+  };
+  privacyPage: { sheet: string; updated: string; email: string };
 }
 
 // Copy is verbatim from docs/handoff/design/*.dc.html COPY objects.
@@ -214,6 +248,116 @@ export const ui: Record<Lang, Ui> = {
       maintenance: 'MAINTENANCE PLAN',
       payment: 'PAYMENT',
     },
+    home: {
+      sheet00: 'SHEET 00 — FRANCISCO MYERS · FULLSTACK DEVELOPER',
+      lead: 'From a validated idea to a product in production: spec, interface, API, database and deployment. One person accountable from start to finish.',
+      see: 'See work',
+      available: 'Available for new projects from {date}',
+      availableNow: 'Available for new projects',
+      sheet01: 'SHEET 01 — SELECTED WORK',
+      allWork: 'ALL WORK',
+      sheet02: 'SHEET 02 — SERVICES',
+      pricing: 'PRICING DETAILS',
+      servicesH: 'Three ways to work together.',
+      ngo: 'I work with churches and nonprofits. Ask me about it. Prices in USD.',
+      sheet03: 'SHEET 03 — PROCESS',
+      steps: 'STEPS',
+      sheet04: 'SHEET 04 — CONTACT',
+      contactH: "Tell me what you're building.",
+      contactP: 'Send a short brief and I reply within 2 business days, Venezuela time (UTC−4).',
+      facts: [
+        { k: 'STACK', v: 'Next.js · NestJS · PostgreSQL', accent: true },
+        { k: 'AUTOMATION', v: 'Google Workspace · Apps Script' },
+        { k: 'BASED IN', v: 'Venezuela · UTC−4 · remote' },
+        { k: 'LANGUAGES', v: 'Spanish · English' },
+      ],
+      process: [
+        {
+          n: '01',
+          time: '1 WK',
+          t: 'Spec',
+          d: 'One page with modules, data and the metric that matters. You sign it before any code.',
+        },
+        {
+          n: '02',
+          time: '3–5 WKS',
+          t: 'Build',
+          d: 'Every week you get a working build on a live link.',
+        },
+        {
+          n: '03',
+          time: '1 WK',
+          t: 'Launch',
+          d: 'Deploy, access and docs. The repository is yours from day one.',
+        },
+        {
+          n: '04',
+          time: '30 DAYS',
+          t: 'Support',
+          d: 'Bug fixes included. After that, an optional maintenance plan.',
+        },
+      ],
+    },
+    about: {
+      sheet: 'SHEET 03 — ABOUT',
+      role: 'FULLSTACK DEVELOPER · VENEZUELA · REMOTE',
+      portrait: 'PORTRAIT · B&W · 4:5',
+      caption: 'FRANCISCO MYERS · CIUDAD GUAYANA',
+      timelineH: 'TIMELINE',
+      ctaH: "Let's build the next one.",
+      work: 'See work',
+      bio: [
+        'I build web products with JavaScript and TypeScript, React and Node.js, and automations on Google Workspace. Before I wrote code, I ran the contracts database for works and services at an aluminium plant. That is where I learned to organise how information moves between users, contractors and internal teams.',
+        'Today I apply that judgement to APIs, databases and interfaces, mostly for organisations with small teams and real constraints. I like projects where one person owns the whole thing, from the spec to the deploy.',
+      ],
+      facts: [
+        { k: 'BASED IN', v: 'Ciudad Guayana, VE' },
+        { k: 'TIME ZONE', v: 'VET · UTC−4' },
+        { k: 'LANGUAGES', v: 'Spanish (native) · English (B1)' },
+        { k: 'WORKS', v: 'Remote, US · EU · LatAm' },
+      ],
+      timeline: [
+        {
+          y: '2026 — NOW',
+          m: 'Freelance · ChurchApp (Gracia Eterna)',
+          d: 'Membership system for a local church in Next.js and Supabase. Public v1.0 ten days after the first commit.',
+        },
+        {
+          y: '2025 — NOW',
+          m: 'Developer · Chapel Library',
+          d: 'Nonprofit publisher, Pensacola (US), remote. Inventory and distribution across warehouses on Apps Script and Workspace.',
+        },
+        {
+          y: '2024',
+          m: 'Full Stack · La Web del Colchón',
+          d: 'E-commerce, Spain, remote. New database, data migration, REST API and new frontend in Laravel.',
+        },
+        {
+          y: '2023',
+          m: 'Full Stack · Skills EMPLI',
+          d: 'Job platform, Lima (PE), remote. Landing pages, dashboards and the candidate–company matching flow in React.',
+        },
+        {
+          y: '2023',
+          m: 'Henry · Full Stack bootcamp',
+          d: 'Formal switch from operations to software.',
+        },
+        {
+          y: '2018 — 2022',
+          m: 'Procurement admin · CVG Venalum',
+          d: 'Aluminium industry, Puerto Ordaz. Ran the contracts database for works and services.',
+        },
+      ],
+      stack: [
+        { k: 'LANGUAGES', v: 'JavaScript · TypeScript · PHP' },
+        { k: 'FRONTEND', v: 'React · Redux Toolkit · Vite · Tailwind CSS' },
+        { k: 'BACKEND', v: 'Node.js · NestJS · Laravel · REST APIs' },
+        { k: 'DATA', v: 'PostgreSQL · MongoDB · Prisma · Supabase' },
+        { k: 'TOOLS', v: 'Git · Figma · Google Apps Script' },
+        { k: 'PRACTICES', v: 'Design patterns · Data modelling' },
+      ],
+    },
+    privacyPage: { sheet: 'SHEET 08 — PRIVACY', updated: 'UPDATED', email: 'HOLA@FMYERS.DEV' },
   },
   es: {
     nav: {
@@ -340,6 +484,121 @@ export const ui: Record<Lang, Ui> = {
       fixes: 'CORRECCIONES',
       maintenance: 'MANTENIMIENTO',
       payment: 'PAGO',
+    },
+    home: {
+      sheet00: 'LÁMINA 00 — FRANCISCO MYERS · DESARROLLADOR FULLSTACK',
+      lead: 'De una idea validada a un producto en producción: especificación, interfaz, API, base de datos y despliegue. Un solo responsable de principio a fin.',
+      see: 'Ver proyectos',
+      available: 'Disponible para nuevos proyectos desde {date}',
+      availableNow: 'Disponible para nuevos proyectos',
+      sheet01: 'LÁMINA 01 — PROYECTOS',
+      allWork: 'TODOS LOS PROYECTOS',
+      sheet02: 'LÁMINA 02 — SERVICIOS',
+      pricing: 'VER PRECIOS',
+      servicesH: 'Tres formas de trabajar juntos.',
+      ngo: 'Trabajo con iglesias y ONG; pregúntame. Precios en USD.',
+      sheet03: 'LÁMINA 03 — PROCESO',
+      steps: 'PASOS',
+      sheet04: 'LÁMINA 04 — CONTACTO',
+      contactH: 'Cuéntame qué estás construyendo.',
+      contactP:
+        'Envía un resumen corto y te respondo en 2 días hábiles, hora de Venezuela (UTC−4).',
+      facts: [
+        { k: 'STACK', v: 'Next.js · NestJS · PostgreSQL', accent: true },
+        { k: 'AUTOMATIZ.', v: 'Google Workspace · Apps Script' },
+        { k: 'BASE', v: 'Venezuela · UTC−4 · remoto' },
+        { k: 'IDIOMAS', v: 'Español · Inglés' },
+      ],
+      process: [
+        {
+          n: '01',
+          time: '1 SEM',
+          t: 'Especificación',
+          d: 'Una página con módulos, datos y la métrica que importa. La firmas antes de escribir código.',
+        },
+        {
+          n: '02',
+          time: '3–5 SEM',
+          t: 'Construcción',
+          d: 'Cada semana recibes una versión navegable en un enlace en vivo.',
+        },
+        {
+          n: '03',
+          time: '1 SEM',
+          t: 'Lanzamiento',
+          d: 'Despliegue, accesos y documentación. El repositorio es tuyo desde el día uno.',
+        },
+        {
+          n: '04',
+          time: '30 DÍAS',
+          t: 'Soporte',
+          d: 'Corrección de errores incluida. Después, plan de mantenimiento opcional.',
+        },
+      ],
+    },
+    about: {
+      sheet: 'LÁMINA 03 — SOBRE MÍ',
+      role: 'DESARROLLADOR FULLSTACK · VENEZUELA · REMOTO',
+      portrait: 'RETRATO · B/N · 4:5',
+      caption: 'FRANCISCO MYERS · CIUDAD GUAYANA',
+      timelineH: 'TRAYECTORIA',
+      ctaH: 'Construyamos el siguiente.',
+      work: 'Ver proyectos',
+      bio: [
+        'Construyo productos web con JavaScript y TypeScript, React y Node.js, y automatizaciones sobre Google Workspace. Antes de programar, administré la base de datos de contrataciones de obras y servicios en una planta de aluminio. Ahí aprendí a ordenar cómo fluye la información entre usuarios, contratistas y áreas internas.',
+        'Hoy aplico ese criterio al diseñar APIs, bases de datos e interfaces, sobre todo para organizaciones con equipos pequeños y restricciones reales. Me gustan los proyectos donde una sola persona responde por todo, de la especificación al despliegue.',
+      ],
+      facts: [
+        { k: 'BASE', v: 'Ciudad Guayana, VE' },
+        { k: 'ZONA HORARIA', v: 'VET · UTC−4' },
+        { k: 'IDIOMAS', v: 'Español (nativo) · Inglés (B1)' },
+        { k: 'TRABAJO', v: 'Remoto, EE. UU. · UE · LatAm' },
+      ],
+      timeline: [
+        {
+          y: '2026 — HOY',
+          m: 'Freelance · ChurchApp (Gracia Eterna)',
+          d: 'Sistema de membresía para una iglesia local en Next.js y Supabase. v1.0 pública diez días después del primer commit.',
+        },
+        {
+          y: '2025 — HOY',
+          m: 'Desarrollador · Chapel Library',
+          d: 'Editorial sin fines de lucro, Pensacola (EE. UU.), remoto. Inventario y distribución entre almacenes con Apps Script y Workspace.',
+        },
+        {
+          y: '2024',
+          m: 'Full Stack · La Web del Colchón',
+          d: 'E-commerce, España, remoto. Base de datos nueva, migración, API REST y frontend nuevo en Laravel.',
+        },
+        {
+          y: '2023',
+          m: 'Full Stack · Skills EMPLI',
+          d: 'Plataforma de empleo, Lima (PE), remoto. Landing pages, dashboards y el flujo entre candidatos y empresas en React.',
+        },
+        {
+          y: '2023',
+          m: 'Henry · Bootcamp Full Stack',
+          d: 'Cambio formal de operaciones a software.',
+        },
+        {
+          y: '2018 — 2022',
+          m: 'Asistente administrativo · CVG Venalum',
+          d: 'Industria del aluminio, Puerto Ordaz. Administré la base de datos de contrataciones de obras y servicios.',
+        },
+      ],
+      stack: [
+        { k: 'LENGUAJES', v: 'JavaScript · TypeScript · PHP' },
+        { k: 'FRONTEND', v: 'React · Redux Toolkit · Vite · Tailwind CSS' },
+        { k: 'BACKEND', v: 'Node.js · NestJS · Laravel · APIs REST' },
+        { k: 'DATOS', v: 'PostgreSQL · MongoDB · Prisma · Supabase' },
+        { k: 'HERRAMIENTAS', v: 'Git · Figma · Google Apps Script' },
+        { k: 'PRÁCTICAS', v: 'Patrones de diseño · Modelado de datos' },
+      ],
+    },
+    privacyPage: {
+      sheet: 'LÁMINA 08 — PRIVACIDAD',
+      updated: 'ACTUALIZADO',
+      email: 'HOLA@FMYERS.DEV',
     },
   },
 };
