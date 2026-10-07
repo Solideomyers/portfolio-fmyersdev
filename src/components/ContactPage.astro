@@ -1,0 +1,117 @@
+---
+import Base from '../layouts/Base.astro';
+import SheetHeader from './SheetHeader.astro';
+import Availability from './Availability.astro';
+import ContactForm from './ContactForm.astro';
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { site } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = ui[lang].contact;
+const hrefs = [
+  `https://wa.me/${site.whatsapp.replace(/\D/g, '')}`,
+  `mailto:${site.email}`,
+  site.linkedin,
+];
+---
+
+<Base lang={lang} title={ui[lang].h1.contact} description={c.lead}>
+  <div class="page">
+    <SheetHeader>
+      {c.sheet}
+      <span slot="meta">{c.meta}</span>
+    </SheetHeader>
+    <div class="row">
+      <div class="intro">
+        <h1>{ui[lang].h1.contact}</h1>
+        <p class="lead">{c.lead}</p>
+        <Availability lang={lang} />
+        <div class="channels">
+          {c.channels.map((ch, i) => (
+            <a href={hrefs[i]} rel={i === 1 ? undefined : 'noopener'}>
+              <span class="k">{ch.k}</span>
+              <span class="v">{ch.v}</span>
+              <span class="g">{ch.g}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+      <ContactForm lang={lang} />
+    </div>
+  </div>
+</Base>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px 64px;
+    align-items: flex-start;
+  }
+  .intro {
+    flex: 1 1 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  h1 {
+    margin: 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(40px, 5.2cqi, 66px);
+    letter-spacing: var(--ls-display);
+    line-height: var(--lh-display);
+    text-wrap: balance;
+  }
+  .lead {
+    margin: 0;
+    font-size: clamp(17px, 1.5cqi, 19px);
+    line-height: 1.45;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+  .channels {
+    display: flex;
+    flex-direction: column;
+    border-top: var(--border-ink);
+  }
+  .channels a {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    min-height: 52px;
+    border-bottom: var(--border-rule);
+    color: var(--text);
+    text-decoration: none;
+  }
+  .k {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  .v {
+    font-size: 16px;
+    overflow-wrap: anywhere;
+  }
+  .g {
+    font-family: var(--font-mono);
+    color: var(--accent);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .channels a:hover {
+      color: var(--accent);
+      text-decoration: none;
+    }
+  }
+</style>

@@ -1,0 +1,129 @@
+---
+import Base from '../layouts/Base.astro';
+import SheetHeader from './SheetHeader.astro';
+import SpecGrid from './SpecGrid.astro';
+import Button from './Button.astro';
+import { path, type Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = ui[lang].contact;
+---
+
+<Base lang={lang} title={ui[lang].h1.contactSent} noindex>
+  <div class="page">
+    <SheetHeader>
+      {c.sheet}
+      <span slot="meta">{c.sentMeta}</span>
+    </SheetHeader>
+    <section class="sent">
+      <svg viewBox="0 0 48 48" width="56" height="56" aria-hidden="true">
+        <rect x="1" y="1" width="46" height="46"></rect>
+        <path d="M13 25l7 7 15-16" pathLength="1"></path>
+      </svg>
+      <span class="received">{c.received}</span>
+      <h1>{ui[lang].h1.contactSent}</h1>
+      <p>{c.sentP}</p>
+      <div class="spec">
+        <SpecGrid items={c.spec} min={180} />
+      </div>
+      <div class="actions">
+        <Button href={path('home', lang)} variant="secondary" glyph="←" glyphFirst>
+          {c.home}
+        </Button>
+        <a class="link" href={path('work', lang)}>
+          {c.whileWait} →
+        </a>
+      </div>
+      <div class="corner" aria-hidden="true"></div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .sent {
+    position: relative;
+    border: var(--border-frame);
+    background: var(--surface);
+    padding: clamp(28px, 5cqi, 64px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 860px;
+  }
+  svg {
+    display: block;
+    color: var(--ok);
+  }
+  rect,
+  path {
+    fill: none;
+    stroke: currentColor;
+  }
+  rect {
+    stroke-width: 2;
+  }
+  path {
+    stroke-width: 3;
+  }
+  .received {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--ok);
+  }
+  h1 {
+    margin: 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(36px, 4.6cqi, 58px);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+  p {
+    margin: 0;
+    font-size: clamp(17px, 1.5cqi, 19px);
+    line-height: 1.45;
+    color: var(--text-muted);
+    max-width: 600px;
+    text-wrap: pretty;
+  }
+  .spec :global(.spec-grid) {
+    border: var(--border-ink);
+  }
+  .spec :global(.cell) {
+    background: var(--bg);
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .link {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .corner {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: var(--corner-mark);
+    height: var(--corner-mark);
+    background: var(--accent);
+  }
+</style>
