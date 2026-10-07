@@ -1,0 +1,72 @@
+[
+  {
+    "id": "Q-01",
+    "page": "pricing",
+    "order": 1,
+    "q": "How long does an MVP take?",
+    "a": "4 to 6 weeks from the signed spec. You get a working build to click through every week, so there are no surprises at the end."
+  },
+  {
+    "id": "Q-02",
+    "page": "pricing",
+    "order": 2,
+    "q": "Who owns the code?",
+    "a": "You do. The repository lives in your account from day one, and at handover you get every access, the documentation and a short walkthrough video."
+  },
+  {
+    "id": "Q-03",
+    "page": "pricing",
+    "order": 3,
+    "q": "What does it cost to run each month?",
+    "a": "For small projects, hosting and services usually run $0–25 a month. Automations on Google Workspace add nothing if you already pay for it. The proposal lists every recurring cost."
+  },
+  {
+    "id": "Q-04",
+    "page": "pricing",
+    "order": 4,
+    "q": "How do payments work?",
+    "a": "50% to start and 50% on delivery. I accept bank transfer, Zelle and crypto. All prices are in USD."
+  },
+  {
+    "id": "Q-05",
+    "page": "pricing",
+    "order": 5,
+    "q": "What if the scope changes?",
+    "a": "It happens. Small adjustments fit within the project. Anything new gets a short written estimate before I build it, so you approve the cost first."
+  },
+  {
+    "id": "Q-06",
+    "page": "pricing",
+    "order": 6,
+    "q": "What's included after launch?",
+    "a": "30 days of bug fixes at no cost. After that, an optional maintenance plan from $150 a month covers updates, monitoring and small changes."
+  },
+  {
+    "id": "Q-07",
+    "page": "services",
+    "order": 7,
+    "q": "What do I need to have ready?",
+    "a": "A clear problem and someone who can answer questions within a day or two. Brand assets and sample data help, but I can work without them at first."
+  },
+  {
+    "id": "Q-08",
+    "page": "services",
+    "order": 8,
+    "q": "How do we work across time zones?",
+    "a": "I'm on Venezuela time (UTC−4), which overlaps with US mornings and European afternoons. We meet once a week; the rest happens in writing, and you always see progress on a live link."
+  },
+  {
+    "id": "Q-09",
+    "page": "services",
+    "order": 9,
+    "q": "Can you take over an existing project?",
+    "a": "Yes. I start with a paid one-week audit of the code and data, then propose whether to fix, extend or rebuild."
+  },
+  {
+    "id": "Q-10",
+    "page": "services",
+    "order": 10,
+    "q": "Why build on Google Workspace instead of a custom app?",
+    "a": "When your team already lives in Sheets and Gmail, an Apps Script tool ships in days, costs nothing to host and stays readable for audits. When you outgrow it, I'll tell you and plan the move."
+  }
+]

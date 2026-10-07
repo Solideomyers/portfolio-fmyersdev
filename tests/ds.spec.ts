@@ -75,3 +75,12 @@ test('button glyphs keep a visible space, also inside flex layouts', async ({ pa
   );
   expect(await page.locator('.cta-row .btn').evaluate(glyphGap, 'after')).toBeGreaterThanOrEqual(4);
 });
+
+test('/ds has the SP3 specimens', async ({ page }) => {
+  await page.goto('/ds');
+  for (const id of ['package-card', 'faq', 'compare', 'button-secondary']) {
+    await expect(page.locator(`#${id}`), id).toBeVisible();
+  }
+  await expect(page.locator('#package-card .package-card.featured .corner')).toHaveCount(1);
+  await expect(page.locator('#faq details').first()).toHaveAttribute('open', '');
+});

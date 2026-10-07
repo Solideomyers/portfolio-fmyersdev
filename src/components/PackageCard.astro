@@ -1,0 +1,184 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { path, type Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { formatUsd, unitLabel } from '../lib/offer';
+
+interface Props {
+  pkg: CollectionEntry<'pricing'>['data'];
+  lang: Lang;
+}
+const { pkg, lang } = Astro.props;
+const o = ui[lang].offer;
+---
+
+<article class:list={['package-card', { featured: pkg.featured }]}>
+  <div class="head">
+    <span class="id">{pkg.id}</span>
+    {pkg.featured && <span class="badge-common">{o.common}</span>}
+  </div>
+  <div class="body">
+    <div class="intro">
+      <h2 class="name">{pkg.name}</h2>
+      <p class="for">{pkg.for}</p>
+    </div>
+    <div class="price">
+      <span class="mono">{o.from}</span>
+      <span class="amount">{formatUsd(pkg.from)}</span>
+      <span class="mono">{unitLabel(pkg.billing, lang)}</span>
+    </div>
+    <ul class="includes">
+      {pkg.includes.map((i) => (
+        <li>{i}</li>
+      ))}
+    </ul>
+    <div class="timeline">{pkg.timeline}</div>
+    <a class="choose" href={path('contact', lang)} data-press>
+      {ui[lang].pricing.choose} →
+    </a>
+  </div>
+  {pkg.featured && <div class="corner" aria-hidden="true" />}
+</article>
+
+<style>
+  .package-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: var(--border-ink);
+    background: var(--bg);
+  }
+  .featured {
+    border: var(--border-frame);
+    background: var(--surface);
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: var(--border-rule);
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .id {
+    color: var(--accent);
+  }
+  .badge-common {
+    font-size: 11px;
+    letter-spacing: 1px;
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+    padding: 3px 6px;
+  }
+  .body {
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+  }
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .name {
+    margin: 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1.05;
+  }
+  .for {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+  .price {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-bottom: 1px dashed var(--text-muted);
+    padding-bottom: 10px;
+  }
+  .mono {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .amount {
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: 44px;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+  .includes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .includes li {
+    position: relative;
+    padding-left: 24px;
+    font-size: 15px;
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+  .includes li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+  }
+  .timeline {
+    margin-top: auto;
+    padding-top: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .choose {
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    background: transparent;
+    color: var(--text);
+    border: var(--border-ink);
+  }
+  .featured .choose {
+    background: var(--accent);
+    color: var(--accent-fg);
+  }
+  .corner {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 20px;
+    height: 20px;
+    background: var(--accent);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .choose:hover {
+      color: var(--text);
+      text-decoration: none;
+      background: repeating-linear-gradient(135deg, var(--hatch) 0 1px, transparent 1px 6px);
+    }
+    .featured .choose:hover {
+      color: var(--accent-fg);
+      background: var(--accent);
+    }
+  }
+</style>

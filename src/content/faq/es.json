@@ -1,0 +1,72 @@
+[
+  {
+    "id": "Q-01",
+    "page": "pricing",
+    "order": 1,
+    "q": "¿Cuánto tarda un MVP?",
+    "a": "Entre 4 y 6 semanas desde la especificación firmada. Cada semana recibes una versión navegable, así que no hay sorpresas al final."
+  },
+  {
+    "id": "Q-02",
+    "page": "pricing",
+    "order": 2,
+    "q": "¿De quién es el código?",
+    "a": "Tuyo. El repositorio vive en tu cuenta desde el primer día y en la entrega recibes todos los accesos, la documentación y un video corto de recorrido."
+  },
+  {
+    "id": "Q-03",
+    "page": "pricing",
+    "order": 3,
+    "q": "¿Cuánto cuesta mantenerlo cada mes?",
+    "a": "En proyectos pequeños, el hosting y los servicios suelen costar entre $0 y $25 al mes. Las automatizaciones en Google Workspace no suman nada si ya lo pagas. La propuesta detalla cada costo recurrente."
+  },
+  {
+    "id": "Q-04",
+    "page": "pricing",
+    "order": 4,
+    "q": "¿Cómo se paga?",
+    "a": "50% al iniciar y 50% en la entrega. Acepto transferencia, Zelle y cripto. Todos los precios están en USD."
+  },
+  {
+    "id": "Q-05",
+    "page": "pricing",
+    "order": 5,
+    "q": "¿Y si cambia el alcance?",
+    "a": "Pasa. Los ajustes pequeños entran en el proyecto. Lo nuevo recibe un presupuesto corto por escrito antes de construirlo, para que apruebes el costo primero."
+  },
+  {
+    "id": "Q-06",
+    "page": "pricing",
+    "order": 6,
+    "q": "¿Qué incluye después del lanzamiento?",
+    "a": "30 días de corrección de errores sin costo. Después, un plan de mantenimiento opcional desde $150 al mes cubre actualizaciones, monitoreo y cambios pequeños."
+  },
+  {
+    "id": "Q-07",
+    "page": "services",
+    "order": 7,
+    "q": "¿Qué necesito tener listo?",
+    "a": "Un problema claro y alguien que pueda responder preguntas en uno o dos días. La identidad de marca y datos de ejemplo ayudan, pero al inicio puedo trabajar sin ellos."
+  },
+  {
+    "id": "Q-08",
+    "page": "services",
+    "order": 8,
+    "q": "¿Cómo trabajamos con distintas zonas horarias?",
+    "a": "Estoy en hora de Venezuela (UTC−4), que coincide con las mañanas de EE. UU. y las tardes de Europa. Nos reunimos una vez por semana; el resto va por escrito, y siempre ves el avance en un enlace en vivo."
+  },
+  {
+    "id": "Q-09",
+    "page": "services",
+    "order": 9,
+    "q": "¿Puedes retomar un proyecto existente?",
+    "a": "Sí. Empiezo con una auditoría pagada de una semana sobre el código y los datos, y luego propongo si corregir, ampliar o rehacer."
+  },
+  {
+    "id": "Q-10",
+    "page": "services",
+    "order": 10,
+    "q": "¿Por qué Google Workspace en vez de una app a medida?",
+    "a": "Si tu equipo ya vive en Sheets y Gmail, una herramienta en Apps Script sale en días, no cuesta hosting y sigue siendo legible para auditorías. Cuando se quede corta, te lo diré y planificamos la migración."
+  }
+]

@@ -12,7 +12,7 @@ interface Props {
 }
 const { lang, currentKey, alternate, menuId = 'site-menu' } = Astro.props;
 const t = ui[lang];
-// NOTES (06) is appended in SP6 when site.blogEnabled is true.
+// NOTES (06) is appended in SP7 (blog) when site.blogEnabled is true.
 const links = NAV.map((key, i) => ({
   key,
   href: path(key, lang),

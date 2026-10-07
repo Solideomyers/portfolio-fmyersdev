@@ -1,0 +1,120 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import SheetHeader from './SheetHeader.astro';
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  packages: CollectionEntry<'pricing'>['data'][];
+  lang: Lang;
+}
+const { packages, lang } = Astro.props;
+const t = ui[lang].pricing;
+const labels = ui[lang].compare;
+const keys = [
+  'timeline',
+  'spec',
+  'weeklyBuilds',
+  'ownership',
+  'fixes',
+  'maintenance',
+  'payment',
+] as const;
+---
+
+<section class="compare">
+  <SheetHeader>
+    {t.compareH}
+    <span slot="meta" class="swipe">
+      {t.swipe} →
+    </span>
+  </SheetHeader>
+  <div class="compare-scroll" tabindex="0" role="region" aria-label={t.compareLabel}>
+    <div class="grid" role="table" aria-label={t.compareLabel}>
+      <div class="row" role="row">
+        <div class="cell head" role="columnheader"></div>
+        {packages.map((p) => (
+          <div class="cell head" role="columnheader">
+            <span class="id">{p.id}</span>
+            <span class="name">{p.name}</span>
+          </div>
+        ))}
+      </div>
+      {keys.map((k) => (
+        <div class="row" role="row">
+          <div class="cell key" role="rowheader">
+            {labels[k]}
+          </div>
+          {packages.map((p) => (
+            <div class="cell val" role="cell">
+              {p.compare[k]}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .compare {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .swipe {
+    display: none;
+  }
+  .compare-scroll {
+    overflow-x: auto;
+  }
+  .grid {
+    min-width: 620px;
+    display: grid;
+    grid-template-columns: minmax(150px, 1.2fr) repeat(3, minmax(0, 1fr));
+    border: var(--border-ink);
+    background: var(--line);
+    gap: 1px;
+  }
+  .row {
+    display: contents;
+  }
+  .cell {
+    padding: 12px 14px;
+    background: var(--bg);
+  }
+  .head {
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .id {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--accent);
+  }
+  .name {
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .key {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+  }
+  .val {
+    font-size: 15px;
+    line-height: 1.35;
+    text-wrap: pretty;
+  }
+  @media (max-width: 619.98px) {
+    .swipe {
+      display: inline;
+    }
+  }
+</style>
