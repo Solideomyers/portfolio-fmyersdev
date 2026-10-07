@@ -69,6 +69,7 @@ const pricing = defineCollection({
       includes: z.array(z.string()),
       timeline: z.string(),
       featured: z.boolean().default(false),
+      teaser: z.array(z.string()).min(1),
       service: z
         .object({
           for: z.string(),
@@ -114,4 +115,13 @@ const faq = defineCollection({
   }),
 });
 
-export const collections = { work, otherWork, pricing, faq };
+const pages = defineCollection({
+  loader: glob({
+    base: './src/content/pages',
+    pattern: '**/*.md',
+    generateId: ({ entry }) => entry.replace(/\.md$/, ''),
+  }),
+  schema: z.object({ title: z.string(), updated: z.coerce.date() }).strict(),
+});
+
+export const collections = { work, otherWork, pricing, faq, pages };

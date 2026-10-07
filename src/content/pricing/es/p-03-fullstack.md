@@ -14,6 +14,10 @@ includes:
   - Cancelas con 30 días de aviso
 timeline: Mensual
 featured: false
+teaser:
+  - ~20 h por semana
+  - Se integra a tu equipo
+  - Reporte semanal
 service:
   for: Para equipos que ya tienen un producto y necesitan manos senior por unos meses.
   scope:

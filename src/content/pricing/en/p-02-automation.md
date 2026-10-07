@@ -14,6 +14,10 @@ includes:
   - Handover and 30 days of fixes
 timeline: 1–2 weeks
 featured: false
+teaser:
+  - On your Google Workspace
+  - Reports, alerts and workflows
+  - No server costs
 service:
   for: For teams on Google Workspace losing hours to spreadsheets, copy-paste and manual reports.
   scope:

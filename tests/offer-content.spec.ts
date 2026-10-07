@@ -31,3 +31,22 @@ test('faq: Services has Q-07…Q-10 only, Pricing Q-01…Q-06 (design decision A
     expect(on('pricing')).toEqual(['Q-01', 'Q-02', 'Q-03', 'Q-04', 'Q-05', 'Q-06']);
   }
 });
+
+test('every package has a three-item teaser (Home)', () => {
+  for (const lang of ['en', 'es']) {
+    for (const file of readdirSync(`src/content/pricing/${lang}`)) {
+      const text = readFileSync(`src/content/pricing/${lang}/${file}`, 'utf8');
+      const block = text.match(/^teaser:\n((?: {2}- .+\n)+)/m);
+      expect(block, `${lang}/${file}`).not.toBeNull();
+      expect(block![1].trim().split('\n')).toHaveLength(3);
+    }
+  }
+});
+
+test('privacy pages exist in both languages with title and updated date', () => {
+  for (const lang of ['en', 'es']) {
+    const text = readFileSync(`src/content/pages/${lang}/privacy.md`, 'utf8');
+    expect(text).toMatch(/^title: .+$/m);
+    expect(text).toMatch(/^updated: \d{4}-\d{2}-\d{2}$/m);
+  }
+});
