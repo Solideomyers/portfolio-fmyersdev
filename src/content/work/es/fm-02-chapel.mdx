@@ -1,0 +1,66 @@
+---
+id: FM-02
+slug: chapel
+lang: es
+title: Chapel
+summary: Inventario y distribución de una editorial sin fines de lucro en dos almacenes, sobre el Google Workspace que el equipo ya tenía.
+client: Chapel Library · editorial sin fines de lucro
+sector: [Sin fines de lucro, Logística]
+modules: [Almacenes, Inventario, Entradas y salidas por lote, Reportes, Usuarios]
+stack: [Google Apps Script, Google Sheets, Chart.js]
+status: in-use
+role: Fullstack sobre Google Workspace
+timeline: En uso desde finales de 2025
+year: 2025
+cover:
+  {
+    src: /work/fm-02/chapel.png,
+    alt: 'App móvil de Chapel: panel, gráficos de stock, entrada por lote y actividad reciente',
+  }
+shots:
+  - {
+      src: /work/fm-02/chapel.png,
+      alt: 'App móvil de Chapel: panel, gráficos de stock, entrada por lote y actividad reciente',
+      caption: Móvil — panel,
+      entrada por lote y actividad,
+    }
+metrics:
+  - { label: Títulos registrados, value: '594', date: 2026-10 }
+  - { label: Unidades registradas, value: '2.731', date: 2026-10 }
+  - { label: Almacenes, value: '2', date: 2026-10 }
+featured: true
+order: 2
+draft: false
+---
+
+## Contexto
+
+Chapel es el sistema de inventario detrás de la distribución de libros de una editorial sin fines de lucro en Venezuela, que despacha desde dos almacenes: Puerto Ordaz y Maracay.
+
+## Problema
+
+El equipo necesitaba un stock compartido y al día para ambos almacenes, un registro de cada entrada y salida, y reportes que pudiera imprimir o enviar.
+
+## Restricciones
+
+- Tenía que funcionar sobre el Google Workspace que el equipo ya usa, sin costos de servidor.
+- Pensado primero para móvil: las entradas y salidas se registran desde el teléfono.
+- Los datos tienen que seguir siendo legibles en una hoja de cálculo, para auditorías.
+
+## Solución
+
+- **Plataforma:** una app de una sola página en Google Apps Script, con Google Sheets como base de datos (inventario, historial de movimientos, historial archivado y usuarios). Corre sobre Workspace, así que no hay costos de servidor.
+- **Movimientos:** entradas y salidas por lote en cada almacén, guardadas como un solo bloque para que el lote quede registrado completo. Salir de un formulario con ítems sin guardar pide confirmación.
+- **Panel:** stock por almacén, distribución del stock, alertas y movimientos del día.
+- **Reportes:** reportes de inventario y de pedidos en PDF y Excel por almacén, filtrados por stock disponible o stock crítico (0–10).
+- **Automatización:** alerta diaria por correo de stock bajo y archivado automático del historial con más de seis meses.
+- **Acceso:** cuatro roles (Super Admin, Admin, Usuario e Invitado) con flujo de aprobación, y un chat del equipo con presencia.
+
+<Figure shot={frontmatter.shots[1]} n={2} lang={frontmatter.lang} />
+
+## Resultado
+
+- 594 títulos y 2.731 unidades registrados en 2 almacenes, con cada movimiento guardado desde diciembre de 2025.
+- Siguiente paso, en curso: reescribirla en Next.js, NestJS y PostgreSQL para llevar la app más lejos.
+
+<Metrics items={frontmatter.metrics} lang={frontmatter.lang} />
