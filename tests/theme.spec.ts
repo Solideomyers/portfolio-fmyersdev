@@ -53,3 +53,15 @@ test('blocked localStorage: page renders and toggle still works', async ({ page 
   await page.locator('header .tools .theme-toggle').click();
   await expect(page.locator('body')).toHaveCSS('background-color', DARK);
 });
+
+test('the whole canvas uses --bg, not just the body box', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.setViewportSize({ width: 768, height: 1400 });
+  await page.goto('/es');
+  const corner = await page.evaluate(() => {
+    const el = document.elementFromPoint(5, window.innerHeight - 5);
+    return getComputedStyle(el === document.documentElement ? el : document.documentElement)
+      .backgroundColor;
+  });
+  expect(corner).toBe(DARK);
+});

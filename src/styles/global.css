@@ -13,6 +13,11 @@
   box-sizing: border-box;
 }
 
+/* body is a size container (cqi type scale), which blocks background propagation to the canvas */
+html {
+  background: var(--bg);
+}
+
 body {
   margin: 0;
   background: var(--bg);
