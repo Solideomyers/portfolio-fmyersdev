@@ -1,4 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { availability } from '../src/lib/home';
+import { site } from '../src/config/site';
+
+// The availability sentence is rendered at build time from site.availableFrom and the real date,
+// so expectations are computed the same way (a build after the month must not turn CI red).
+const built = (lang: 'en' | 'es') => availability(site.availableFrom, new Date(), lang);
 
 const homes = [
   {
@@ -6,7 +12,6 @@ const homes = [
     url: '/en',
     work: '/en/work',
     pricing: '/en/pricing',
-    avail: 'Available for new projects from Nov 2026',
     now: 'Available for new projects',
   },
   {
@@ -14,18 +19,18 @@ const homes = [
     url: '/es',
     work: '/es/proyectos',
     pricing: '/es/precios',
-    avail: 'Disponible para nuevos proyectos desde nov 2026',
     now: 'Disponible para nuevos proyectos',
   },
 ] as const;
 
 for (const h of homes) {
   test(`${h.lang} home: hero, work, services, process, contact`, async ({ page }) => {
-    await page.clock.setFixedTime(new Date('2026-10-07T12:00:00Z'));
+    // A visitor clock before any plausible date: the inline script must leave the build text alone.
+    await page.clock.setFixedTime(new Date('2000-01-01T00:00:00Z'));
     await page.goto(h.url);
     await expect(page.locator('.hero .ruler .zone')).toHaveCount(8);
     await expect(page.locator('.hero .ruler .zone.on')).toHaveText('1');
-    await expect(page.locator('.hero .available .text')).toHaveText(h.avail);
+    await expect(page.locator('.hero .available .text')).toHaveText(built(h.lang).text);
     await expect(page.locator('.hero .spec-grid.rows .cell')).toHaveCount(4);
     await expect(page.locator('.hero .v.accent')).toHaveText('Next.js · NestJS · PostgreSQL');
     const cards = page.locator('a.card.grid');
@@ -45,7 +50,8 @@ for (const h of homes) {
   test(`${h.lang} home: availability is dateless once the month has started (visitor clock)`, async ({
     page,
   }) => {
-    await page.clock.setFixedTime(new Date('2026-12-01T12:00:00Z'));
+    test.skip(!built(h.lang).dated, 'build already past availableFrom: no script to exercise');
+    await page.clock.setFixedTime(new Date('2099-01-01T00:00:00Z'));
     await page.goto(h.url);
     await expect(page.locator('.hero .available .text')).toHaveText(h.now);
   });
@@ -64,9 +70,7 @@ test.describe('without JavaScript', () => {
   test.use({ javaScriptEnabled: false });
   test('availability shows the build-time sentence', async ({ page }) => {
     await page.goto('/en');
-    await expect(page.locator('.hero .available .text')).toContainText(
-      'Available for new projects',
-    );
+    await expect(page.locator('.hero .available .text')).toHaveText(built('en').text);
   });
 });
 
@@ -77,4 +81,14 @@ test('home heading levels never skip', async ({ page }) => {
     .evaluateAll((els) => els.map((e) => Number(e.tagName[1])));
   expect(levels[0]).toBe(1);
   for (let i = 1; i < levels.length; i++) expect(levels[i]).toBeLessThanOrEqual(levels[i - 1] + 1);
+});
+
+test('home contact and section links meet the 44px touch target', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+  await page.goto('/en');
+  const heights = await page
+    .locator('.contact-block .links a, .meta-link')
+    .evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height));
+  expect(heights).toHaveLength(4);
+  for (const h of heights) expect(h).toBeGreaterThanOrEqual(44);
 });

@@ -83,7 +83,12 @@ const whatsapp = `https://wa.me/${site.whatsapp.replace(/\D/g, '')}`;
     font-size: 13px;
     letter-spacing: 1px;
   }
+  /* 44px hit area (touch-target rule); negative margins keep the visual spacing. */
   .links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-block: -12px;
     color: var(--invert-fg);
     text-decoration: underline;
   }

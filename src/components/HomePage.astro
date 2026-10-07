@@ -87,7 +87,12 @@ const packages = byOrder(await getCollection('pricing', (e) => e.data.lang === l
     flex-direction: column;
     gap: 24px;
   }
+  /* 44px hit area without moving the sheet-header rule. */
   .meta-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-block: -12px;
     color: var(--accent);
   }
   .cases {
