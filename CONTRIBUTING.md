@@ -6,6 +6,7 @@
 2. `npm install`. This also installs the git hooks (`prepare` → husky). Check with `git config --get core.hooksPath` (expected `.husky/_`).
 3. `npx playwright install chromium` for tests.
 4. Install gitleaks (`winget install gitleaks`) so the pre-commit secrets scan runs locally. Without it the hook warns and CI still scans.
+5. Optional: `cp .env.example .env` to exercise `/api/contact` locally (`npm run dev`). The contact backend is documented in `apps-script/README.md`. Tests serve the static build with `scripts/serve-static.mjs`, because the Vercel adapter disables `astro preview`.
 
 ## Branches
 
