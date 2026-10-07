@@ -92,3 +92,25 @@ test.describe('without JavaScript', () => {
     await expect(second).toHaveAttribute('open', '');
   });
 });
+
+test('SEE PRICING links meet the 44px touch target', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+  await page.goto('/en/services');
+  for (const box of await page
+    .locator('.service-sheet .see')
+    .evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height))) {
+    expect(box).toBeGreaterThanOrEqual(44);
+  }
+});
+
+for (const url of ['/en/pricing', '/es/servicios']) {
+  test(`${url}: heading levels never skip`, async ({ page }) => {
+    await page.goto(url);
+    const levels = await page
+      .locator('main :is(h1, h2, h3, h4)')
+      .evaluateAll((els) => els.map((e) => Number(e.tagName[1])));
+    expect(levels[0]).toBe(1);
+    for (let i = 1; i < levels.length; i++)
+      expect(levels[i]).toBeLessThanOrEqual(levels[i - 1] + 1);
+  });
+}

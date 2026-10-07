@@ -152,7 +152,14 @@ const s = ui[lang].services;
   .time {
     font-size: 15px;
   }
+  /* 44px hit area (touch-target rule) without moving the text: the extra height is cancelled by
+     negative margins. */
   .see {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-bottom: -12px;
     margin-top: auto;
     font-family: var(--font-mono);
     font-size: 13px;
