@@ -46,3 +46,18 @@ main {
 .h1-xl {
   font-size: clamp(40px, 6.6cqi, 84px);
 }
+
+/* Base link + button styles from the handoff helmet (every .dc.html). Hover: fine pointers only (D02). */
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  a:hover {
+    color: var(--text);
+    text-decoration: underline;
+  }
+}
+button {
+  font: inherit;
+}

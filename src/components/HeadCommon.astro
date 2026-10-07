@@ -13,12 +13,22 @@ const { title, description, noindex } = Astro.props;
 {description && <meta name="description" content={description} />}
 {noindex && <meta name="robots" content="noindex" />}
 <script is:inline>
-  try {
-    const t = localStorage.getItem('theme');
-    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
-  } catch {
-    // storage blocked: follow the OS theme
-  }
+  (function () {
+    const apply = function () {
+      try {
+        const t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        else delete document.documentElement.dataset.theme;
+      } catch {
+        // storage blocked: follow the OS theme
+      }
+    };
+    apply();
+    // Pages restored from the back/forward cache don't re-run this script.
+    window.addEventListener('pageshow', function (e) {
+      if (e.persisted) apply();
+    });
+  })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
