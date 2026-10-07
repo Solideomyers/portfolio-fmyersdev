@@ -17,6 +17,7 @@
     "prepare": "husky && git config commit.template .gitmessage"
   },
   "dependencies": {
+    "@astrojs/mdx": "^8.0.3",
     "astro": "^7.3.6"
   },
   "allowScripts": {

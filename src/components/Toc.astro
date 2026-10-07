@@ -1,0 +1,245 @@
+---
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { pad2 } from '../lib/work';
+
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+  lang: Lang;
+}
+const { headings, lang } = Astro.props;
+const items = headings.filter((h) => h.depth === 2);
+const label = ui[lang].case.contents;
+const total = pad2(items.length);
+---
+
+{items.length >= 3 && (
+  <>
+    <nav class="toc-side" aria-label={label}>
+      <span class="label">{label}</span>
+      <div class="list">
+        <div class="marker" aria-hidden="true" />
+        {items.map((h, i) => (
+          <a href={`#${h.slug}`} data-toc-link={i}>
+            <span class="n">{pad2(i + 1)}</span>
+            {h.text}
+          </a>
+        ))}
+      </div>
+    </nav>
+    <div class="toc-block" data-total={total}>
+      <button type="button" aria-expanded="false" aria-controls="toc-list">
+        <span class="now" data-label={label}>
+          {label} · 01/{total} {items[0].text}
+        </span>
+        <span class="plus" aria-hidden="true">
+          +
+        </span>
+      </button>
+      <div id="toc-list" class="rows" hidden>
+        {items.map((h, i) => (
+          <a href={`#${h.slug}`} data-toc-link={i}>
+            <span class="n">{pad2(i + 1)}</span>
+            {h.text}
+          </a>
+        ))}
+      </div>
+      <noscript>
+        <style>
+          .toc-block .rows[hidden] {
+            display: flex !important;
+          }
+          .toc-block button {
+            display: none !important;
+          }
+        </style>
+      </noscript>
+    </div>
+  </>
+)}
+
+<script>
+  const headings = [...document.querySelectorAll<HTMLElement>('.prose h2[id]')];
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
+  const marker = document.querySelector<HTMLElement>('.toc-side .marker');
+  const block = document.querySelector<HTMLElement>('.toc-block');
+  const btn = block?.querySelector('button');
+  const rows = block?.querySelector<HTMLElement>('.rows');
+  const now = block?.querySelector<HTMLElement>('.now');
+
+  const setActive = (i: number) => {
+    for (const a of links) {
+      const on = Number(a.dataset.tocLink) === i;
+      a.classList.toggle('on', on);
+      if (on) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    }
+    if (marker) marker.style.transform = `translateY(${i * 36}px)`;
+    if (now && block)
+      now.textContent = `${now.dataset.label} · ${String(i + 1).padStart(2, '0')}/${block.dataset.total} ${headings[i]?.textContent ?? ''}`;
+  };
+  const setOpen = (open: boolean) => {
+    if (!btn || !rows) return;
+    rows.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+  };
+
+  // Active = the last heading that has passed 30% of the viewport. Computed from positions (not
+  // only from headings crossing a band), so deep links, the End key and scrollbar drags work too.
+  const current = () => {
+    const line = innerHeight * 0.3;
+    let idx = 0;
+    headings.forEach((h, k) => {
+      if (h.getBoundingClientRect().top <= line) idx = k;
+    });
+    return idx;
+  };
+
+  // A click wins until the scroll it triggers settles: a short section would otherwise hand the
+  // active state to the next heading that passes the line.
+  let locked = false;
+  let release: ReturnType<typeof setTimeout> | undefined;
+  const unlockSoon = (ms: number) => {
+    clearTimeout(release);
+    release = setTimeout(() => (locked = false), ms);
+  };
+
+  if (headings.length) {
+    let queued = false;
+    const update = () => {
+      queued = false;
+      if (!locked) setActive(current());
+    };
+    const schedule = () => {
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(update);
+      }
+    };
+    update();
+    addEventListener('scroll', schedule, { passive: true });
+    addEventListener('load', schedule);
+    addEventListener('hashchange', schedule);
+    for (const a of links)
+      a.addEventListener('click', () => {
+        locked = true;
+        unlockSoon(1000);
+        setActive(Number(a.dataset.tocLink));
+        setOpen(false);
+      });
+    addEventListener('scrollend', () => {
+      if (locked) unlockSoon(150);
+    });
+    btn?.addEventListener('click', () => setOpen(rows?.hidden !== false));
+  }
+</script>
+
+<style>
+  .toc-side {
+    display: none;
+  }
+  .label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  .list {
+    position: relative;
+    border-left: var(--border-rule);
+  }
+  .marker {
+    position: absolute;
+    left: -1px;
+    top: 0;
+    width: 2px;
+    height: 36px;
+    background: var(--accent);
+    transition: transform 200ms var(--ease-in-out);
+  }
+  .toc-side a,
+  .rows a {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 15px;
+    color: var(--text-muted);
+    font-weight: 400;
+    text-decoration: none;
+  }
+  .toc-side a {
+    height: 36px;
+    padding-left: 14px;
+  }
+  .toc-side a.on,
+  .rows a.on {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .n {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  .toc-block {
+    width: 100%;
+    border: var(--border-ink);
+  }
+  .toc-block button {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 0 14px;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-align: left;
+  }
+  .plus {
+    font-size: 18px;
+    transition: transform 200ms var(--ease-out);
+  }
+  [aria-expanded='true'] .plus {
+    transform: rotate(45deg);
+  }
+  .rows {
+    display: flex;
+    flex-direction: column;
+    border-top: var(--border-rule);
+  }
+  .rows[hidden] {
+    display: none;
+  }
+  .rows a {
+    min-height: 44px;
+    padding: 0 14px;
+    border-bottom: var(--border-rule);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .toc-side a:hover,
+    .rows a:hover {
+      color: var(--accent);
+      text-decoration: none;
+    }
+  }
+  @media (min-width: 1200px) {
+    .toc-side {
+      position: sticky;
+      top: 88px;
+      flex: 0 0 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .toc-block {
+      display: none;
+    }
+  }
+</style>

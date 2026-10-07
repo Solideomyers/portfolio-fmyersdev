@@ -1,0 +1,26 @@
+[
+  {
+    "id": "OW-01",
+    "title": "Confession 1689 API",
+    "repo": "https://github.com/Solideomyers/confesion1689-api",
+    "stack": ["NestJS", "PostgreSQL", "Swagger"],
+    "en": "REST API serving the 1689 Baptist Confession as structured data, documented with Swagger.",
+    "es": "API REST que sirve la Confesión Bautista de 1689 como datos estructurados, documentada con Swagger."
+  },
+  {
+    "id": "OW-02",
+    "title": "Hymnal generator",
+    "repo": "https://github.com/Solideomyers/hymns-church",
+    "stack": ["FastAPI", "Tesseract OCR", "Redis", "Celery", "PostgreSQL"],
+    "en": "Extracts hymns from two-column PDF hymnals with OCR and generates .docx songbooks.",
+    "es": "Extrae himnos de himnarios PDF a dos columnas con OCR y genera himnarios en .docx."
+  },
+  {
+    "id": "OW-03",
+    "title": "Historical translation MCP",
+    "repo": "https://github.com/Solideomyers/mcp_translate",
+    "stack": ["TypeScript", "MCP", "tesseract.js"],
+    "en": "MCP server that translates 17th-century English Baptist texts into contemporary Spanish.",
+    "es": "Servidor MCP que traduce textos bautistas ingleses del siglo XVII al español actual."
+  }
+]

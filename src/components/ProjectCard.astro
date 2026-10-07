@@ -1,0 +1,146 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Figure from './Figure.astro';
+import Status from './Status.astro';
+import SpecGrid from './SpecGrid.astro';
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { statusLabel } from '../lib/work';
+
+interface Props {
+  data: CollectionEntry<'work'>['data'];
+  href: string;
+  lang: Lang;
+  variant?: 'grid' | 'next';
+}
+const { data, href, lang, variant = 'grid' } = Astro.props;
+const t = ui[lang].work;
+const shot = { src: data.cover.src, alt: data.cover.alt };
+const sizes = '(min-width: 768px) 50vw, 100vw';
+---
+
+{variant === 'grid' ? (
+  <a class="card grid" href={href}>
+    <div class="head">
+      <span class="id">{data.id}</span>
+      <Status status={data.status} lang={lang} variant="badge" />
+    </div>
+    <Figure shot={shot} lang={lang} frame={false} placeholder="16:10" sizes={sizes} />
+    <div class="body">
+      <div class="title">{data.title}</div>
+      <div class="summary">{data.summary}</div>
+    </div>
+    <SpecGrid
+      variant="card"
+      items={[
+        { k: t.keys.sector, v: data.sector.join(' · ') },
+        { k: t.keys.stack, v: data.stack.slice(0, 2).join(' · ') },
+        { k: t.keys.role, v: data.role },
+        { k: t.keys.year, v: String(data.year) },
+      ]}
+    />
+    <div class="read">{t.readCaps} →</div>
+  </a>
+) : (
+  <a class="card next" href={href}>
+    <Figure shot={shot} lang={lang} frame={false} placeholder="16:10" sizes={sizes} />
+    <div class="next-body">
+      <div class="next-head">
+        <span class="id">{data.id}</span>
+        <span class="muted">{statusLabel(data.status, lang)}</span>
+      </div>
+      <div class="title fixed">{data.title}</div>
+      <div class="summary">{data.summary}</div>
+      <div class="read auto">{t.readCaps} →</div>
+    </div>
+  </a>
+)}
+
+<style>
+  .card {
+    border: var(--border-ink);
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color var(--dur-hover) var(--ease);
+  }
+  .grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .grid :global(.media) {
+    border-bottom: var(--border-rule);
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: var(--border-rule);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+  .id {
+    color: var(--accent);
+  }
+  .body {
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .title {
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(28px, 2.7cqi, 34px);
+    letter-spacing: -1px;
+  }
+  .title.fixed {
+    font-size: 34px;
+  }
+  .summary {
+    font-size: 16px;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+  .read {
+    padding: 14px 16px;
+    margin-top: auto;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--accent);
+  }
+  .next {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  }
+  .next-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-left: var(--border-rule);
+  }
+  .next-head {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+  .muted {
+    color: var(--text-muted);
+  }
+  .read.auto {
+    padding: 0;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .card:hover {
+      border-color: var(--accent);
+      color: var(--text);
+      text-decoration: none;
+    }
+  }
+</style>

@@ -1,0 +1,58 @@
+---
+interface Props {
+  items: { k: string; v: string }[];
+  variant?: 'cells' | 'card';
+  min?: number;
+}
+const { items, variant = 'cells', min = 160 } = Astro.props;
+// Rows without data are omitted (handoff C05).
+const rows = items.filter((i) => i.v.trim() !== '');
+---
+
+<div class:list={['spec-grid', variant]} style={`--min:${min}px`}>
+  {rows.map((r) => (
+    <div class="cell">
+      <span class="k">{r.k}</span>
+      <span class="v">{r.v}</span>
+    </div>
+  ))}
+</div>
+
+<style>
+  .cells {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--min)), 1fr));
+    gap: 1px;
+    background: var(--line);
+  }
+  .cells .cell {
+    background: var(--surface);
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: var(--border-rule);
+  }
+  .card .cell {
+    padding: 10px 16px;
+    border-bottom: var(--border-rule);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .k {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  .v {
+    font-size: 15px;
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+</style>

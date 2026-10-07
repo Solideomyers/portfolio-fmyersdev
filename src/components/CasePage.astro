@@ -1,0 +1,199 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Button from './Button.astro';
+import SheetHeader from './SheetHeader.astro';
+import Status from './Status.astro';
+import SpecGrid from './SpecGrid.astro';
+import Tag from './Tag.astro';
+import Figure from './Figure.astro';
+import Metrics from './Metrics.astro';
+import Prose from './Prose.astro';
+import Toc from './Toc.astro';
+import ProjectCard from './ProjectCard.astro';
+import CtaRow from './CtaRow.astro';
+import { path, type Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { caseLinks, caseUrl, listCases, nextCase, pad2, statusText } from '../lib/work';
+
+interface Props {
+  lang: Lang;
+  entry: CollectionEntry<'work'>;
+  fallback: boolean;
+}
+const { lang, entry, fallback } = Astro.props;
+const d = entry.data;
+const c = ui[lang].case;
+const all = await getCollection('work');
+const links = caseLinks(all, entry, lang, fallback);
+const next = nextCase(listCases(all, lang), d.id);
+const { Content, headings } = await render(entry);
+const version = d.version ? ` · ${d.version}` : '';
+---
+
+<Base
+  lang={lang}
+  title={d.title}
+  description={d.summary}
+  alternate={links.alternate}
+  hreflang={links.hreflang}
+  noindex={links.noindex}
+>
+  <div class="page">
+    <div class="head">
+      <Button href={path('work', lang)} variant="link" glyph="←" glyphFirst>
+        {c.allWork}
+      </Button>
+      <SheetHeader>
+        {d.id} — {c.caseStudy}
+        <Status slot="meta" status={d.status} lang={lang} suffix={d.version} />
+      </SheetHeader>
+      <section class="case-frame" lang={d.lang}>
+        <div class="intro">
+          {fallback && <Tag>{ui[d.lang].case.onlyIn}</Tag>}
+          <h1>{d.title}</h1>
+          <p class="summary">{d.summary}</p>
+          <div class="byline">
+            <span>{d.client}</span>
+            <span>{d.role}</span>
+            <span>{d.timeline}</span>
+          </div>
+        </div>
+        <div class="specs">
+          <SpecGrid
+            items={[
+              { k: c.keys.sector, v: d.sector.join(' · ') },
+              { k: c.keys.modules, v: d.modules.join(' · ') },
+              { k: c.keys.stack, v: d.stack.join(' · ') },
+              { k: c.keys.status, v: `${statusText(d.status, lang)}${version}` },
+            ]}
+          />
+        </div>
+        <div class="corner"></div>
+      </section>
+    </div>
+
+    <div class="fig1">
+      <Figure shot={d.shots[0]} n={1} lang={lang} eager />
+    </div>
+
+    <div class="body">
+      <Toc headings={headings} lang={lang} />
+      <article lang={d.lang}>
+        <Prose>
+          <Content components={{ Figure, Metrics }} />
+        </Prose>
+      </article>
+    </div>
+
+    <section class="next-section">
+      <SheetHeader>
+        {c.next}
+        <span slot="meta">
+          {pad2(next.index)} / {pad2(next.total)}
+        </span>
+      </SheetHeader>
+      <ProjectCard
+        data={next.entry.data}
+        href={caseUrl(lang, next.entry.data.slug)}
+        lang={lang}
+        variant="next"
+      />
+    </section>
+
+    <CtaRow lang={lang} heading={c.similar} />
+  </div>
+</Base>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(40px, 6cqi, 72px);
+    /* Case design top padding is clamp(20px,3cqi,32px), smaller than the global main's. */
+    margin-top: calc(clamp(20px, 3cqi, 32px) - clamp(24px, 4cqi, 48px));
+  }
+  .head {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .head > :global(.btn.link) {
+    align-self: flex-start;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+  }
+  .case-frame {
+    position: relative;
+    border: var(--border-frame);
+    background: var(--bg);
+  }
+  .intro {
+    padding: clamp(24px, 4cqi, 48px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .intro :global(.tag) {
+    align-self: flex-start;
+  }
+  h1 {
+    margin: 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(44px, 6.6cqi, 84px);
+    letter-spacing: var(--ls-display);
+    line-height: var(--lh-display);
+  }
+  .summary {
+    margin: 0;
+    font-size: clamp(17px, 1.5cqi, 19px);
+    line-height: 1.45;
+    max-width: 680px;
+    text-wrap: pretty;
+  }
+  .byline {
+    display: flex;
+    gap: 6px 20px;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .specs {
+    border-top: var(--border-ink);
+  }
+  .corner {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: var(--corner-mark);
+    height: var(--corner-mark);
+    background: var(--accent);
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+    align-items: flex-start;
+  }
+  article {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    max-width: var(--prose-max);
+  }
+  .next-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  @media (min-width: 1200px) {
+    .body {
+      flex-direction: row;
+    }
+  }
+</style>

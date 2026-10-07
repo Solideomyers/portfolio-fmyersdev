@@ -1,0 +1,49 @@
+---
+import type { Lang } from '../i18n/routes';
+import { statusLabel } from '../lib/work';
+
+interface Props {
+  status: 'live' | 'in-use' | 'wip';
+  lang: Lang;
+  variant?: 'badge' | 'inline';
+  suffix?: string;
+}
+const { status, lang, variant = 'inline', suffix } = Astro.props;
+---
+
+<span class:list={['status', variant]}>
+  <span class:list={['dot', status]} aria-hidden="true"></span>
+  {statusLabel(status, lang)}
+  {suffix && ` · ${suffix}`}
+</span>
+
+<style>
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge {
+    font-size: 12px;
+    border: var(--border-ink);
+    padding: 4px 8px;
+  }
+  .inline {
+    color: var(--text-muted);
+  }
+  /* The only round element in the system; it never animates. */
+  .dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    border: 1.5px solid var(--ok);
+  }
+  .live {
+    background: var(--ok);
+  }
+  .wip {
+    border-style: dashed;
+  }
+</style>

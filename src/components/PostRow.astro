@@ -1,0 +1,75 @@
+---
+interface Props {
+  href: string;
+  meta: string;
+  title: string;
+  dek: string;
+  foot?: string;
+  action: string;
+  external?: boolean;
+}
+const { href, meta, title, dek, foot, action, external = false } = Astro.props;
+---
+
+<a class="post-row" href={href} rel={external ? 'noopener' : undefined}>
+  <span class="meta">{meta}</span>
+  <span class="body">
+    <span class="title">{title}</span>
+    <span class="dek">{dek}</span>
+    {foot && <span class="foot">{foot}</span>}
+  </span>
+  <span class="action">{action}</span>
+</a>
+
+<style>
+  .post-row {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr) auto;
+    gap: 8px 16px;
+    padding: 16px 0;
+    border-bottom: var(--border-rule);
+    color: var(--text);
+    text-decoration: none;
+    transition: color var(--dur-hover) var(--ease);
+  }
+  .meta,
+  .foot {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  .foot {
+    letter-spacing: 0;
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+  .title {
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(19px, 1.8cqi, 22px);
+  }
+  .dek {
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+  .action {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .post-row:hover {
+      color: var(--accent);
+      text-decoration: none;
+    }
+  }
+</style>
