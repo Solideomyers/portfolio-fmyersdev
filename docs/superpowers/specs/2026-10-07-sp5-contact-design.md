@@ -209,3 +209,11 @@ The `CLAUDE.md` stack line becomes: "Astro (static output; the only on-demand ro
 - **Preview:** shows both pages, and a real submission through the preview works **once the user has deployed the Apps Script and set the env vars**. That manual step goes in the PR body.
 - **Screenshots** match `Contact.dc.html` (form and sent) at 1280/375.
 - **Roadmap:** SP5 done.
+
+## Amendment after the final review (2026-10-07)
+
+- The sender copy is skipped for `noJs` briefs and capped at 30/day (UTC). Apps Script returns `{ok, copy}`; the endpoint returns `{ok, copy}` (JSON) or redirects to the sent URL with `#no-copy` when no copy was sent, and the sent page swaps `sentP` for `sentNoCopy` via `:target`.
+- The row is the source of truth: email failures are logged and never fail the submission. `waitLock` is 5s.
+- Apps Script accepts only known `type`/`budget` values and flattens newlines in `name`.
+- Client: with no Turnstile token (widget blocked or unfinished after 8s), the form falls back to a native post (the no-JS path). `aria-describedby` points at the error text only while the field is invalid. A bfcache restore resets the sending state.
+- A Vercel Firewall rate-limit rule on `/api/contact` is part of the deploy steps.

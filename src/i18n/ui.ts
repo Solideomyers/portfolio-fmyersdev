@@ -141,6 +141,7 @@ interface Ui {
     turnstile: string;
     received: string;
     sentP: string;
+    sentNoCopy: string;
     home: string;
     whileWait: string;
     types: Record<'saas' | 'automation' | 'contract' | 'other', string>;
@@ -413,6 +414,7 @@ export const ui: Record<Lang, Ui> = {
       received: 'BRIEF RECEIVED',
       sentP:
         'A copy of your message is on its way to your inbox. If it is urgent, WhatsApp is the fastest way to reach me.',
+      sentNoCopy: 'Your brief is in. If it is urgent, WhatsApp is the fastest way to reach me.',
       home: 'Back home',
       whileWait: 'SEE SELECTED WORK',
       types: { saas: 'SaaS MVP', automation: 'Automation', contract: 'Contract', other: 'Other' },
@@ -701,6 +703,7 @@ export const ui: Record<Lang, Ui> = {
       received: 'RESUMEN RECIBIDO',
       sentP:
         'Te llega una copia de tu mensaje al correo. Si es urgente, WhatsApp es la vía más rápida.',
+      sentNoCopy: 'Tu resumen llegó. Si es urgente, WhatsApp es la vía más rápida.',
       home: 'Volver al inicio',
       whileWait: 'VER PROYECTOS',
       types: {

@@ -5,6 +5,11 @@
 const SHEET = 'Briefs';
 const HEADER = ['timestamp', 'lang', 'name', 'email', 'type', 'budget', 'message', 'noJs'];
 const NO_JS_DAILY_CAP = 20;
+// Sender copies go to an address the visitor typed: capped and never sent on the no-JS path,
+// so the form can't be used to relay mail from this account.
+const COPY_DAILY_CAP = 30;
+const TYPES = ['saas', 'automation', 'contract', 'other'];
+const BUDGETS = ['lt1k', '1-5k', '5-10k', '10k+', 'unsure'];
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const COPY = {
   en: {
@@ -30,15 +35,19 @@ function doPost(e) {
       return out({ ok: false, reason: 'invalid' });
     }
     const lang = body.lang === 'es' ? 'es' : 'en';
+    // Single line, no control characters: the name ends up in an email subject.
     const name = String(body.name || '')
+      .replace(/[\r\n\t]+/g, ' ')
       .trim()
       .slice(0, 200);
-    const type = String(body.type || '').slice(0, 20);
-    const budget = String(body.budget || '').slice(0, 20);
+    // Only known values reach the sheet (no formula can come in through these columns).
+    const type = TYPES.indexOf(body.type) >= 0 ? body.type : '';
+    const budget = BUDGETS.indexOf(body.budget) >= 0 ? body.budget : '';
     const noJs = body.noJs === true;
 
+    let sendCopy = false;
     const lock = LockService.getScriptLock();
-    lock.waitLock(10000);
+    lock.waitLock(5000); // stays well inside the caller's 10s timeout
     try {
       const sheet = getSheet();
       if (noJs && countNoJsToday(sheet) >= NO_JS_DAILY_CAP)
@@ -53,36 +62,59 @@ function doPost(e) {
         cell(message),
         noJs,
       ]);
+      sendCopy = !noJs && takeCopySlot(props);
     } finally {
       lock.releaseLock();
     }
 
-    MailApp.sendEmail({
-      to: props.getProperty('NOTIFY_TO'),
-      replyTo: email,
-      subject: 'New brief · ' + (type || 'no type') + ' · ' + (name || email),
-      body: [
-        'From: ' + name + ' <' + email + '>',
-        'Type: ' + type,
-        'Budget: ' + budget,
-        'Lang: ' + lang,
-        'No-JS: ' + noJs,
-        '',
-        message,
-      ].join('\n'),
-    });
-    MailApp.sendEmail({
-      to: email,
-      replyTo: 'hola@fmyers.dev',
-      name: 'Francisco Myers',
-      subject: COPY[lang].subject,
-      body: COPY[lang].body + '\n\n— — —\n\n' + message,
-    });
-    return out({ ok: true });
+    // The row is the source of truth: email failures are logged, never reported as a failed
+    // submission (that would make the visitor retry and duplicate the row).
+    try {
+      MailApp.sendEmail({
+        to: props.getProperty('NOTIFY_TO'),
+        replyTo: email,
+        subject: 'New brief · ' + (type || 'no type') + ' · ' + (name || email),
+        body: [
+          'From: ' + name + ' <' + email + '>',
+          'Type: ' + type,
+          'Budget: ' + budget,
+          'Lang: ' + lang,
+          'No-JS: ' + noJs,
+          '',
+          message,
+        ].join('\n'),
+      });
+    } catch (err) {
+      console.error('notify failed', err);
+    }
+    if (sendCopy) {
+      try {
+        MailApp.sendEmail({
+          to: email,
+          replyTo: 'hola@fmyers.dev',
+          name: 'Francisco Myers',
+          subject: COPY[lang].subject,
+          body: COPY[lang].body + '\n\n— — —\n\n' + message,
+        });
+      } catch (err) {
+        console.error('copy failed', err);
+        sendCopy = false;
+      }
+    }
+    return out({ ok: true, copy: sendCopy });
   } catch (err) {
     console.error(err);
     return out({ ok: false, reason: 'error' });
   }
+}
+
+/** Daily (UTC) sender-copy budget; call inside the script lock. */
+function takeCopySlot(props) {
+  const key = 'copies-' + Utilities.formatDate(new Date(), 'UTC', 'yyyy-MM-dd');
+  const used = Number(props.getProperty(key) || 0);
+  if (used >= COPY_DAILY_CAP) return false;
+  props.setProperty(key, String(used + 1));
+  return true;
 }
 
 function getSheet() {

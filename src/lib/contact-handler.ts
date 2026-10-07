@@ -64,7 +64,10 @@ export async function handleContact(
   }
   const lang: Lang = form.get('lang') === 'es' ? 'es' : 'en';
 
-  if (isSpam(form)) return reply(wantsJson, 200, lang, true);
+  if (isSpam(form)) {
+    console.warn('contact: honeypot');
+    return reply(wantsJson, 200, lang, true);
+  }
 
   const parsed = parseBrief(form);
   if (!parsed.ok)
@@ -97,14 +100,18 @@ export async function handleContact(
       redirect: 'follow',
       signal: AbortSignal.timeout(10_000),
     });
-    const out = (await res.json()) as { ok?: boolean; reason?: string };
+    const out = (await res.json()) as { ok?: boolean; reason?: string; copy?: boolean };
     if (!res.ok || out.ok !== true) {
       console.error('contact: upstream rejected', res.status, out.reason ?? '');
       return reply(wantsJson, 502, lang, false);
     }
+    // The sender copy is never sent on the no-JS path (anti-relay) and is capped on the JS path;
+    // the sent page reflects it with #no-copy.
+    const copy = out.copy === true;
+    if (wantsJson) return json(200, { ok: true, copy });
+    return redirect(`${sentUrl(lang)}${copy ? '' : '#no-copy'}`);
   } catch (e) {
     console.error('contact: upstream error', (e as Error).name);
     return reply(wantsJson, 502, lang, false);
   }
-  return reply(wantsJson, 200, lang, true);
 }

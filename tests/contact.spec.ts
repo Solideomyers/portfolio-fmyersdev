@@ -19,9 +19,21 @@ const pages = [
 async function isolate(page: Page) {
   await page.route('**/challenges.cloudflare.com/**', (r) => r.abort());
 }
-async function fill(page: Page) {
+async function fillFields(page: Page) {
   await page.fill('input[name=email]', 'ana@example.com');
   await page.fill('textarea[name=message]', 'We need an MVP.');
+}
+// Fields plus a solved Turnstile (the real widget is blocked in tests).
+async function fill(page: Page) {
+  await fillFields(page);
+  await page.evaluate(() => {
+    const t = document.createElement('input');
+    t.type = 'hidden';
+    t.name = 'cf-turnstile-response';
+    t.value = 'tok';
+    document.querySelector('form.contact-form')!.append(t);
+    (window as unknown as { turnstile: object }).turnstile = { reset() {} };
+  });
 }
 
 for (const p of pages) {
@@ -59,7 +71,7 @@ for (const p of pages) {
 
   test(`${p.lang} contact: success navigates to the sent page`, async ({ page }) => {
     await isolate(page);
-    await page.route('**/api/contact', (r) => r.fulfill({ json: { ok: true } }));
+    await page.route('**/api/contact', (r) => r.fulfill({ json: { ok: true, copy: true } }));
     await page.goto(p.url);
     await fill(page);
     await page.click('button[type=submit]');
@@ -134,4 +146,75 @@ test('selected chip is inverted (ink background)', async ({ page }) => {
   await page.mouse.move(0, 0);
   await expect(chip).toHaveCSS('background-color', 'rgb(21, 24, 28)');
   await expect(chip).toHaveCSS('color', 'rgb(242, 243, 239)');
+});
+
+test('sent page: #no-copy swaps the copy sentence (works without JS)', async ({ page }) => {
+  await page.goto('/en/contact/sent');
+  await expect(page.locator('.sent .with-copy')).toBeVisible();
+  await expect(page.locator('.sent .no-copy')).toBeHidden();
+  await page.goto('/en/contact/sent#no-copy');
+  await expect(page.locator('.sent .no-copy')).toBeVisible();
+  await expect(page.locator('.sent .with-copy')).toBeHidden();
+});
+
+test('success without a sender copy lands on #no-copy', async ({ page }) => {
+  await isolate(page);
+  await page.route('**/api/contact', (r) => r.fulfill({ json: { ok: true, copy: false } }));
+  await page.goto('/en/contact');
+  await fill(page);
+  await page.click('button[type=submit]');
+  await expect(page).toHaveURL(/\/en\/contact\/sent\/?#no-copy$/);
+});
+
+test('Turnstile blocked: falls back to a native post instead of a dead end', async ({ page }) => {
+  await isolate(page);
+  let accept = 'unset';
+  await page.route('**/api/contact', async (r) => {
+    accept = r.request().headers()['accept'] ?? '';
+    await r.fulfill({ status: 303, headers: { location: '/en/contact/sent#no-copy' } });
+  });
+  await page.goto('/en/contact');
+  await fillFields(page);
+  await page.click('button[type=submit]');
+  await expect(page).toHaveURL(/\/en\/contact\/sent/);
+  expect(accept).not.toContain('application/json');
+});
+
+test('error text is only described when the field is invalid', async ({ page }) => {
+  await isolate(page);
+  await page.goto('/en/contact');
+  const email = page.locator('input[name=email]');
+  await expect(email).not.toHaveAttribute('aria-describedby', /.+/);
+  await email.fill('bad');
+  await page.click('button[type=submit]');
+  await expect(email).toHaveAttribute('aria-describedby', 'err-email');
+  await email.fill('ana@example.com');
+  await page.fill('textarea[name=message]', 'Hi');
+  await page.route('**/api/contact', (r) => r.fulfill({ status: 502, json: { ok: false } }));
+  await page.evaluate(() => {
+    const t = document.createElement('input');
+    t.type = 'hidden';
+    t.name = 'cf-turnstile-response';
+    t.value = 'tok';
+    document.querySelector('form.contact-form')!.append(t);
+    (window as unknown as { turnstile: object }).turnstile = { reset() {} };
+  });
+  await page.click('button[type=submit]');
+  await expect(page.locator('#send-error')).toBeVisible();
+  await expect(email).not.toHaveAttribute('aria-describedby', /.+/);
+});
+
+test('restoring the page from the back/forward cache resets a sending button', async ({ page }) => {
+  await isolate(page);
+  await page.goto('/en/contact');
+  await page.evaluate(() => {
+    const btn = document.querySelector('form.contact-form button[type=submit]')!;
+    btn.classList.add('is-sending');
+    btn.setAttribute('aria-disabled', 'true');
+    btn.querySelector('.label')!.textContent = 'Sending…';
+    window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
+  });
+  const btn = page.locator('button[type=submit]');
+  await expect(btn).toHaveAttribute('aria-disabled', 'false');
+  await expect(btn.locator('.label')).toHaveText('Send brief →');
 });

@@ -46,7 +46,7 @@ test('JS submit: verifies Turnstile, forwards without spam fields, returns ok JS
   const { fn, calls } = stubFetch();
   const res = await handleContact(req({ ...valid, website: '' }), ENV, fn);
   expect(res.status).toBe(200);
-  expect(await res.json()).toEqual({ ok: true });
+  expect(await res.json()).toEqual({ ok: true, copy: false });
   expect(calls[0].url).toContain('challenges.cloudflare.com');
   const forwarded = JSON.parse(calls[1].body);
   expect(forwarded).toEqual({
@@ -96,7 +96,8 @@ test('no-JS without token: forwarded as noJs and redirected to the sent page', a
   const noToken = { email: 'ana@example.com', message: 'Hi', lang: 'en' };
   const res = await handleContact(req(noToken, { json: false }), ENV, fn);
   expect(res.status).toBe(303);
-  expect(res.headers.get('location')).toBe('/en/contact/sent');
+  // No sender copy on the no-JS path (anti-relay): the sent page says so via #no-copy.
+  expect(res.headers.get('location')).toBe('/en/contact/sent#no-copy');
   expect(JSON.parse(calls[0].body).noJs).toBe(true);
 });
 
@@ -132,4 +133,17 @@ test('missing configuration: 503 unless test mode supplies the Turnstile test se
 test('non-POST is 405', async () => {
   const res = await handleContact(req({}, { method: 'GET' }), ENV, stubFetch().fn);
   expect(res.status).toBe(405);
+});
+
+test('the copy flag from Apps Script reaches the JS client', async () => {
+  const { fn } = stubFetch({ upstream: { ok: true, copy: false } });
+  expect(await (await handleContact(req(valid), ENV, fn)).json()).toEqual({
+    ok: true,
+    copy: false,
+  });
+  const sent = stubFetch({ upstream: { ok: true, copy: true } });
+  expect(await (await handleContact(req(valid), ENV, sent.fn)).json()).toEqual({
+    ok: true,
+    copy: true,
+  });
 });

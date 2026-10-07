@@ -43,6 +43,13 @@ Then redeploy (push a commit or **Redeploy** in Vercel).
 
 Submit the form on the preview. Expected: a row in `Briefs`, an email to `NOTIFY_TO`, and a copy in the sender's inbox. Without JS (disable it in the browser), you get the same plus `noJs = TRUE`. After 20 no-JS briefs in a day (UTC), further no-JS posts show the error box.
 
+## Abuse limits
+
+- **Sender copy:** never sent for no-JS briefs, and at most 30 per day (UTC) otherwise. The sent page says "Your brief is in" instead of promising a copy (`#no-copy`). This keeps the form from relaying mail from your account.
+- **No-JS briefs:** at most 20 per day (UTC); after that they show the error box.
+- **Email failures** (for example MailApp's daily quota) are logged in **Executions** but never fail the submission: the row in `Briefs` is the source of truth.
+- **Vercel Firewall:** add a rate-limit rule (Project → Firewall → Rules): path equals `/api/contact`, 5 requests per 60s per IP, action Deny. This protects the function and the script lock from floods.
+
 ## Updating the script
 
 Edit `Code.gs` in the repo first, paste it into the editor, then **Deploy → Manage deployments → Edit → New version**. The URL stays the same.

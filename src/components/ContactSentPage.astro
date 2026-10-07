@@ -26,7 +26,11 @@ const c = ui[lang].contact;
       </svg>
       <span class="received">{c.received}</span>
       <h1>{ui[lang].h1.contactSent}</h1>
-      <p>{c.sentP}</p>
+      <p class="with-copy">{c.sentP}</p>
+      <!-- Shown via #no-copy (works without JS): no sender copy was sent (no-JS path or daily cap). -->
+      <p class="no-copy" id="no-copy">
+        {c.sentNoCopy}
+      </p>
       <div class="spec">
         <SpecGrid items={c.spec} min={180} />
       </div>
@@ -96,6 +100,15 @@ const c = ui[lang].contact;
     color: var(--text-muted);
     max-width: 600px;
     text-wrap: pretty;
+  }
+  .no-copy {
+    display: none;
+  }
+  #no-copy:target {
+    display: block;
+  }
+  .sent:has(#no-copy:target) .with-copy {
+    display: none;
   }
   .spec :global(.spec-grid) {
     border: var(--border-ink);

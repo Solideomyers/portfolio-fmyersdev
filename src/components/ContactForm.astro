@@ -28,7 +28,6 @@ const c = ui[lang].contact;
       autocomplete="email"
       maxlength="254"
       placeholder={c.phEmail}
-      aria-describedby="err-email"
     />
     <span class="field-error" id="err-email" role="alert" hidden>
       {c.errEmail}
@@ -61,14 +60,7 @@ const c = ui[lang].contact;
 
   <label class="field" data-field="message">
     <span class="lab">{c.fMsg}</span>
-    <textarea
-      name="message"
-      rows="4"
-      required
-      maxlength="5000"
-      placeholder={c.phMsg}
-      aria-describedby="err-message"
-    ></textarea>
+    <textarea name="message" rows="4" required maxlength="5000" placeholder={c.phMsg}></textarea>
     <span class="field-error" id="err-message" role="alert" hidden>
       {c.errMsg}
     </span>
@@ -133,8 +125,12 @@ const c = ui[lang].contact;
         )!;
         const bad = Boolean(errors[name]);
         field.classList.toggle('is-error', bad);
-        field.querySelector<HTMLElement>('.field-error')!.hidden = !bad;
+        const message = field.querySelector<HTMLElement>('.field-error')!;
+        message.hidden = !bad;
         control.setAttribute('aria-invalid', String(bad));
+        // Describe the control by its error only while it's invalid (hidden text is still read).
+        if (bad) control.setAttribute('aria-describedby', message.id);
+        else control.removeAttribute('aria-describedby');
         if (bad && !first) first = control;
       }
       first?.focus();
@@ -147,32 +143,61 @@ const c = ui[lang].contact;
       label.textContent = on ? (btn.dataset.sending ?? idle) : idle;
     };
 
+    const turnstile = () => (window as unknown as { turnstile?: { reset: () => void } }).turnstile;
+    const token = () => new FormData(form).get('cf-turnstile-response');
+
+    // Wait briefly for a pending challenge; resolves false if no token shows up.
+    const waitForToken = async (ms: number) => {
+      for (let waited = 0; waited < ms; waited += 250) {
+        if (token()) return true;
+        await new Promise((r) => setTimeout(r, 250));
+      }
+      return Boolean(token());
+    };
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (btn.getAttribute('aria-disabled') === 'true') return;
       err.classList.remove('is-visible');
-      const data = new FormData(form);
-      const parsed = parseBrief(data);
+      const parsed = parseBrief(new FormData(form));
       if (showErrors(parsed.ok ? {} : parsed.errors)) return;
       setSending(true);
+      // No Turnstile token (widget blocked or challenge unfinished): fall back to the native
+      // post, which the server accepts as the no-JS path, instead of a dead-end 403.
+      if (!token() && !(turnstile() && (await waitForToken(8000)))) {
+        HTMLFormElement.prototype.submit.call(form);
+        return;
+      }
       try {
         const res = await fetch(form.action, {
           method: 'POST',
-          body: data,
+          body: new FormData(form),
           headers: { Accept: 'application/json' },
         });
-        const out = (await res.json().catch(() => ({}))) as { ok?: boolean; errors?: Errors };
+        const out = (await res.json().catch(() => ({}))) as {
+          ok?: boolean;
+          copy?: boolean;
+          errors?: Errors;
+        };
         if (res.ok && out.ok) {
-          location.assign(sentUrl(lang));
+          location.assign(`${sentUrl(lang)}${out.copy ? '' : '#no-copy'}`);
           return;
         }
-        if (res.status === 422 && out.errors) showErrors(out.errors);
-        else err.classList.add('is-visible');
+        if (!(res.status === 422 && out.errors && showErrors(out.errors)))
+          err.classList.add('is-visible');
       } catch {
         err.classList.add('is-visible');
       }
       setSending(false);
-      (window as unknown as { turnstile?: { reset: () => void } }).turnstile?.reset();
+      turnstile()?.reset();
+    });
+
+    // Back from the sent page restores this page from the bfcache with a stale sending state.
+    addEventListener('pageshow', (e) => {
+      if (e.persisted) {
+        setSending(false);
+        turnstile()?.reset();
+      }
     });
   }
 </script>
