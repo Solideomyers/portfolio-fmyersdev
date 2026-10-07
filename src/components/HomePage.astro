@@ -1,0 +1,126 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import HeroSheet from './HeroSheet.astro';
+import SheetHeader from './SheetHeader.astro';
+import ProjectCard from './ProjectCard.astro';
+import PackageCard from './PackageCard.astro';
+import ProcessGrid from './ProcessGrid.astro';
+import ContactBlock from './ContactBlock.astro';
+import { path, type Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { caseUrl } from '../lib/work';
+import { byOrder } from '../lib/offer';
+import { featuredCases } from '../lib/home';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const h = ui[lang].home;
+const cases = featuredCases(await getCollection('work'), lang);
+const packages = byOrder(await getCollection('pricing', (e) => e.data.lang === lang)).map(
+  (e) => e.data,
+);
+---
+
+<Base lang={lang} title={ui[lang].h1.home} description={h.lead}>
+  <div class="page">
+    <HeroSheet lang={lang} />
+
+    {cases.length > 0 && (
+      <section class="block">
+        <div class="work-head">
+          <SheetHeader>
+            {h.sheet01}
+            <a slot="meta" class="meta-link" href={path('work', lang)}>
+              {h.allWork} →
+            </a>
+          </SheetHeader>
+        </div>
+        <div class="cases">
+          {cases.map((e) => (
+            <ProjectCard data={e.data} href={caseUrl(lang, e.data.slug)} lang={lang} />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <section class="block">
+      <div class="services-head">
+        <SheetHeader>
+          {h.sheet02}
+          <a slot="meta" class="meta-link" href={path('pricing', lang)}>
+            {h.pricing} →
+          </a>
+        </SheetHeader>
+      </div>
+      <h2 class="display-l">{h.servicesH}</h2>
+      <div class="packages">
+        {packages.map((p) => (
+          <PackageCard pkg={p} lang={lang} variant="compact" />
+        ))}
+      </div>
+      <p class="ngo">{h.ngo}</p>
+    </section>
+
+    <section class="block">
+      <SheetHeader>
+        {h.sheet03}
+        <span slot="meta">04 {h.steps}</span>
+      </SheetHeader>
+      <ProcessGrid lang={lang} />
+    </section>
+
+    <ContactBlock lang={lang} />
+  </div>
+</Base>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(56px, 8cqi, 96px);
+  }
+  .block {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  /* 44px hit area without moving the sheet-header rule. */
+  .meta-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-block: -12px;
+    color: var(--accent);
+  }
+  .cases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
+    gap: 24px;
+  }
+  .display-l {
+    margin: 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(32px, 4.1cqi, 52px);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    max-width: 820px;
+    text-wrap: balance;
+  }
+  .packages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: var(--border-ink);
+  }
+  .ngo {
+    margin: 0;
+    font-size: 15px;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+</style>

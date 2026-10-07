@@ -16,6 +16,11 @@ import PackageCard from '../components/PackageCard.astro';
 import Faq from '../components/Faq.astro';
 import CompareTable from '../components/CompareTable.astro';
 import ProcessRows from '../components/ProcessRows.astro';
+import HeroSheet from '../components/HeroSheet.astro';
+import ProcessGrid from '../components/ProcessGrid.astro';
+import ContactBlock from '../components/ContactBlock.astro';
+import Timeline from '../components/Timeline.astro';
+import Portrait from '../components/Portrait.astro';
 import { caseUrl } from '../lib/work';
 import { byOrder, faqFor } from '../lib/offer';
 
@@ -31,7 +36,7 @@ const faqItems = faqFor(await getCollection('faq'), 'pricing', 'en').map((e) => 
 
 <Base lang="en" title="Design system specimens" noindex>
   <div class="ds">
-    <h1 class="h1-page">Specimens · SP2–SP3</h1>
+    <p class="h1-page">Specimens · SP2–SP4</p>
     <section id="status">
       <SheetHeader>C06 — STATUS</SheetHeader>
       <div class="row">
@@ -130,6 +135,41 @@ const faqItems = faqFor(await getCollection('faq'), 'pricing', 'en').map((e) => 
     <section id="faq">
       <Faq items={faqItems} lang="en" heading="Before you ask." />
     </section>
+    <section id="hero">
+      <HeroSheet lang="en" />
+    </section>
+    <section id="spec-rows">
+      <SheetHeader>C05 — SPEC ROWS</SheetHeader>
+      <SpecGrid
+        variant="rows"
+        items={[
+          { k: 'STACK', v: 'Next.js · NestJS · PostgreSQL', accent: true },
+          { k: 'AUTOMATION', v: 'Google Workspace · Apps Script' },
+          { k: 'BASED IN', v: 'Venezuela · UTC−4 · remote' },
+          { k: 'LANGUAGES', v: 'Spanish · English' },
+        ]}
+      />
+    </section>
+    <section id="package-compact">
+      <SheetHeader>C09 — PACKAGE CARD COMPACT</SheetHeader>
+      <div class="compact-grid">
+        {packages.map((p) => (
+          <PackageCard pkg={p} lang="en" variant="compact" />
+        ))}
+      </div>
+    </section>
+    <section id="process-grid">
+      <ProcessGrid lang="en" />
+    </section>
+    <section id="contact-block">
+      <ContactBlock lang="en" />
+    </section>
+    <section id="timeline">
+      <Timeline lang="en" />
+    </section>
+    <section id="portrait">
+      <Portrait lang="en" />
+    </section>
     <section id="cta-row">
       <CtaRow lang="en" heading="Want yours on this sheet?" />
     </section>
@@ -157,6 +197,13 @@ const faqItems = faqFor(await getCollection('faq'), 'pricing', 'en').map((e) => 
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
     gap: 24px;
+  }
+  .compact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: var(--border-ink);
   }
   .two {
     display: grid;

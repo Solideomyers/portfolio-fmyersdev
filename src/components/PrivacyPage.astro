@@ -1,0 +1,70 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import SheetHeader from './SheetHeader.astro';
+import Prose from './Prose.astro';
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { site } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const entry = await getEntry('pages', `${lang}/privacy`);
+if (!entry) throw new Error(`Missing src/content/pages/${lang}/privacy.md`);
+const { Content } = await render(entry);
+const t = ui[lang].privacyPage;
+const updated = entry.data.updated.toISOString().slice(0, 10);
+---
+
+<Base lang={lang} title={entry.data.title}>
+  <div class="page">
+    <SheetHeader>
+      {t.sheet}
+      <span slot="meta">
+        {t.updated} {updated}
+      </span>
+    </SheetHeader>
+    <article>
+      <h1 class="h1-page">{entry.data.title}</h1>
+      <Prose variant="page">
+        <Content />
+      </Prose>
+      <a class="mail" href={`mailto:${site.email}`}>
+        {t.email} →
+      </a>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  article {
+    max-width: var(--prose-max);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .mail {
+    align-self: flex-start;
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    border: var(--border-ink);
+    color: var(--text);
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .mail:hover {
+      color: var(--accent);
+      text-decoration: none;
+    }
+  }
+</style>

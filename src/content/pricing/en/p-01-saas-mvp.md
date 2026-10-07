@@ -14,6 +14,10 @@ includes:
   - Deploy, docs and 30 days of fixes
 timeline: 4–6 weeks
 featured: true
+teaser:
+  - One-page spec
+  - Web app + API + database
+  - Deploy and 30 days of fixes
 service:
   for: For founders and teams with a validated idea that needs a real product, not a prototype.
   scope:

@@ -84,3 +84,21 @@ test('/ds has the SP3 specimens', async ({ page }) => {
   await expect(page.locator('#package-card .package-card.featured .corner')).toHaveCount(1);
   await expect(page.locator('#faq details').first()).toHaveAttribute('open', '');
 });
+
+test('/ds has the SP4 specimens', async ({ page }) => {
+  await page.goto('/ds');
+  for (const id of [
+    'hero',
+    'package-compact',
+    'process-grid',
+    'contact-block',
+    'timeline',
+    'portrait',
+    'spec-rows',
+  ]) {
+    await expect(page.locator(`#${id}`), id).toBeVisible();
+  }
+  await expect(page.locator('#hero .ruler .zone')).toHaveCount(8);
+  await expect(page.locator('#spec-rows .spec-grid.rows .cell')).toHaveCount(4);
+  await expect(page.locator('#portrait .hatch')).toContainText('PORTRAIT');
+});

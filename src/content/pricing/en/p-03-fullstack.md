@@ -14,6 +14,10 @@ includes:
   - Cancel with 30 days notice
 timeline: Monthly
 featured: false
+teaser:
+  - ~20 h a week
+  - Joins your team
+  - Weekly report
 service:
   for: For teams that already have a product and need a senior pair of hands for a few months.
   scope:

@@ -14,6 +14,10 @@ includes:
   - Entrega y 30 días de correcciones
 timeline: 1–2 semanas
 featured: false
+teaser:
+  - Sobre tu Google Workspace
+  - Reportes, alertas y flujos
+  - Sin costos de servidor
 service:
   for: Para equipos en Google Workspace que pierden horas en hojas de cálculo, copiar y pegar y reportes manuales.
   scope:

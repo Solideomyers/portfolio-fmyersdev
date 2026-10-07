@@ -1,19 +1,21 @@
 ---
 interface Props {
-  items: { k: string; v: string }[];
-  variant?: 'cells' | 'card';
+  items: { k: string; v: string; accent?: boolean }[];
+  variant?: 'cells' | 'card' | 'rows';
   min?: number;
+  /** cells with padding 16 and 16px values (About stack) */
+  roomy?: boolean;
 }
-const { items, variant = 'cells', min = 160 } = Astro.props;
+const { items, variant = 'cells', min = 160, roomy = false } = Astro.props;
 // Rows without data are omitted (handoff C05).
 const rows = items.filter((i) => i.v.trim() !== '');
 ---
 
-<div class:list={['spec-grid', variant]} style={`--min:${min}px`}>
+<div class:list={['spec-grid', variant, { roomy }]} style={`--min:${min}px`}>
   {rows.map((r) => (
     <div class="cell">
       <span class="k">{r.k}</span>
-      <span class="v">{r.v}</span>
+      <span class:list={['v', { accent: r.accent }]}>{r.v}</span>
     </div>
   ))}
 </div>
@@ -32,6 +34,13 @@ const rows = items.filter((i) => i.v.trim() !== '');
     flex-direction: column;
     gap: 4px;
   }
+  .roomy .cell {
+    padding: 16px;
+    gap: 6px;
+  }
+  .roomy .v {
+    font-size: 16px;
+  }
   .card {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -44,6 +53,28 @@ const rows = items.filter((i) => i.v.trim() !== '');
     flex-direction: column;
     gap: 3px;
   }
+  .rows {
+    border: var(--border-ink);
+    background: var(--surface);
+  }
+  .rows .cell {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    border-bottom: var(--border-rule);
+    min-height: 52px;
+  }
+  .rows .k {
+    border-right: var(--border-rule);
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+  }
+  .rows .v {
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+  }
   .k {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -54,5 +85,9 @@ const rows = items.filter((i) => i.v.trim() !== '');
     font-size: 15px;
     line-height: 1.4;
     text-wrap: pretty;
+  }
+  .v.accent {
+    font-weight: 600;
+    color: var(--accent);
   }
 </style>

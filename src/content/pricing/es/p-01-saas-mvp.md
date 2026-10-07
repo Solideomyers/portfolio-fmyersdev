@@ -14,6 +14,10 @@ includes:
   - Despliegue, documentación y 30 días de correcciones
 timeline: 4–6 semanas
 featured: true
+teaser:
+  - Especificación de una página
+  - App web + API + base de datos
+  - Despliegue y 30 días de correcciones
 service:
   for: Para fundadores y equipos con una idea validada que necesita un producto real, no un prototipo.
   scope:
