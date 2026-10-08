@@ -47,6 +47,9 @@ export function notePaths<T extends NoteLike>(all: T[], lang: Lang) {
     .sort(newestFirst);
   const seen = { id: new Set<string>(), slug: new Set<string>() };
   for (const n of own) {
+    // The schema checks the shape; an impossible date (2026-13-45) would become an Invalid Date feed.
+    if (Number.isNaN(Date.parse(n.data.date)))
+      throw new Error(`notes: invalid date ${n.data.date} in ${n.data.id}`);
     if (seen.id.has(n.data.id)) throw new Error(`notes: duplicate id ${n.data.id} in ${lang}`);
     if (seen.slug.has(n.data.slug))
       throw new Error(`notes: duplicate slug ${n.data.slug} in ${lang}`);

@@ -53,7 +53,10 @@ const notes = defineCollection({
       slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
       title: z.string(),
       dek: z.string(),
-      date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      date: z
+        .string()
+        .regex(/^\d{4}-\d{2}-\d{2}$/)
+        .refine((d) => !Number.isNaN(Date.parse(d)), 'not a real date'),
       category: z.enum(['process', 'automation', 'engineering', 'cases']),
       minutes: z.number().int().min(1),
       tags: z.array(z.string()),

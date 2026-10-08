@@ -98,3 +98,9 @@ test('rssFeed: escaped, absolute links, RFC 822 dates', () => {
   expect(xml).toContain('<description>A &amp; B</description>');
   expect(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>')).toBe(true);
 });
+
+test('notePaths: an impossible date fails the build instead of an Invalid Date feed', () => {
+  expect(() => notePaths([note({ id: 'N-07', slug: 'bad', date: '2026-13-45' })], 'en')).toThrow(
+    /date/,
+  );
+});

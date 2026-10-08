@@ -211,3 +211,14 @@ test('visual QA fixes: one rule under the latest-note header; a tight quote', as
   await page.goto('/en/notes/one-page-spec');
   await expect(page.locator('.prose blockquote p')).toHaveCSS('margin-top', '0px');
 });
+
+test('review fixes: RSS ↗ has a 44px target; SHOW ALL keeps keyboard focus', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+  await page.goto('/en/notes');
+  const rss = page.locator('.notes-head a', { hasText: 'RSS ↗' });
+  expect((await rss.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+  await page.locator('.notes-chips button', { hasText: 'Automation' }).click();
+  await page.locator('.notes-empty button').focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.notes-chips button').nth(0)).toBeFocused();
+});

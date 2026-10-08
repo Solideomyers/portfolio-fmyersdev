@@ -30,3 +30,18 @@ test('fails on a notes page, a feed, an OG image or a link to the blog', () => {
   expect(run(site({ 'og/notes/en/x.png': '' }))).toBe(1);
   expect(run(site({ 'en/index.html': '<a href="/es/notas">n</a>' }))).toBe(1);
 });
+
+test('also catches absolute URLs, og:image, src= and non-HTML outputs', () => {
+  const abs = '<link rel="alternate" href="https://fmyers.dev/en/notes/rss.xml">';
+  expect(run(site({ 'en/index.html': abs }))).toBe(1);
+  expect(
+    run(
+      site({
+        'en/a.html': '<meta property="og:image" content="https://fmyers.dev/og/notes/en/x.png">',
+      }),
+    ),
+  ).toBe(1);
+  expect(run(site({ 'en/b.html': "<img src='/og/notes/en/x.png'>" }))).toBe(1);
+  expect(run(site({ 'sitemap.xml': '<loc>https://fmyers.dev/es/notas</loc>' }))).toBe(1);
+  expect(run(site({ 'en/c.html': '<a href="https://fmyers.dev/en/work">w</a>' }))).toBe(0);
+});

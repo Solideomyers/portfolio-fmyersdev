@@ -4,7 +4,12 @@ import { join, relative, sep } from 'node:path';
 
 const root = process.argv[2] ?? '.vercel/output/static';
 const BLOG = /^\/(en\/notes|es\/notas|og\/notes)(\/|$)/;
-const LINK = /href="\/(en\/notes|es\/notas)(["/?#])/;
+// Relative or absolute (https://fmyers.dev/...) references in attributes, plus bare URLs in
+// text formats such as a sitemap's <loc>.
+const ATTR =
+  /(?:href|src|content)=["'](?:https:\/\/fmyers\.dev)?\/(?:en\/notes|es\/notas|og\/notes)(?:["'/?#])/;
+const URL_TEXT = /https:\/\/fmyers\.dev\/(?:en\/notes|es\/notas|og\/notes)(?:[/"'<?#\s]|$)/;
+const SCANNED = /\.(html|xml|json|txt|webmanifest)$/;
 const found = [];
 
 async function walk(dir) {
@@ -16,8 +21,10 @@ async function walk(dir) {
       continue;
     }
     if (e.isDirectory()) await walk(full);
-    else if (e.name.endsWith('.html') && LINK.test(await readFile(full, 'utf8')))
-      found.push(`${rel} links to the blog`);
+    else if (SCANNED.test(e.name)) {
+      const text = await readFile(full, 'utf8');
+      if (ATTR.test(text) || URL_TEXT.test(text)) found.push(`${rel} links to the blog`);
+    }
   }
 }
 

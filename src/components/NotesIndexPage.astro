@@ -27,7 +27,7 @@ const rss = `${Astro.url.pathname.replace(/\/$/, '')}/rss.xml`;
     <section class="notes-head">
       <SheetHeader>
         {n.sheet}
-        <a slot="meta" href={rss}>
+        <a slot="meta" class="meta-link" href={rss}>
           RSS ↗
         </a>
       </SheetHeader>
@@ -75,7 +75,10 @@ const rss = `${Astro.url.pathname.replace(/\/$/, '')}/rss.xml`;
   };
   if (chips.length) {
     for (const c of chips) c.addEventListener('click', () => pick(c.dataset.cat ?? 'all'));
-    empty?.querySelector('button')?.addEventListener('click', () => pick('all'));
+    empty?.querySelector('button')?.addEventListener('click', () => {
+      pick('all');
+      chips[0].focus(); // the button just hid itself; keep keyboard users in place
+    });
     pick('all');
   }
 </script>
@@ -91,7 +94,12 @@ const rss = `${Astro.url.pathname.replace(/\/$/, '')}/rss.xml`;
     flex-direction: column;
     gap: 16px;
   }
-  .notes-head a {
+  /* 44px hit area without changing the sheet-header row height (same as the Home meta links) */
+  .meta-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-block: -12px;
     color: var(--accent);
   }
   h1 {

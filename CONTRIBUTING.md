@@ -7,7 +7,7 @@
 3. `npx playwright install chromium` for tests.
 4. Install gitleaks (`winget install gitleaks`) so the pre-commit secrets scan runs locally. Without it the hook warns and CI still scans.
 5. Optional: `cp .env.example .env` to exercise `/api/contact` locally (`npm run dev`). The contact backend is documented in `apps-script/README.md`. Tests serve the static build with `scripts/serve-static.mjs`, because the Vercel adapter disables `astro preview`.
-6. The notes section is off by default. Set `BLOG_ENABLED=true` (Vercel env + redeploy, or locally) to build it; tests always build with it on.
+6. The notes section is off by default. Set `BLOG_ENABLED=true` (exactly `true`; Vercel env + redeploy, or locally) to build it; tests always build with it on. Turn it on through the Vercel env, not by changing the default in `astro.config.mjs`: CI's `check-blog-hidden` step asserts that the default build has no blog, so flipping the default also means removing that step.
 
 ## Branches
 
