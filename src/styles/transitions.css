@@ -5,11 +5,21 @@
   navigation: auto;
 }
 
-/* Every navigation crossfades briefly (it happens tens of times per visit); only named groups,
-   the card → case sheet, keep motion.css's --dur-sheet. The language swap (D07) is this fade. */
+/* Every navigation crossfades briefly (it happens tens of times per visit), and so do named
+   elements that enter or leave without a partner. Only a paired card → case sheet morph keeps
+   motion.css's --dur-sheet. The language swap (D07) is this fade. */
+::view-transition-group(root),
 ::view-transition-old(root),
-::view-transition-new(root) {
+::view-transition-new(root),
+::view-transition-old(*):only-child,
+::view-transition-new(*):only-child {
   animation-duration: var(--dur-fade);
+}
+
+/* The theme reveal is a same-document transition: named sheets must not be captured, or they
+   would crossfade on top of the circle. The names are inline styles, hence !important. */
+html.theme-reveal [data-vt] {
+  view-transition-name: none !important;
 }
 
 /* Revealed content is never stuck hidden on paper. */

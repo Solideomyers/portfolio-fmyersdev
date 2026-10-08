@@ -34,7 +34,9 @@ const { lang, alternate, size = 'sm' } = Astro.props;
   const blocks = () => [...document.querySelectorAll<HTMLElement>('main section')];
 
   for (const a of document.querySelectorAll<HTMLAnchorElement>('.lang-switch a[data-lang]')) {
-    a.addEventListener('click', () => {
+    a.addEventListener('click', (e) => {
+      // A modified click opens another tab, which doesn't share this tab's sessionStorage.
+      const sameTab = !(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button);
       try {
         localStorage.setItem('lang', a.dataset.lang ?? 'en');
       } catch {
@@ -51,7 +53,10 @@ const { lang, alternate, size = 'sm' } = Astro.props;
         }
       });
       try {
-        if (index >= 0) sessionStorage.setItem(KEY, JSON.stringify({ index, offset }));
+        if (sameTab && index >= 0) {
+          const path = new URL(a.href).pathname;
+          sessionStorage.setItem(KEY, JSON.stringify({ index, offset, path }));
+        } else sessionStorage.removeItem(KEY);
       } catch {
         // storage blocked: the twin opens at the top
       }
@@ -62,8 +67,14 @@ const { lang, alternate, size = 'sm' } = Astro.props;
     const saved = sessionStorage.getItem(KEY);
     if (saved) {
       sessionStorage.removeItem(KEY);
-      const { index, offset } = JSON.parse(saved) as { index: number; offset: number };
-      const el = blocks()[index];
+      const { index, offset, path } = JSON.parse(saved) as {
+        index: number;
+        offset: number;
+        path: string;
+      };
+      // Only the twin the click was for; anything else (aborted navigation) starts at the top.
+      const bare = (p: string) => p.replace(/\/$/, '');
+      const el = bare(path) === bare(location.pathname) ? blocks()[index] : undefined;
       if (el)
         scrollTo(
           0,

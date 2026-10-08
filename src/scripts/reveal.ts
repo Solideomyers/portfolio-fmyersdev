@@ -24,6 +24,8 @@ const io = new IntersectionObserver(
   { rootMargin: '0px 0px -10% 0px' },
 );
 for (const g of groups) {
+  // A keyboard user may tab into a card before it is scrolled into view: never focus the invisible.
+  g.addEventListener('focusin', () => show(g, true));
   // Already on screen at load (or reached via #hash): show it without a fade.
   if (location.hash || g.getBoundingClientRect().top < innerHeight) show(g, true);
   else io.observe(g);

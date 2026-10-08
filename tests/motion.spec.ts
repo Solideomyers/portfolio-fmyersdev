@@ -294,3 +294,118 @@ test.describe('D11 / D15 drawings', () => {
     expect(await page.locator('.sent').evaluate((e) => getComputedStyle(e).opacity)).toBe('1');
   });
 });
+
+test.describe('review fixes', () => {
+  // Runs a theme toggle click inside the page and samples the running animations per frame.
+  const sampleThemeReveal = (page: Page, clicks = 1) =>
+    page.evaluate(async (clicks) => {
+      const btn = [...document.querySelectorAll<HTMLElement>('.theme-toggle')].find(
+        (b) => b.offsetParent !== null,
+      )!;
+      const frame = () => new Promise((r) => requestAnimationFrame(r));
+      btn.click();
+      for (let i = 1; i < clicks; i++) {
+        await frame();
+        await frame();
+        btn.click();
+      }
+      const seen: { pseudo: string; duration: number; reveal: boolean }[] = [];
+      for (let i = 0; i < 40; i++) {
+        await frame();
+        for (const a of document.getAnimations()) {
+          const e = a.effect as KeyframeEffect;
+          if (!e.pseudoElement) continue;
+          seen.push({
+            pseudo: e.pseudoElement,
+            duration: Number(e.getTiming().duration),
+            reveal: document.documentElement.classList.contains('theme-reveal'),
+          });
+        }
+      }
+      return seen;
+    }, clicks);
+
+  test('D06: the circular reveal lasts --dur-sheet (450ms) in the built CSS', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto('/en/about');
+    const seen = await sampleThemeReveal(page);
+    const clip = seen.find((s) => s.pseudo === '::view-transition-new(root)' && s.duration > 200);
+    expect(clip?.duration).toBe(450);
+  });
+
+  test('D06: named cards are not captured during the theme reveal', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto('/en/work');
+    const seen = await sampleThemeReveal(page);
+    expect(seen.some((s) => s.pseudo === '::view-transition-new(root)')).toBe(true);
+    expect(seen.filter((s) => s.pseudo.includes('sheet-'))).toEqual([]);
+  });
+
+  test('D06: a double click keeps theme-reveal for the second transition', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto('/en/about');
+    const seen = await sampleThemeReveal(page, 2);
+    const roots = seen.filter((s) => s.pseudo === '::view-transition-new(root)');
+    expect(roots.length).toBeGreaterThan(0);
+    expect(roots.every((s) => s.reveal)).toBe(true);
+  });
+
+  test('D07: a modified click stores nothing that leaks into the next page', async ({ page }) => {
+    await page.goto('/en');
+    await page.evaluate(() => {
+      const el = document.querySelectorAll('main section')[1] as HTMLElement;
+      scrollTo(0, el.getBoundingClientRect().top + scrollY + 40);
+    });
+    const popup = page.context().waitForEvent('page');
+    await page
+      .locator('.lang-switch a[data-lang="es"]:visible')
+      .first()
+      .click({ modifiers: ['Control'] });
+    await (await popup).close();
+    await page.goto('/en/pricing');
+    expect(await page.evaluate(() => scrollY)).toBe(0);
+  });
+
+  test('cross-document navigation: entering and leaving names fade at --dur-fade', async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      addEventListener('pagereveal', (e) => {
+        const vt = (e as Event & { viewTransition?: ViewTransition }).viewTransition;
+        vt?.ready.then(() => {
+          (window as unknown as { vtTimings: [string, number][] }).vtTimings = document
+            .getAnimations()
+            .map((a) => [
+              (a.effect as KeyframeEffect).pseudoElement ?? '',
+              Number((a.effect as KeyframeEffect).getTiming().duration),
+            ]);
+        });
+      });
+    });
+    await page.goto('/en/about');
+    await page.locator('nav a[href="/en/work"]:visible').first().click();
+    await expect(page).toHaveURL(/\/en\/work\/?$/);
+    const timings = await expect
+      .poll(() =>
+        page.evaluate(() => (window as unknown as { vtTimings?: [string, number][] }).vtTimings),
+      )
+      .toBeTruthy()
+      .then(() =>
+        page.evaluate(() => (window as unknown as { vtTimings: [string, number][] }).vtTimings),
+      );
+    const named = timings.filter(
+      ([p]) => /\((root|sheet-[^)]+)\)$/.test(p) && !p.startsWith('::view-transition-group(sheet'),
+    );
+    expect(named.length).toBeGreaterThan(0);
+    for (const [p, d] of named) expect([p, d]).toEqual([p, 150]);
+  });
+
+  test('D04: focusing a hidden card reveals its group', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 500 });
+    await page.goto('/en');
+    const card = page.locator('.cases [data-reveal]').first();
+    await expect(card).toHaveCSS('opacity', '0');
+    await card.locator('a').evaluate((a) => (a as HTMLElement).focus({ preventScroll: true }));
+    await expect(card).toHaveClass(/is-in/);
+  });
+});

@@ -59,7 +59,7 @@ Running before first paint avoids a flash of the unanimated or hidden state.
 ### Navigation fade and D05 Card → case (`transitions.css`, ProjectCard, CasePage)
 
 - `@view-transition { navigation: auto; }`.
-- **Root crossfade is short.** Every navigation (tens per visit) crossfades the page. `transitions.css` overrides the duration of `::view-transition-old(root)` and `::view-transition-new(root)` to `--dur-fade` (150ms), keeping `motion.css`'s fade keyframes and easing. The longer exit and enter durations (250/350ms) would add perceived latency to every click.
+- **Short crossfade.** Every navigation (tens per visit) crossfades the page. `transitions.css` sets `--dur-fade` (150ms) on the root group and its old/new images, and on named elements that enter or leave without a partner (`::view-transition-old/new(*):only-child`). It keeps `motion.css`'s fade keyframes and easing. Only a paired card → case morph keeps `--dur-sheet`. The longer durations would add perceived latency to every click.
 - **Morph:** the `ProjectCard` root and the CasePage header sheet get `style="view-transition-name: sheet-{id}"` (id = case id, e.g. `fm-01`).
   - Names must be unique per page, and every page listing several cards uses distinct ids.
   - The morph group keeps `motion.css`'s `--dur-sheet` (450ms) `--ease-in-out`.
@@ -76,14 +76,18 @@ On click, if `document.startViewTransition` exists and reduced motion is off:
 
 Under reduced motion it's a plain cross-fade: a view transition without the class, which keeps the root fade. Without the API the swap is instant. The theme logic stays one function shared by both buttons.
 
+- **Named sheets are left out.** The reveal is a same-document transition, so elements with a `view-transition-name` would be captured and would crossfade on top of the circle. While `html.theme-reveal` is set, `[data-vt]` elements (the card and case sheets) get `view-transition-name: none`.
+- **Fast repeat clicks.** A second click skips the running transition; only the latest transition removes `theme-reveal`.
+- **Duration.** It is read from `--dur-sheet` with its unit, because the built CSS is minified (`.45s`).
+
 ### D07 Language (LangSwitch)
 
 - The fade is the 150ms root crossfade above. It already matches the D07 timing, so no extra class is needed.
-- **Keep the reading position.** A click on an alternate-language link stores it in `sessionStorage['fm-lang-swap']`, alongside the existing `localStorage.lang`.
-  - Stored value: the index of the topmost block crossing the viewport top among `main` > `section` / `[id]` blocks, plus the pixel offset into that block.
+- **Keep the reading position.** A plain click on an alternate-language link stores it in `sessionStorage['fm-lang-swap']`, alongside the existing `localStorage.lang`, together with the target path. A modified click (new tab or window) stores nothing, because the other tab doesn't share this tab's `sessionStorage`.
+  - Stored value: the index of the innermost `main section` crossing the viewport top, plus the pixel offset into it.
   - A raw `scrollY` would drift, because EN and ES copy differ in length.
 - **Restore on the twin page.** A tiny script scrolls to the same block index plus the offset, clamped to that block's height.
-  - It runs on `pagereveal` (fallback: `DOMContentLoaded`), then clears the flag.
+  - It runs when the module script executes (the document is parsed), only if the current path is the stored target, then clears the flag. A one-frame paint at the top is possible and accepted.
   - If the twin has fewer blocks, it falls back to the top.
 
 ## Per component
@@ -94,7 +98,7 @@ Applies only when `html.sig` is set and reduced motion is off.
 
 - **Frame:** four 2px edge elements (`.edge-t/r/b/l`, `aria-hidden`) draw the 2px frame by scaling from 0 to 1 along their axis: top left→right, right top→bottom, bottom right→left, left bottom→top.
   - Timing: `--dur-draw` (600ms), `--ease-draw`, delays 0/130/260/390ms.
-  - During the signature the real border is transparent and the edges sit over it. Afterwards the edges are removed (`animationend` on the last edge) and the border is restored.
+  - During the signature the real border is transparent and the edges sit over it. The edges stay in place after drawing (fill-mode `both`, `--line-strong`), so they follow theme changes, with the same pixels as the border and no script.
 - **Ruler:** the zones fade in with a 30ms stagger after the frame (start ≈ 520ms).
 - **Headline:** the h1 rises by `--rise` with **transform only** (`--dur-enter`, `--ease-out`). It is never transparent, so the Home LCP isn't delayed.
 - **Corner:** the corner mark scales and fades in last.
@@ -114,7 +118,7 @@ Applies only when `html.sig` is set and reduced motion is off.
 
 ### D08 Mobile menu (SiteNav)
 
-- **Open:** remove `hidden`, then animate the panel `clip-path: inset(0 0 100% 0)` → `inset(0)` in 250ms `--ease-out`. The rows don't stagger: the menu opens repeatedly on mobile, and a cascade makes it feel slow.
+- **Open:** remove `hidden`, then animate the panel `clip-path: inset(0 0 100% 0)` → `inset(0)` in 250ms `--ease-out`. This is shorter than the handoff's 350/250ms and drops its 30ms row stagger, by the owner's decision after the motion audit (2026-10-07): the menu opens repeatedly on mobile, and the longer timing and the cascade make it feel slow.
 - **Close:** animate the clip back over 200ms, then set `hidden`.
 - Implemented with Web Animations (`element.animate`), so `hidden` toggles after the close finishes. A new open or close cancels the running one.
 - Reduced motion: an opacity fade only.
@@ -124,11 +128,11 @@ Applies only when `html.sig` is set and reduced motion is off.
 
 - The `.sent` panel rises (`--rise`, 350ms, `--ease-out`) on load.
 - The check `path` (already `pathLength="1"`) draws via `stroke-dasharray: 1; stroke-dashoffset: 1 → 0`, 400ms `--ease-draw`, with a 200ms delay.
-- Pure CSS. Under reduced motion the panel just fades and the check is static.
+- Pure CSS. The panel rise is transform-only (the panel holds the page's LCP, Decision 5), so under reduced motion (`--rise: 0`) it doesn't move and the check is static.
 
 ### D15 404 (pages/404.astro)
 
-The two diagonals draw via `stroke-dasharray: 1; stroke-dashoffset: 1 → 0` (`pathLength="1"` added), 600ms `--ease-draw`, the second 120ms later. Pure CSS. Under reduced motion they are static.
+Each diagonal is drawn by a `clip-path` that grows from its start corner (`inset(0 100% 100% 0)` / `inset(0 0 100% 100%)` → `inset(0)`), 600ms `--ease-draw`, the second 120ms later. Dash-based drawing doesn't work here: the strokes use `vector-effect: non-scaling-stroke`, which ignores `pathLength`. The keyframes need an explicit end, because `inset()` doesn't interpolate to `none`. Pure CSS. Under reduced motion they are static.
 
 ## Testing
 

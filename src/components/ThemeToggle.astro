@@ -14,6 +14,9 @@ const { label, size = 'sm' } = Astro.props;
   const root = document.documentElement;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const token = (name: string) => getComputedStyle(root).getPropertyValue(name).trim();
+  // Durations come back minified from the built CSS ('.45s'), so convert by unit.
+  const ms = (v: string) => parseFloat(v) * (v.endsWith('ms') ? 1 : 1000);
+  let latest: ViewTransition | undefined;
 
   const setTheme = (next: string) => {
     root.dataset.theme = next;
@@ -46,14 +49,18 @@ const { label, size = 'sm' } = Astro.props;
           root.animate(
             { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
             {
-              duration: parseFloat(token('--dur-sheet')),
+              duration: ms(token('--dur-sheet')),
               easing: token('--ease-in-out'),
               pseudoElement: '::view-transition-new(root)',
             },
           ),
         )
         .catch(() => {});
-      vt.finished.finally(() => root.classList.remove('theme-reveal'));
+      // A second click skips this transition; only the latest one may clear the class.
+      latest = vt;
+      vt.finished.finally(() => {
+        if (latest === vt) root.classList.remove('theme-reveal');
+      });
     });
   }
 </script>
