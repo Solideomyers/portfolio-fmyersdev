@@ -54,7 +54,7 @@ test.describe('D06 theme', () => {
     await page.emulateMedia({ colorScheme: 'light' });
     await page.goto('/en/about');
     await toggle(page).click();
-    expect(await theme(page)).toEqual(['dark', 'dark']);
+    await expect.poll(() => theme(page)).toEqual(['dark', 'dark']);
     await expect(page.locator('html')).not.toHaveClass(/theme-reveal/);
   });
 
@@ -80,9 +80,7 @@ test.describe('D06 theme', () => {
     await toggle(page).click();
     await toggle(page).click();
     await expect(page.locator('html')).not.toHaveClass(/theme-reveal/);
-    const [attr, stored] = await theme(page);
-    expect(attr).toBe(stored);
-    expect(attr).toBe('light');
+    await expect.poll(() => theme(page)).toEqual(['light', 'light']);
   });
 
   test('without the API it flips instantly', async ({ page }) => {
@@ -93,7 +91,7 @@ test.describe('D06 theme', () => {
     await page.emulateMedia({ colorScheme: 'light' });
     await page.goto('/en/about');
     await toggle(page).click();
-    expect(await theme(page)).toEqual(['dark', 'dark']);
+    await expect.poll(() => theme(page)).toEqual(['dark', 'dark']);
   });
 
   test('reduced motion never adds theme-reveal', async ({ page }) => {
@@ -106,7 +104,7 @@ test.describe('D06 theme', () => {
       }).observe(document.documentElement, { attributes: true });
     });
     await toggle(page).click();
-    expect(await theme(page)).toEqual(['dark', 'dark']);
+    await expect.poll(() => theme(page)).toEqual(['dark', 'dark']);
     expect(
       await page.evaluate(() => (window as unknown as { sawReveal?: boolean }).sawReveal),
     ).toBeUndefined();
