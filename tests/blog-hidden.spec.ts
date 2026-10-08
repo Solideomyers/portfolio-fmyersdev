@@ -1,0 +1,32 @@
+import { test, expect } from '@playwright/test';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+const run = (dir: string) => {
+  try {
+    execFileSync('node', ['scripts/check-blog-hidden.mjs', dir], { stdio: 'pipe' });
+    return 0;
+  } catch (e) {
+    return (e as { status: number }).status;
+  }
+};
+const site = (files: Record<string, string>) => {
+  const dir = mkdtempSync(join(tmpdir(), 'blog-hidden-'));
+  for (const [p, body] of Object.entries(files)) {
+    mkdirSync(join(dir, p, '..'), { recursive: true });
+    writeFileSync(join(dir, p), body);
+  }
+  return dir;
+};
+
+test('passes on a build without the blog', () => {
+  expect(run(site({ 'en/index.html': '<a href="/en/work">w</a>' }))).toBe(0);
+});
+test('fails on a notes page, a feed, an OG image or a link to the blog', () => {
+  expect(run(site({ 'en/notes/index.html': '' }))).toBe(1);
+  expect(run(site({ 'es/notas/rss.xml': '' }))).toBe(1);
+  expect(run(site({ 'og/notes/en/x.png': '' }))).toBe(1);
+  expect(run(site({ 'en/index.html': '<a href="/es/notas">n</a>' }))).toBe(1);
+});

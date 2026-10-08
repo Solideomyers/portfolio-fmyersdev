@@ -47,3 +47,7 @@ test('navKeyOf matches section prefixes but never home', () => {
   expect(navKeyOf('/en/nope')).toBeUndefined();
   expect(navKeyOf('/en')).toBeUndefined();
 });
+test('navKeyOf: notes pages belong to notes', () => {
+  expect(navKeyOf('/en/notes')).toBe('notes');
+  expect(navKeyOf('/es/notas/especificacion-de-una-pagina')).toBe('notes');
+});
