@@ -1,0 +1,21 @@
+/* SP6 global motion rules. They extend motion.css, which stays byte-identical to the handoff. */
+
+/* Native cross-document View Transitions (no ClientRouter). Browsers without them swap instantly. */
+@view-transition {
+  navigation: auto;
+}
+
+/* Every navigation crossfades briefly (it happens tens of times per visit); only named groups,
+   the card → case sheet, keep motion.css's --dur-sheet. The language swap (D07) is this fade. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--dur-fade);
+}
+
+/* Revealed content is never stuck hidden on paper. */
+@media print {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

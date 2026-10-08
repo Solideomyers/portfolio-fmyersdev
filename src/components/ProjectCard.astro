@@ -20,7 +20,7 @@ const sizes = '(min-width: 768px) 50vw, 100vw';
 ---
 
 {variant === 'grid' ? (
-  <a class="card grid" href={href}>
+  <a class="card grid" href={href} style={`view-transition-name: sheet-${data.id.toLowerCase()}`}>
     <div class="head">
       <span class="id">{data.id}</span>
       <Status status={data.status} lang={lang} variant="badge" />
@@ -42,7 +42,7 @@ const sizes = '(min-width: 768px) 50vw, 100vw';
     <div class="read">{t.readCaps} →</div>
   </a>
 ) : (
-  <a class="card next" href={href}>
+  <a class="card next" href={href} style={`view-transition-name: sheet-${data.id.toLowerCase()}`}>
     <Figure shot={shot} lang={lang} frame={false} placeholder="16:10" sizes={sizes} />
     <div class="next-body">
       <div class="next-head">
