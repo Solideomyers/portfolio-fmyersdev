@@ -177,3 +177,30 @@ for (const url of [
 test('drafts get no OG image', async ({ request }) => {
   expect((await request.get('/og/notes/en/apps-script-backend.png')).status()).toBe(404);
 });
+
+for (const h of [
+  { url: '/en', sheet: 'SHEET 07 — NOTES', all: '/en/notes', note: '/en/notes/one-page-spec' },
+  {
+    url: '/es',
+    sheet: 'LÁMINA 07 — NOTAS',
+    all: '/es/notas',
+    note: '/es/notas/especificacion-de-una-pagina',
+  },
+]) {
+  test(`${h.url}: latest note block before the contact block`, async ({ page }) => {
+    await page.goto(h.url);
+    const block = page.locator('.latest-note');
+    await expect(block.locator('.sheet-header')).toContainText(h.sheet);
+    await expect(block.locator('.sheet-header a')).toHaveAttribute('href', h.all);
+    await expect(block.locator('.note-row')).toHaveCount(1);
+    await expect(block.locator('.note-row')).toHaveAttribute('href', h.note);
+    const order = await page.evaluate(() => {
+      const all = [...document.querySelectorAll('main section, main .contact-block')];
+      return (
+        all.indexOf(document.querySelector('.latest-note')!) <
+        all.findIndex((e) => e.matches('.contact-block'))
+      );
+    });
+    expect(order).toBe(true);
+  });
+}

@@ -7,11 +7,14 @@ import ProjectCard from './ProjectCard.astro';
 import PackageCard from './PackageCard.astro';
 import ProcessGrid from './ProcessGrid.astro';
 import ContactBlock from './ContactBlock.astro';
+import NoteRow from './NoteRow.astro';
 import { path, type Lang } from '../i18n/routes';
 import { ui } from '../i18n/ui';
 import { caseUrl } from '../lib/work';
 import { byOrder } from '../lib/offer';
 import { featuredCases } from '../lib/home';
+import { listNotes } from '../lib/notes';
+import { blogEnabled } from '../config/blog';
 
 interface Props {
   lang: Lang;
@@ -19,6 +22,7 @@ interface Props {
 const { lang } = Astro.props;
 const h = ui[lang].home;
 const cases = featuredCases(await getCollection('work'), lang);
+const latest = blogEnabled ? listNotes(await getCollection('notes'), lang)[0] : undefined;
 const packages = byOrder(await getCollection('pricing', (e) => e.data.lang === lang)).map(
   (e) => e.data,
 );
@@ -74,6 +78,20 @@ const packages = byOrder(await getCollection('pricing', (e) => e.data.lang === l
       <ProcessGrid lang={lang} />
     </section>
 
+    {latest && (
+      <section class="block latest-note">
+        <SheetHeader>
+          {ui[lang].notes.sheet}
+          <a slot="meta" class="meta-link" href={path('notes', lang)}>
+            {ui[lang].notes.allNotes} →
+          </a>
+        </SheetHeader>
+        <div class="latest-list">
+          <NoteRow note={latest} lang={lang} />
+        </div>
+      </section>
+    )}
+
     <ContactBlock lang={lang} />
   </div>
 </Base>
@@ -100,6 +118,9 @@ const packages = byOrder(await getCollection('pricing', (e) => e.data.lang === l
     min-height: 44px;
     margin-block: -12px;
     color: var(--accent);
+  }
+  .latest-list {
+    border-top: var(--border-ink);
   }
   .cases {
     display: grid;
