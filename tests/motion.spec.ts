@@ -161,3 +161,50 @@ test.describe('D03 Home signature', () => {
     await expect(page.locator('.hero')).not.toHaveCSS('border-top-color', 'rgba(0, 0, 0, 0)');
   });
 });
+
+test.describe('D08 mobile menu', () => {
+  test.use({ viewport: { width: 375, height: 740 } });
+  const btn = (page: Page) => page.locator('.menu-btn:visible').first();
+  const panel = (page: Page) => page.locator('#site-menu');
+
+  test('opens and closes with the animation, Escape included', async ({ page }) => {
+    await page.goto('/en/about');
+    await btn(page).click();
+    await expect(btn(page)).toHaveAttribute('aria-expanded', 'true');
+    await expect(panel(page)).toBeVisible();
+    await btn(page).click();
+    await expect(btn(page)).toHaveAttribute('aria-expanded', 'false');
+    await expect(panel(page)).toBeHidden();
+    await btn(page).click();
+    await page.keyboard.press('Escape');
+    await expect(panel(page)).toBeHidden();
+  });
+
+  test('opening and closing are animated (clip from the top)', async ({ page }) => {
+    await page.goto('/en/about');
+    await btn(page).click();
+    const opening = await panel(page).evaluate((e) =>
+      e.getAnimations().map((a) => Object.keys((a.effect as KeyframeEffect).getKeyframes()[0])),
+    );
+    expect(opening.flat()).toContain('clipPath');
+    await page.waitForTimeout(300);
+    await btn(page).click();
+    expect(await panel(page).evaluate((e) => (e as HTMLElement).hidden)).toBe(false);
+    await expect(panel(page)).toBeHidden();
+  });
+
+  test('a double tap ends in a consistent state', async ({ page }) => {
+    await page.goto('/en/about');
+    await btn(page).dblclick();
+    await expect(btn(page)).toHaveAttribute('aria-expanded', 'false');
+    await expect(panel(page)).toBeHidden();
+  });
+
+  test('growing to desktop mid-animation closes it cleanly', async ({ page }) => {
+    await page.goto('/en/about');
+    await btn(page).click();
+    await page.setViewportSize({ width: 1300, height: 740 });
+    await expect(panel(page)).toBeHidden();
+    await expect(page.locator('.menu-btn').first()).toHaveAttribute('aria-expanded', 'false');
+  });
+});
