@@ -72,3 +72,62 @@ test.describe('notes index without JavaScript', () => {
     await expect(page.locator('.notes-empty')).toBeHidden();
   });
 });
+
+const notes = [
+  {
+    url: '/en/notes/one-page-spec',
+    head: 'N-02 — PROCESS',
+    meta: '2026.11 · 6 MIN',
+    h1: 'Why every project starts with a one-page spec',
+    dek: 'A day of writing saves weeks of rework. What goes on the page, and what I leave out.',
+    tags: ['Process', 'Pricing', 'Specs'],
+    twin: '/es/notas/especificacion-de-una-pagina',
+    contact: '/en/contact',
+    write: 'WRITE TO ME',
+  },
+  {
+    url: '/es/notas/especificacion-de-una-pagina',
+    head: 'N-02 — PROCESO',
+    meta: '2026.11 · 6 MIN',
+    h1: 'Por qué todo proyecto empieza con una especificación de una página',
+    dek: 'Un día escribiendo ahorra semanas de retrabajo. Qué va en la página y qué dejo fuera.',
+    tags: ['Proceso', 'Precios', 'Especificación'],
+    twin: '/en/notes/one-page-spec',
+    contact: '/es/contacto',
+    write: 'ESCRÍBEME',
+  },
+] as const;
+
+for (const n of notes) {
+  test(`${n.url}: header, toc, body, author, twin, og`, async ({ page }) => {
+    await page.goto(n.url);
+    await expect(page.locator('.note-head .sheet-header')).toContainText(n.head);
+    await expect(page.locator('.note-head .sheet-header')).toContainText(n.meta);
+    await expect(page.locator('h1')).toHaveText(n.h1);
+    await expect(page.locator('.note-head .dek')).toHaveText(n.dek);
+    await expect(page.locator('.note-head .tag')).toHaveText([...n.tags]);
+    const h2 = page.locator('.prose h2');
+    await expect(h2).toHaveCount(4);
+    await expect(page.locator('.toc-side a[href^="#"]')).toHaveCount(4);
+    expect(await h2.first().evaluate((e) => getComputedStyle(e, '::before').content)).toBe('none');
+    await expect(page.locator('.prose pre')).not.toHaveAttribute('style', /background/);
+    await expect(page.locator('.prose .figure')).toContainText(/1600×1000/);
+    await expect(page.locator('.author a')).toHaveAttribute('href', n.contact);
+    await expect(page.locator('.author a')).toContainText(n.write);
+    await expect(page.locator('.related')).toHaveCount(0); // a single published note: nothing to relate
+    await expect(page.locator('header .tools .lang-switch a[hreflang]')).toHaveAttribute(
+      'href',
+      n.twin,
+    );
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+      'content',
+      /^https:\/\/fmyers\.dev\/og\/notes\/(en|es)\/[a-z-]+\.png$/,
+    );
+    await expect(page.locator('header nav a[aria-current="page"]')).toContainText(/NOTES|NOTAS/);
+  });
+}
+
+test('drafts are never routed', async ({ request }) => {
+  expect((await request.get('/en/notes/apps-script-backend')).status()).toBe(404);
+  expect((await request.get('/es/notas/apps-script-como-backend')).status()).toBe(404);
+});

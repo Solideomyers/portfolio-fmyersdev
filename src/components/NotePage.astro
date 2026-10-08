@@ -1,0 +1,263 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import SheetHeader from './SheetHeader.astro';
+import Button from './Button.astro';
+import Tag from './Tag.astro';
+import Toc from './Toc.astro';
+import Prose from './Prose.astro';
+import Figure from './Figure.astro';
+import { path, type Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import {
+  categoryLabel,
+  dateLabel,
+  listNotes,
+  noteAlternate,
+  noteHref,
+  prevNext,
+} from '../lib/notes';
+
+interface Props {
+  entry: CollectionEntry<'notes'>;
+  lang: Lang;
+}
+const { entry, lang } = Astro.props;
+const d = entry.data;
+const n = ui[lang].notes;
+const all = await getCollection('notes');
+const { Content, headings } = await render(entry);
+const list = listNotes(all, lang);
+const { prev, next } = prevNext(list, d.id);
+const { alternate, hreflang } = noteAlternate(all, entry);
+---
+
+<Base
+  lang={lang}
+  title={d.title}
+  description={d.dek}
+  alternate={alternate}
+  hreflang={hreflang}
+  ogImage={`/og/notes/${lang}/${d.slug}.png`}
+>
+  <div class="page">
+    <section class="note-head">
+      <Button href={path('notes', lang)} variant="link" glyph="←" glyphFirst>
+        {n.allNotes}
+      </Button>
+      <SheetHeader>
+        {d.id} — {categoryLabel(d.category, lang).toUpperCase()}
+        <span slot="meta">
+          {dateLabel(d.date)} · {d.minutes} MIN
+        </span>
+      </SheetHeader>
+      <h1>{d.title}</h1>
+      <p class="dek">{d.dek}</p>
+      <div class="tags">
+        {d.tags.map((t) => (
+          <Tag>{t}</Tag>
+        ))}
+      </div>
+    </section>
+    <div class="note-body">
+      <Toc headings={headings} lang={lang} />
+      <article>
+        <Prose variant="note">
+          <Content components={{ Figure }} />
+        </Prose>
+        <div class="author">
+          <div class="portrait" aria-hidden="true"></div>
+          <div class="who">
+            <span class="name">Francisco Myers</span>
+            <span class="line">{n.author}</span>
+          </div>
+          <a href={path('contact', lang)}>{n.write} →</a>
+        </div>
+      </article>
+    </div>
+    {list.length > 1 && (
+      <section class="related">
+        <SheetHeader>{n.related}</SheetHeader>
+        <div class="pair">
+          {prev ? (
+            <a class="cell" href={noteHref(prev)}>
+              <span class="k">
+                ← {n.prev} · {prev.data.id}
+              </span>
+              <span class="t">{prev.data.title}</span>
+            </a>
+          ) : (
+            <div class="cell off" aria-disabled="true">
+              <span class="k">← {n.prev}</span>
+            </div>
+          )}
+          {next ? (
+            <a class="cell end" href={noteHref(next)}>
+              <span class="k">
+                {n.next} · {next.data.id} →
+              </span>
+              <span class="t">{next.data.title}</span>
+            </a>
+          ) : (
+            <div class="cell end off" aria-disabled="true">
+              <span class="k">{n.next} →</span>
+              <span class="latest">{n.latest}</span>
+            </div>
+          )}
+        </div>
+      </section>
+    )}
+  </div>
+</Base>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(32px, 5cqi, 56px);
+  }
+  .note-head {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 984px;
+  }
+  .note-head > :global(.btn) {
+    align-self: flex-start;
+  }
+  h1 {
+    margin: 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(36px, 5cqi, 64px);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+  .dek {
+    margin: 0;
+    font-size: clamp(17px, 1.6cqi, 20px);
+    line-height: 1.45;
+    color: var(--text-muted);
+    max-width: 680px;
+    text-wrap: pretty;
+  }
+  .tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .note-body {
+    display: flex;
+    gap: 64px;
+    align-items: flex-start;
+  }
+  article {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 680px;
+  }
+  @media (max-width: 1199px) {
+    .note-body {
+      flex-direction: column;
+      gap: 24px;
+    }
+    article {
+      width: 100%;
+    }
+  }
+  .author {
+    margin-top: 44px;
+    border: var(--border-ink);
+    background: var(--surface);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    padding: 20px;
+  }
+  .portrait {
+    width: 56px;
+    height: 70px;
+    flex: none;
+    border: var(--border-ink);
+    background: repeating-linear-gradient(135deg, var(--hatch) 0 1px, transparent 1px 6px);
+  }
+  .who {
+    flex: 1 1 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .name {
+    font-weight: 700;
+    font-size: 17px;
+  }
+  .line {
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+  .author a {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    background: var(--accent);
+    color: var(--accent-fg);
+    padding: 0 16px;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .related {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .pair {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    border-top: var(--border-ink);
+  }
+  .cell {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 12px 14px 0;
+    border-bottom: var(--border-rule);
+    color: var(--text);
+    text-decoration: none;
+  }
+  .cell.end {
+    padding: 14px 0 14px 12px;
+    text-align: right;
+  }
+  .cell.off {
+    opacity: 0.4;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    a.cell:hover {
+      color: var(--accent);
+      text-decoration: none;
+    }
+  }
+  .k {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  .t {
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: 19px;
+    text-wrap: pretty;
+  }
+  .latest {
+    font-size: 15px;
+    color: var(--text-muted);
+  }
+</style>

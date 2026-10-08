@@ -1,0 +1,13 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import NotePage from '../../../components/NotePage.astro';
+import { blogEnabled } from '../../../config/blog';
+import { notePaths } from '../../../lib/notes';
+
+export async function getStaticPaths() {
+  return blogEnabled ? notePaths(await getCollection('notes'), 'es') : [];
+}
+const { entry } = Astro.props as { entry: CollectionEntry<'notes'> };
+---
+
+<NotePage entry={entry} lang="es" />
