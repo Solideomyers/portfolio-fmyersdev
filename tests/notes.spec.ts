@@ -204,3 +204,10 @@ for (const h of [
     expect(order).toBe(true);
   });
 }
+
+test('visual QA fixes: one rule under the latest-note header; a tight quote', async ({ page }) => {
+  await page.goto('/en');
+  await expect(page.locator('.latest-note .latest-list')).toHaveCSS('border-top-width', '0px');
+  await page.goto('/en/notes/one-page-spec');
+  await expect(page.locator('.prose blockquote p')).toHaveCSS('margin-top', '0px');
+});
