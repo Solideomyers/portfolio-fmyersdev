@@ -251,3 +251,48 @@ test.describe('D04 without JavaScript', () => {
     await expect(page.locator('.cases [data-reveal]').first()).toHaveCSS('opacity', '1');
   });
 });
+
+test.describe('D11 / D15 drawings', () => {
+  test('404 diagonals draw progressively (the clip interpolates)', async ({ page }) => {
+    await page.goto('/en/nope-404');
+    const mid = await page
+      .locator('.sheet svg path')
+      .first()
+      .evaluate((p) => {
+        const a = p.getAnimations()[0];
+        a.pause();
+        a.currentTime = 300; // halfway through --dur-draw
+        return getComputedStyle(p).clipPath;
+      });
+    expect(mid).toMatch(/^inset\(0px \d+(\.\d+)?% \d+(\.\d+)?% 0px\)$/);
+    expect(mid).not.toBe('inset(0px 100% 100% 0px)');
+  });
+
+  test('404 diagonals stay solid lines (non-scaling-stroke ignores pathLength)', async ({
+    page,
+  }) => {
+    await page.goto('/en/nope-404');
+    for (const path of await page.locator('.sheet svg path').all())
+      await expect(path).toHaveCSS('stroke-dasharray', 'none');
+  });
+
+  for (const [url, sel] of [
+    ['/en/contact/sent', '.sent svg path'],
+    ['/en/nope-404', '.sheet svg path'],
+  ] as const) {
+    test(`${url}: strokes draw, and are static under reduced motion`, async ({ page }) => {
+      await page.goto(url);
+      const path = page.locator(sel).first();
+      if (url.includes('sent')) await expect(path).toHaveAttribute('pathLength', '1');
+      expect(await path.evaluate((e) => getComputedStyle(e).animationName)).not.toBe('none');
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.reload();
+      expect(await path.evaluate((e) => getComputedStyle(e).animationName)).toBe('none');
+    });
+  }
+
+  test('the sent panel only moves; it is never transparent', async ({ page }) => {
+    await page.goto('/en/contact/sent');
+    expect(await page.locator('.sent').evaluate((e) => getComputedStyle(e).opacity)).toBe('1');
+  });
+});
