@@ -27,7 +27,7 @@ test('html.js and the cross-document view-transition rules are present', async (
   );
 });
 
-for (const url of ['/en', '/en/work', '/en/work/churchapp', '/es/proyectos/chapel']) {
+for (const url of ['/en', '/en/work', '/en/work/churchapp', '/es/proyectos/chapel', '/ds']) {
   test(`${url}: view-transition names are unique`, async ({ page }) => {
     await page.goto(url);
     const names = await vtNames(page);

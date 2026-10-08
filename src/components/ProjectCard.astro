@@ -12,20 +12,18 @@ interface Props {
   href: string;
   lang: Lang;
   variant?: 'grid' | 'next';
+  /** view-transition name for the card → case morph; off where the same case is shown twice (specimens) */
+  vt?: boolean;
 }
-const { data, href, lang, variant = 'grid' } = Astro.props;
+const { data, href, lang, variant = 'grid', vt = true } = Astro.props;
+const vtStyle = vt ? `view-transition-name: sheet-${data.id.toLowerCase()}` : undefined;
 const t = ui[lang].work;
 const shot = { src: data.cover.src, alt: data.cover.alt };
 const sizes = '(min-width: 768px) 50vw, 100vw';
 ---
 
 {variant === 'grid' ? (
-  <a
-    class="card grid"
-    href={href}
-    data-vt
-    style={`view-transition-name: sheet-${data.id.toLowerCase()}`}
-  >
+  <a class="card grid" href={href} data-vt style={vtStyle}>
     <div class="head">
       <span class="id">{data.id}</span>
       <Status status={data.status} lang={lang} variant="badge" />
@@ -47,12 +45,7 @@ const sizes = '(min-width: 768px) 50vw, 100vw';
     <div class="read">{t.readCaps} →</div>
   </a>
 ) : (
-  <a
-    class="card next"
-    href={href}
-    data-vt
-    style={`view-transition-name: sheet-${data.id.toLowerCase()}`}
-  >
+  <a class="card next" href={href} data-vt style={vtStyle}>
     <Figure shot={shot} lang={lang} frame={false} placeholder="16:10" sizes={sizes} />
     <div class="next-body">
       <div class="next-head">

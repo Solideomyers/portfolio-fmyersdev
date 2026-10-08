@@ -108,7 +108,13 @@ const faqItems = faqFor(await getCollection('faq'), 'pricing', 'en').map((e) => 
         <ProjectCard data={chapel} href={caseUrl('en', chapel.slug)} lang="en" />
         <ProjectCard data={church} href={caseUrl('en', church.slug)} lang="en" />
       </div>
-      <ProjectCard data={chapel} href={caseUrl('en', chapel.slug)} lang="en" variant="next" />
+      <ProjectCard
+        data={chapel}
+        href={caseUrl('en', chapel.slug)}
+        lang="en"
+        variant="next"
+        vt={false}
+      />
     </section>
     <section id="button-secondary">
       <SheetHeader>C01 — BUTTON SECONDARY</SheetHeader>
