@@ -160,3 +160,20 @@ for (const f of [
     expect(parsed).toEqual({ error: false, title: f.title, links: [f.link] });
   });
 }
+
+for (const url of [
+  '/og/notes/en/one-page-spec.png',
+  '/og/notes/es/especificacion-de-una-pagina.png',
+]) {
+  test(`${url} is a 1200×630 PNG`, async ({ request }) => {
+    const res = await request.get(url);
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toBe('image/png');
+    const b = await res.body();
+    expect([...b.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+    expect([b.readUInt32BE(16), b.readUInt32BE(20)]).toEqual([1200, 630]);
+  });
+}
+test('drafts get no OG image', async ({ request }) => {
+  expect((await request.get('/og/notes/en/apps-script-backend.png')).status()).toBe(404);
+});
