@@ -39,6 +39,32 @@ const work = defineCollection({
   }),
 });
 
+const notes = defineCollection({
+  // Id from the file path (en/n-02-…): the EN and ES twins share `id`, not the entry id.
+  loader: glob({
+    base: './src/content/notes',
+    pattern: '**/*.mdx',
+    generateId: ({ entry }) => entry.replace(/\.mdx$/, ''),
+  }),
+  schema: z
+    .object({
+      id: z.string().regex(/^N-\d{2}$/),
+      lang: z.enum(['en', 'es']),
+      slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+      title: z.string(),
+      dek: z.string(),
+      date: z
+        .string()
+        .regex(/^\d{4}-\d{2}-\d{2}$/)
+        .refine((d) => !Number.isNaN(Date.parse(d)), 'not a real date'),
+      category: z.enum(['process', 'automation', 'engineering', 'cases']),
+      minutes: z.number().int().min(1),
+      tags: z.array(z.string()),
+      draft: z.boolean().default(false),
+    })
+    .strict(),
+});
+
 const otherWork = defineCollection({
   loader: file('src/content/other-work.json'),
   schema: z.object({
@@ -124,4 +150,4 @@ const pages = defineCollection({
   schema: z.object({ title: z.string(), updated: z.coerce.date() }).strict(),
 });
 
-export const collections = { work, otherWork, pricing, faq, pages };
+export const collections = { work, notes, otherWork, pricing, faq, pages };

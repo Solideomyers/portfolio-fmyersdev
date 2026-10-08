@@ -42,7 +42,7 @@ test('menu opens, rows ≥ 52px, Escape closes and refocuses', async ({ page }) 
   await expect(btn).toHaveAttribute('aria-expanded', 'true');
   await expect(btn).toHaveText('CERRAR');
   const rows = page.locator('#site-menu > a');
-  await expect(rows).toHaveCount(5);
+  await expect(rows).toHaveCount(6); // e2e builds with BLOG_ENABLED=true: 06 NOTAS is in the menu
   for (const h of await rows.evaluateAll((els) =>
     els.map((e) => e.getBoundingClientRect().height),
   )) {
@@ -65,9 +65,14 @@ test('menu closes when the viewport grows to desktop', async ({ page }) => {
   await expect(header(page).locator('.menu-btn')).toHaveAttribute('aria-expanded', 'false');
 });
 
-test('no NOTES link while the blog is disabled', async ({ page }) => {
+// e2e builds with BLOG_ENABLED=true; the disabled build is checked by scripts/check-blog-hidden.mjs in CI.
+test('06 NOTES joins the nav when the blog is enabled', async ({ page }) => {
   await page.goto('/en');
-  await expect(page.getByText('NOTES')).toHaveCount(0);
+  await expect(header(page).locator('nav a', { hasText: 'NOTES' })).toHaveAttribute(
+    'href',
+    '/en/notes',
+  );
+  await expect(header(page).locator('nav a', { hasText: 'NOTES' })).toContainText('06');
 });
 
 test.describe('without JavaScript', () => {

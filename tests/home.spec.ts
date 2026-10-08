@@ -89,6 +89,6 @@ test('home contact and section links meet the 44px touch target', async ({ page 
   const heights = await page
     .locator('.contact-block .links a, .meta-link')
     .evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height));
-  expect(heights).toHaveLength(4);
+  expect(heights).toHaveLength(5); // e2e builds with BLOG_ENABLED=true: + ALL NOTES →
   for (const h of heights) expect(h).toBeGreaterThanOrEqual(44);
 });

@@ -11,6 +11,7 @@ export const ROUTES = {
   contact: { en: '/en/contact', es: '/es/contacto' },
   contactSent: { en: '/en/contact/sent', es: '/es/contacto/enviado' },
   privacy: { en: '/en/privacy', es: '/es/privacidad' },
+  notes: { en: '/en/notes', es: '/es/notas' },
 } as const satisfies Record<string, Record<Lang, string>>;
 
 export type RouteKey = keyof typeof ROUTES;
@@ -22,7 +23,9 @@ export const NAV = [
   'pricing',
   'contact',
 ] as const satisfies readonly RouteKey[];
-export type NavKey = (typeof NAV)[number];
+/** NOTES (06) joins the nav only when the blog is enabled (SiteNav reads src/config/blog.ts). */
+export const NAV_WITH_NOTES = [...NAV, 'notes'] as const satisfies readonly RouteKey[];
+export type NavKey = (typeof NAV_WITH_NOTES)[number];
 
 export const path = (key: RouteKey, lang: Lang): string => ROUTES[key][lang];
 export const other = (lang: Lang): Lang => (lang === 'en' ? 'es' : 'en');
@@ -47,5 +50,7 @@ export function alternateOf(pathname: string, alternate?: string | null): string
 /** Nav section for a path, including its sub-pages (/en/work/chapel → work). Home never matches. */
 export function navKeyOf(pathname: string): NavKey | undefined {
   const p = trim(pathname);
-  return NAV.find((k) => LANGS.some((l) => p === ROUTES[k][l] || p.startsWith(ROUTES[k][l] + '/')));
+  return NAV_WITH_NOTES.find((k) =>
+    LANGS.some((l) => p === ROUTES[k][l] || p.startsWith(ROUTES[k][l] + '/')),
+  );
 }

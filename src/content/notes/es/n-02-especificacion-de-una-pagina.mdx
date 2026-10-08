@@ -1,0 +1,56 @@
+---
+id: 'N-02'
+lang: 'es'
+slug: 'especificacion-de-una-pagina'
+title: 'Por qué todo proyecto empieza con una especificación de una página'
+dek: 'Un día escribiendo ahorra semanas de retrabajo. Qué va en la página y qué dejo fuera.'
+date: '2026-11-01'
+category: 'process'
+minutes: 6
+tags: ['Proceso', 'Precios', 'Especificación']
+---
+
+Antes de escribir una línea de código, escribo una página. El cliente la lee, corregimos lo que esté mal y la firma. Solo entonces envío un precio fijo.
+
+## Una página, no un documento
+
+Las especificaciones largas se leen por encima. Una sola página nos obliga a los dos a decidir qué importa. Si algo no cabe, probablemente no es parte de la primera versión.
+
+> La especificación es el contrato con quien mantendrá el código — normalmente yo.
+
+## Qué lleva
+
+Cada especificación tiene los mismos cinco bloques, en el mismo orden, para que el cliente aprenda a leerla rápido.
+
+```text
+ESPEC FM-NN
+01 PROBLEMA  una frase
+02 USUARIOS  roles, y qué puede hacer cada uno
+03 MÓDULOS   máx. 6, cada uno con un verbo
+04 DATOS     las tablas que importan
+05 MÉTRICA   el número que dice que funcionó
+```
+
+### Qué dejo fuera
+
+- Pantallas y píxeles. Llegan en la primera semana, en un enlace en vivo.
+- Lo deseable. Va a una lista de "después" al final.
+- Decisiones técnicas que el cliente no necesita aprobar.
+
+## Qué ahorra
+
+En ChurchApp la especificación tomó una tarde. Nombró siete módulos y una métrica. La primera versión pública salió diez días después, sin agregar ni quitar ningún módulo. La historia completa está en el [caso de estudio](/es/proyectos/churchapp).
+
+<Figure
+  n={1}
+  lang="es"
+  shot={{
+    src: '/notes/n-02-spec.png',
+    alt: 'La especificación de ChurchApp, página uno de una',
+    caption: 'La especificación de ChurchApp, página uno de una',
+  }}
+/>
+
+## Cuándo no la hago
+
+En un mes de contrato sobre un producto existente no hay nada que especificar de antemano. Igual escribo una página por cada tarea grande, para que el equipo pueda decir que no antes de empezar.

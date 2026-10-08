@@ -1,0 +1,196 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import SheetHeader from './SheetHeader.astro';
+import NoteRow from './NoteRow.astro';
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { CATEGORIES, categoryCounts, listNotes } from '../lib/notes';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const n = ui[lang].notes;
+const list = listNotes(await getCollection('notes'), lang);
+const counts = categoryCounts(list);
+const chips = (['all', ...CATEGORIES] as const).map((cat, i) => ({
+  cat,
+  name: n.cats[i],
+  count: counts[cat],
+}));
+const rss = `${Astro.url.pathname.replace(/\/$/, '')}/rss.xml`;
+---
+
+<Base lang={lang} title={ui[lang].h1.notes} description={n.lead} rss={rss}>
+  <div class="page">
+    <section class="notes-head">
+      <SheetHeader>
+        {n.sheet}
+        <a slot="meta" class="meta-link" href={rss}>
+          RSS ↗
+        </a>
+      </SheetHeader>
+      <h1>{ui[lang].h1.notes}</h1>
+      <p class="lead">{n.lead}</p>
+    </section>
+    <div class="notes-body">
+      <div class="notes-chips" role="group" aria-label={n.filterLabel}>
+        {chips.map((c) => (
+          <button type="button" class="chip" data-cat={c.cat} aria-pressed="false" data-press>
+            {c.name}
+            <span class="count">{c.count}</span>
+          </button>
+        ))}
+      </div>
+      <div class="notes-list">
+        {list.map((note) => (
+          <NoteRow note={note} lang={lang} />
+        ))}
+      </div>
+      <div class="notes-empty" hidden>
+        <span class="k">{n.emptyK}</span>
+        <span class="h">{n.emptyH}</span>
+        <button type="button">← {n.showAll}</button>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<script>
+  // Category filter. Without JS every row shows and no chip is pressed (nothing filters).
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.notes-chips button')];
+  const rows = [...document.querySelectorAll<HTMLElement>('.note-row')];
+  const list = document.querySelector<HTMLElement>('.notes-list');
+  const empty = document.querySelector<HTMLElement>('.notes-empty');
+  const pick = (cat: string) => {
+    for (const c of chips) c.setAttribute('aria-pressed', String(c.dataset.cat === cat));
+    let shown = 0;
+    for (const r of rows) {
+      r.hidden = cat !== 'all' && r.dataset.cat !== cat;
+      if (!r.hidden) shown++;
+    }
+    if (list) list.hidden = shown === 0;
+    if (empty) empty.hidden = shown !== 0;
+  };
+  if (chips.length) {
+    for (const c of chips) c.addEventListener('click', () => pick(c.dataset.cat ?? 'all'));
+    empty?.querySelector('button')?.addEventListener('click', () => {
+      pick('all');
+      chips[0].focus(); // the button just hid itself; keep keyboard users in place
+    });
+    pick('all');
+  }
+</script>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(32px, 5cqi, 56px);
+  }
+  .notes-head {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  /* 44px hit area without changing the sheet-header row height (same as the Home meta links) */
+  .meta-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-block: -12px;
+    color: var(--accent);
+  }
+  h1 {
+    margin: 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(40px, 5.6cqi, 72px);
+    letter-spacing: var(--ls-display);
+    line-height: var(--lh-display);
+    text-wrap: balance;
+  }
+  .lead {
+    margin: 0;
+    font-size: clamp(17px, 1.5cqi, 19px);
+    line-height: 1.45;
+    color: var(--text-muted);
+    max-width: 640px;
+    text-wrap: pretty;
+  }
+  .notes-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .notes-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    min-height: 40px;
+    padding: 0 12px;
+    border: var(--border-ink);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .chip[aria-pressed='true'] {
+    background: var(--invert-bg);
+    color: var(--invert-fg);
+  }
+  @media (pointer: coarse) {
+    .chip {
+      min-height: 44px;
+    }
+  }
+  .count {
+    opacity: 0.6;
+  }
+  .notes-list {
+    display: flex;
+    flex-direction: column;
+    border-top: var(--border-ink);
+  }
+  .notes-list[hidden],
+  .notes-empty[hidden] {
+    display: none;
+  }
+  .notes-empty {
+    border: 1px dashed var(--text-muted);
+    padding: clamp(24px, 4cqi, 40px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .k {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  .h {
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: 24px;
+  }
+  .notes-empty button {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--accent);
+    background: transparent;
+    border: 0;
+    padding: 8px 0;
+    min-height: 44px;
+    cursor: pointer;
+  }
+</style>

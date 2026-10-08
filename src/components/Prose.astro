@@ -1,6 +1,6 @@
 ---
 interface Props {
-  variant?: 'case' | 'page';
+  variant?: 'case' | 'page' | 'note';
 }
 const { variant = 'case' } = Astro.props;
 ---
@@ -110,5 +110,43 @@ const { variant = 'case' } = Astro.props;
     font-size: clamp(17px, 1.5cqi, 19px);
     line-height: 1.5;
     color: var(--text-muted);
+  }
+  /* Note (P09): no h2 numbers; the article spacing of Blog Post.dc.html. */
+  .note :global(h2) {
+    margin-top: 40px;
+  }
+  .note :global(h2)::before {
+    content: none;
+  }
+  .note :global(h3) {
+    margin: 28px 0 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: 21px;
+  }
+  .note :global(p),
+  .note :global(pre),
+  .note :global(ul) {
+    margin-top: 20px;
+  }
+  .note :global(p) {
+    line-height: 1.65;
+  }
+  .note :global(blockquote),
+  .note :global(.figure) {
+    margin-top: 24px;
+  }
+  .note :global(blockquote) {
+    padding: 4px 0 4px 16px;
+  }
+  .note :global(blockquote p) {
+    margin-top: 0;
+  }
+  .note :global(pre) {
+    padding: 14px 16px;
+    line-height: 1.6;
+  }
+  .note > :global(:first-child) {
+    margin-top: 0;
   }
 </style>

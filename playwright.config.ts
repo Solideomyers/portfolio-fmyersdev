@@ -16,6 +16,8 @@ export default defineConfig({
     command: `npm run build && node scripts/serve-static.mjs .vercel/output/static ${PORT}`,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: false,
+    // e2e runs with the blog on; CI's build job checks the default (off) build.
+    env: { BLOG_ENABLED: 'true' },
     timeout: 120_000,
   },
 });

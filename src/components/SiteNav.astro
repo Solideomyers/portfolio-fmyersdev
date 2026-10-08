@@ -1,7 +1,8 @@
 ---
 import LangSwitch from './LangSwitch.astro';
 import ThemeToggle from './ThemeToggle.astro';
-import { NAV, path, type Lang, type RouteKey } from '../i18n/routes';
+import { NAV, NAV_WITH_NOTES, path, type Lang, type RouteKey } from '../i18n/routes';
+import { blogEnabled } from '../config/blog';
 import { ui } from '../i18n/ui';
 
 interface Props {
@@ -12,8 +13,8 @@ interface Props {
 }
 const { lang, currentKey, alternate, menuId = 'site-menu' } = Astro.props;
 const t = ui[lang];
-// NOTES (06) is appended in SP7 (blog) when site.blogEnabled is true.
-const links = NAV.map((key, i) => ({
+const keys = blogEnabled ? NAV_WITH_NOTES : NAV;
+const links = keys.map((key, i) => ({
   key,
   href: path(key, lang),
   num: String(i + 1).padStart(2, '0'),
