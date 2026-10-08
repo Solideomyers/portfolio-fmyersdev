@@ -11,6 +11,7 @@ export const ROUTES = {
   contact: { en: '/en/contact', es: '/es/contacto' },
   contactSent: { en: '/en/contact/sent', es: '/es/contacto/enviado' },
   privacy: { en: '/en/privacy', es: '/es/privacidad' },
+  notes: { en: '/en/notes', es: '/es/notas' },
 } as const satisfies Record<string, Record<Lang, string>>;
 
 export type RouteKey = keyof typeof ROUTES;

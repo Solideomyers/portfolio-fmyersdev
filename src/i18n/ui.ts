@@ -149,6 +149,24 @@ interface Ui {
     channels: { k: string; v: string; g: string }[];
     spec: { k: string; v: string }[];
   };
+  notes: {
+    sheet: string;
+    lead: string;
+    filterLabel: string;
+    cats: string[];
+    onlyEn: string;
+    emptyK: string;
+    emptyH: string;
+    showAll: string;
+    allNotes: string;
+    author: string;
+    write: string;
+    related: string;
+    prev: string;
+    next: string;
+    latest: string;
+    rssTitle: string;
+  };
 }
 
 // Copy is verbatim from docs/handoff/design/*.dc.html COPY objects.
@@ -178,6 +196,26 @@ export const ui: Record<Lang, Ui> = {
       contact: "Tell me what you're building.",
       contactSent: "Thanks. I'll reply within 2 business days.",
       privacy: 'Privacy',
+      notes: 'Notes',
+    },
+    notes: {
+      sheet: 'SHEET 07 — NOTES',
+      lead: 'How I scope, price and build small products and automations. Written when there is something worth saying.',
+      filterLabel: 'Filter by category',
+      cats: ['All', 'Process', 'Automation', 'Engineering', 'Cases'],
+      onlyEn: 'ONLY IN SPANISH',
+      emptyK: '0 NOTES',
+      emptyH: 'Nothing in this category yet.',
+      showAll: 'SHOW ALL NOTES',
+      allNotes: 'ALL NOTES',
+      author:
+        'Fullstack developer in Venezuela. I build SaaS products and Google Workspace automations.',
+      write: 'WRITE TO ME',
+      related: 'MORE NOTES',
+      prev: 'PREVIOUS',
+      next: 'NEXT',
+      latest: 'This is the latest note',
+      rssTitle: 'fmyers.dev — Notes',
     },
     notFound: {
       sheet: 'SHEET 404',
@@ -462,6 +500,26 @@ export const ui: Record<Lang, Ui> = {
       contact: 'Cuéntame qué estás construyendo.',
       contactSent: 'Gracias. Te respondo en 2 días hábiles.',
       privacy: 'Privacidad',
+      notes: 'Notas',
+    },
+    notes: {
+      sheet: 'LÁMINA 07 — NOTAS',
+      lead: 'Cómo defino, cotizo y construyo productos pequeños y automatizaciones. Escribo cuando hay algo que valga la pena.',
+      filterLabel: 'Filtrar por categoría',
+      cats: ['Todo', 'Proceso', 'Automatización', 'Ingeniería', 'Casos'],
+      onlyEn: 'SOLO EN INGLÉS',
+      emptyK: '0 NOTAS',
+      emptyH: 'Aún no hay nada en esta categoría.',
+      showAll: 'VER TODAS LAS NOTAS',
+      allNotes: 'TODAS LAS NOTAS',
+      author:
+        'Desarrollador fullstack en Venezuela. Construyo productos SaaS y automatizaciones en Google Workspace.',
+      write: 'ESCRÍBEME',
+      related: 'MÁS NOTAS',
+      prev: 'ANTERIOR',
+      next: 'SIGUIENTE',
+      latest: 'Esta es la nota más reciente',
+      rssTitle: 'fmyers.dev — Notas',
     },
     notFound: {
       sheet: 'LÁMINA 404',
