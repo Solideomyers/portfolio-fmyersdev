@@ -131,3 +131,32 @@ test('drafts are never routed', async ({ request }) => {
   expect((await request.get('/en/notes/apps-script-backend')).status()).toBe(404);
   expect((await request.get('/es/notas/apps-script-como-backend')).status()).toBe(404);
 });
+
+for (const f of [
+  {
+    url: '/en/notes/rss.xml',
+    link: 'https://fmyers.dev/en/notes/one-page-spec',
+    title: 'fmyers.dev — Notes',
+  },
+  {
+    url: '/es/notas/rss.xml',
+    link: 'https://fmyers.dev/es/notas/especificacion-de-una-pagina',
+    title: 'fmyers.dev — Notas',
+  },
+]) {
+  test(`${f.url} is a valid feed with the published notes only`, async ({ page, request }) => {
+    const res = await request.get(f.url);
+    expect(res.status()).toBe(200);
+    const text = await res.text();
+    await page.goto('/en');
+    const parsed = await page.evaluate((xml) => {
+      const doc = new DOMParser().parseFromString(xml, 'application/xml');
+      return {
+        error: doc.querySelector('parsererror') !== null,
+        title: doc.querySelector('channel > title')?.textContent,
+        links: [...doc.querySelectorAll('item > link')].map((l) => l.textContent),
+      };
+    }, text);
+    expect(parsed).toEqual({ error: false, title: f.title, links: [f.link] });
+  });
+}
