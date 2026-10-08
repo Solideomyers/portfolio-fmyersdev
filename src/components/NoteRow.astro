@@ -1,0 +1,97 @@
+---
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { categoryLabel, dateLabel, noteHref, type Listed, type NoteLike } from '../lib/notes';
+
+interface Props {
+  note: Listed<NoteLike>;
+  lang: Lang;
+}
+const { note, lang } = Astro.props;
+const d = note.data;
+---
+
+<a
+  class="note-row"
+  href={noteHref(note)}
+  data-cat={d.category}
+  lang={note.fallback ? d.lang : undefined}
+>
+  <span class="meta">
+    {d.id}
+    <br />
+    {dateLabel(d.date)}
+  </span>
+  <span class="body">
+    <span class="title">{d.title}</span>
+    <span class="dek">{d.dek}</span>
+    <span class="foot" lang={lang}>
+      <span>{categoryLabel(d.category, lang).toUpperCase()}</span>
+      <span>·</span>
+      <span>{d.minutes} MIN</span>
+      {note.fallback && <span class="only">{ui[lang].notes.onlyEn}</span>}
+    </span>
+  </span>
+</a>
+
+<style>
+  .note-row {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: var(--border-rule);
+    color: var(--text);
+    text-decoration: none;
+    transition: color var(--dur-hover) var(--ease);
+  }
+  .note-row[hidden] {
+    display: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .note-row:hover {
+      color: var(--accent);
+      text-decoration: none;
+    }
+  }
+  .meta,
+  .foot {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  .meta {
+    line-height: 1.6;
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+  .title {
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(22px, 2.2cqi, 28px);
+    letter-spacing: -0.3px;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  .dek {
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    max-width: 680px;
+    text-wrap: pretty;
+  }
+  .foot {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .only {
+    border: var(--border-rule);
+    padding: 0 6px;
+  }
+</style>
