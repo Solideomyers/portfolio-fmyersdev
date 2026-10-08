@@ -31,4 +31,4 @@ Since SP2, sub-projects are vertical slices (components arrive with the screens 
 1. Brainstorm → spec → plan (superpowers). Spec + plan are the **first commit** on the SP branch; push the branch and open a draft PR immediately so nothing is lost.
 2. Work in `.worktrees/sp<N>-<topic>/` (`git worktree add .worktrees/sp<N>-<topic> -b feature/sp<N>-<topic> develop`).
 3. PR to `develop`, squash merge, auto-tag. Update this table in the same PR.
-4. `release/*` promotes `develop` → `main` when a milestone is ready for production.
+4. `release/vX.Y.Z` (cut exactly at the `develop` tag, no own commits) promotes `develop` → `main` with a **merge commit** when a milestone is ready for production. See CONTRIBUTING "Releasing".

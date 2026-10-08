@@ -57,9 +57,24 @@ Hooks are the fast layer. CI repeats lint, typecheck, build, tests, secrets scan
 ## Pull requests and releases
 
 - One sub-project = one PR to `develop`. Spec and plan go in the first commit.
-- Squash merge only. The squash commit takes the **PR title** as subject and the PR body as message (repo setting), so the title must be a valid Conventional Commit.
+- **Squash merge only into `develop`** (ruleset). The squash commit takes the **PR title** as subject and the PR body as message (repo setting), so the title must be a valid Conventional Commit.
 - Update the sub-project row in `docs/superpowers/roadmap.md` in the same PR.
-- Release PRs go from `release/v0.N.0` to `main`, titled `chore: release v0.N.0`, where `v0.N.0` is the `develop` tag being promoted.
+- Release PRs go from `release/v0.N.0` to `main`, titled `chore: release v0.N.0`, where `v0.N.0` is the `develop` tag being promoted. They are **merged with a merge commit** (ruleset: main allows only merge commits), whose subject is the PR title.
+
+### Releasing (keeps `main` and `develop` aligned)
+
+A squash into `main` would create a commit `develop` never has, and every later release would replay old commits and hit false conflicts. So `main` gets `develop`'s real commits through a merge commit, and the release branch never carries work of its own:
+
+```bash
+git fetch origin --tags
+git switch -c release/v0.N.0 v0.N.0      # exactly the tagged develop commit
+git push -u origin release/v0.N.0
+gh pr create --base main --title "chore: release v0.N.0" --body-file .github/pull_request_template.md
+# CI release-source checks branch, title and tag; then merge with "Create a merge commit".
+```
+
+- Never commit on `release/*`. A fix found while releasing goes to `develop` through a normal PR; delete the release branch and cut it again from the new tag.
+- No back-merge from `main` to `develop` is ever needed: every commit on `main` is either already on `develop` or a release merge commit.
 
 ## Templates
 
