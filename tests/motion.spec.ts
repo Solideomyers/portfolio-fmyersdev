@@ -112,3 +112,31 @@ test.describe('D06 theme', () => {
     ).toBeUndefined();
   });
 });
+
+test.describe('D07 language swap', () => {
+  const sectionTop = (page: Page, i: number) =>
+    page.evaluate(
+      (i) => document.querySelectorAll('main section')[i].getBoundingClientRect().top,
+      i,
+    );
+
+  test('lands on the same section of the twin page', async ({ page }) => {
+    await page.goto('/en');
+    await page.evaluate(() => {
+      const el = document.querySelectorAll('main section')[1] as HTMLElement;
+      scrollTo(0, el.getBoundingClientRect().top + scrollY + 40);
+    });
+    await page.locator('.lang-switch a[data-lang="es"]:visible').first().click();
+    await expect(page).toHaveURL(/\/es\/?$/);
+    await expect.poll(() => sectionTop(page, 1)).toBeLessThan(-35);
+    expect(await sectionTop(page, 1)).toBeGreaterThan(-45);
+  });
+
+  test('from the top it opens at the top and leaves nothing behind', async ({ page }) => {
+    await page.goto('/en/about');
+    await page.locator('.lang-switch a[data-lang="es"]:visible').first().click();
+    await expect(page).toHaveURL(/\/es\/sobre-mi\/?$/);
+    expect(await page.evaluate(() => scrollY)).toBe(0);
+    expect(await page.evaluate(() => sessionStorage.getItem('fm-lang-swap'))).toBeNull();
+  });
+});

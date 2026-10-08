@@ -28,6 +28,11 @@ const { lang, alternate, size = 'sm' } = Astro.props;
 </div>
 
 <script>
+  // D07: switching language keeps the reading position. The twin pages share their section
+  // structure but not their text length, so the position is "section index + offset into it".
+  const KEY = 'fm-lang-swap';
+  const blocks = () => [...document.querySelectorAll<HTMLElement>('main section')];
+
   for (const a of document.querySelectorAll<HTMLAnchorElement>('.lang-switch a[data-lang]')) {
     a.addEventListener('click', () => {
       try {
@@ -35,7 +40,38 @@ const { lang, alternate, size = 'sm' } = Astro.props;
       } catch {
         // storage blocked: the link still navigates
       }
+      let index = -1;
+      let offset = 0;
+      blocks().forEach((el, i) => {
+        const r = el.getBoundingClientRect();
+        // the last match is the innermost section crossing the viewport top
+        if (r.top <= 0 && r.bottom > 0) {
+          index = i;
+          offset = -r.top;
+        }
+      });
+      try {
+        if (index >= 0) sessionStorage.setItem(KEY, JSON.stringify({ index, offset }));
+      } catch {
+        // storage blocked: the twin opens at the top
+      }
     });
+  }
+
+  try {
+    const saved = sessionStorage.getItem(KEY);
+    if (saved) {
+      sessionStorage.removeItem(KEY);
+      const { index, offset } = JSON.parse(saved) as { index: number; offset: number };
+      const el = blocks()[index];
+      if (el)
+        scrollTo(
+          0,
+          el.getBoundingClientRect().top + scrollY + Math.min(offset, el.offsetHeight - 1),
+        );
+    }
+  } catch {
+    // storage blocked or bad value: stay at the top
   }
 </script>
 
