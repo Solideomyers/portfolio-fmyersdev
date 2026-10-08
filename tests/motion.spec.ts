@@ -44,3 +44,71 @@ test('a work card and its case header share sheet-{id}', async ({ page }) => {
   await page.goto((await card.getAttribute('href'))!);
   await expect(page.locator('.case-frame')).toHaveCSS('view-transition-name', name);
 });
+
+test.describe('D06 theme', () => {
+  const toggle = (page: Page) => page.locator('.theme-toggle:visible').first();
+  const theme = (page: Page) =>
+    page.evaluate(() => [document.documentElement.dataset.theme, localStorage.getItem('theme')]);
+
+  test('flips with view transitions and clears theme-reveal', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto('/en/about');
+    await toggle(page).click();
+    expect(await theme(page)).toEqual(['dark', 'dark']);
+    await expect(page.locator('html')).not.toHaveClass(/theme-reveal/);
+  });
+
+  test('with motion on, the reveal runs (theme-reveal set, then cleared)', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto('/en/about');
+    await page.evaluate(() => {
+      new MutationObserver(() => {
+        if (document.documentElement.classList.contains('theme-reveal'))
+          (window as unknown as { sawReveal?: boolean }).sawReveal = true;
+      }).observe(document.documentElement, { attributes: true });
+    });
+    await toggle(page).click();
+    await expect(page.locator('html')).not.toHaveClass(/theme-reveal/);
+    expect(
+      await page.evaluate(() => (window as unknown as { sawReveal?: boolean }).sawReveal),
+    ).toBe(true);
+  });
+
+  test('a fast double click ends consistent', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto('/en/about');
+    await toggle(page).click();
+    await toggle(page).click();
+    await expect(page.locator('html')).not.toHaveClass(/theme-reveal/);
+    const [attr, stored] = await theme(page);
+    expect(attr).toBe(stored);
+    expect(attr).toBe('light');
+  });
+
+  test('without the API it flips instantly', async ({ page }) => {
+    await page.addInitScript(() => {
+      // @ts-expect-error simulate a browser without View Transitions
+      document.startViewTransition = undefined;
+    });
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto('/en/about');
+    await toggle(page).click();
+    expect(await theme(page)).toEqual(['dark', 'dark']);
+  });
+
+  test('reduced motion never adds theme-reveal', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light', reducedMotion: 'reduce' });
+    await page.goto('/en/about');
+    await page.evaluate(() => {
+      new MutationObserver(() => {
+        if (document.documentElement.classList.contains('theme-reveal'))
+          (window as unknown as { sawReveal?: boolean }).sawReveal = true;
+      }).observe(document.documentElement, { attributes: true });
+    });
+    await toggle(page).click();
+    expect(await theme(page)).toEqual(['dark', 'dark']);
+    expect(
+      await page.evaluate(() => (window as unknown as { sawReveal?: boolean }).sawReveal),
+    ).toBeUndefined();
+  });
+});

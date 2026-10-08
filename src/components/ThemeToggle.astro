@@ -12,18 +12,48 @@ const { label, size = 'sm' } = Astro.props;
 
 <script>
   const root = document.documentElement;
-  for (const btn of document.querySelectorAll('.theme-toggle')) {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const token = (name: string) => getComputedStyle(root).getPropertyValue(name).trim();
+
+  const setTheme = (next: string) => {
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      // storage blocked: the choice lasts for this page only
+    }
+  };
+
+  for (const btn of document.querySelectorAll<HTMLButtonElement>('.theme-toggle')) {
     btn.addEventListener('click', () => {
       const current =
         root.dataset.theme ??
         (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       const next = current === 'dark' ? 'light' : 'dark';
-      root.dataset.theme = next;
-      try {
-        localStorage.setItem('theme', next);
-      } catch {
-        // storage blocked: the choice lasts for this page only
-      }
+      if (!document.startViewTransition) return setTheme(next);
+      // Reduced motion keeps the plain root crossfade.
+      if (reduce.matches) return void document.startViewTransition(() => setTheme(next));
+
+      // D06: circular reveal from the toggle's centre to the farthest viewport corner.
+      const r = btn.getBoundingClientRect();
+      const x = r.left + r.width / 2;
+      const y = r.top + r.height / 2;
+      const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+      root.classList.add('theme-reveal');
+      const vt = document.startViewTransition(() => setTheme(next));
+      vt.ready
+        .then(() =>
+          root.animate(
+            { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+            {
+              duration: parseFloat(token('--dur-sheet')),
+              easing: token('--ease-in-out'),
+              pseudoElement: '::view-transition-new(root)',
+            },
+          ),
+        )
+        .catch(() => {});
+      vt.finished.finally(() => root.classList.remove('theme-reveal'));
     });
   }
 </script>
