@@ -178,16 +178,31 @@ test.describe('D08 mobile menu', () => {
     await expect(panel(page)).toBeHidden();
   });
 
+  // Clicks run inside the page and the state is read synchronously, so CPU load can't race them.
+  const toggleNow = (page: Page) =>
+    page.evaluate(() => {
+      const b = [...document.querySelectorAll<HTMLElement>('.menu-btn')].find(
+        (x) => x.offsetParent,
+      )!;
+      b.click();
+      const p = document.getElementById('site-menu')!;
+      return {
+        hidden: p.hidden,
+        keys: p
+          .getAnimations()
+          .flatMap((a) => Object.keys((a.effect as KeyframeEffect).getKeyframes()[0])),
+      };
+    });
+
   test('opening and closing are animated (clip from the top)', async ({ page }) => {
     await page.goto('/en/about');
-    await btn(page).click();
-    const opening = await panel(page).evaluate((e) =>
-      e.getAnimations().map((a) => Object.keys((a.effect as KeyframeEffect).getKeyframes()[0])),
-    );
-    expect(opening.flat()).toContain('clipPath');
-    await page.waitForTimeout(300);
-    await btn(page).click();
-    expect(await panel(page).evaluate((e) => (e as HTMLElement).hidden)).toBe(false);
+    const opening = await toggleNow(page);
+    expect(opening.hidden).toBe(false);
+    expect(opening.keys).toContain('clipPath');
+    await panel(page).evaluate((e) => Promise.all(e.getAnimations().map((a) => a.finished)));
+    const closing = await toggleNow(page);
+    expect(closing.hidden).toBe(false); // still visible while the close plays
+    expect(closing.keys).toContain('clipPath');
     await expect(panel(page)).toBeHidden();
   });
 
@@ -200,7 +215,9 @@ test.describe('D08 mobile menu', () => {
 
   test('growing to desktop mid-animation closes it cleanly', async ({ page }) => {
     await page.goto('/en/about');
-    await btn(page).click();
+    await toggleNow(page);
+    // freeze the opening so the resize is guaranteed to land mid-animation
+    await panel(page).evaluate((e) => e.getAnimations().forEach((a) => a.pause()));
     await page.setViewportSize({ width: 1300, height: 740 });
     await expect(panel(page)).toBeHidden();
     await expect(page.locator('.menu-btn').first()).toHaveAttribute('aria-expanded', 'false');
