@@ -48,7 +48,12 @@ const version = d.version ? ` · ${d.version}` : '';
         {d.id} — {c.caseStudy}
         <Status slot="meta" status={d.status} lang={lang} suffix={d.version} />
       </SheetHeader>
-      <section class="case-frame" lang={d.lang}>
+      <section
+        class="case-frame"
+        data-vt
+        lang={d.lang}
+        style={`view-transition-name: sheet-${d.id.toLowerCase()}`}
+      >
         <div class="intro">
           {fallback && <Tag>{ui[d.lang].case.onlyIn}</Tag>}
           <h1>{d.title}</h1>

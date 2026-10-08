@@ -198,4 +198,29 @@ import { ui } from '../i18n/ui';
     height: var(--corner-mark);
     background: var(--accent);
   }
+  /* D15: the two diagonals are drawn, 120ms apart. A clip growing from each line's start corner
+     draws it (the stroke is non-scaling, so dash-based drawing would ignore pathLength). */
+  svg path {
+    animation: nf-draw var(--dur-draw) var(--ease-draw) both;
+  }
+  svg path:first-child {
+    --from: inset(0 100% 100% 0);
+  }
+  svg path + path {
+    --from: inset(0 0 100% 100%);
+    animation-delay: 120ms;
+  }
+  @keyframes nf-draw {
+    from {
+      clip-path: var(--from);
+    }
+    to {
+      clip-path: inset(0); /* explicit end: inset() can't interpolate to none */
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    svg path {
+      animation: none;
+    }
+  }
 </style>

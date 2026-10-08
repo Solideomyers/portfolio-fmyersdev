@@ -88,26 +88,56 @@ const links = NAV.map((key, i) => ({
 
 <script>
   const desktop = window.matchMedia('(min-width: 1200px)');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const token = (name: string) =>
+    getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
   for (const btn of document.querySelectorAll<HTMLButtonElement>('.menu-btn')) {
     const panel = document.getElementById(btn.getAttribute('aria-controls') ?? '');
     if (!panel) continue;
+    let running: Animation | null = null;
+    const isOpen = () => btn.getAttribute('aria-expanded') === 'true';
+
+    // D08: clip from the top, 250ms in / 200ms out (opacity only under reduced motion).
+    // A new open/close cancels the running one, so fast taps always end consistent.
     const set = (open: boolean) => {
-      panel.hidden = !open;
+      if (open === isOpen() && open === !panel.hidden) return;
       btn.setAttribute('aria-expanded', String(open));
       btn.textContent = (open ? btn.dataset.open : btn.dataset.closed) ?? '';
+      running?.cancel();
+      const frames = reduce.matches
+        ? { opacity: [0, 1] }
+        : { clipPath: ['inset(0 0 100% 0)', 'inset(0)'] };
+      if (open) {
+        panel.hidden = false;
+        running = panel.animate(frames, { duration: 250, easing: token('--ease-out') });
+        return;
+      }
+      const closing = panel.animate(frames, {
+        duration: 200,
+        easing: token('--ease-out'),
+        direction: 'reverse',
+      });
+      closing.onfinish = () => (panel.hidden = true);
+      running = closing;
     };
-    btn.addEventListener('click', () => set(panel.hidden !== false));
+    btn.addEventListener('click', () => set(!isOpen()));
     panel.addEventListener('click', (e) => {
       if ((e.target as Element).closest('a')) set(false);
     });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !panel.hidden) {
+      if (e.key === 'Escape' && isOpen()) {
         set(false);
         btn.focus();
       }
     });
     desktop.addEventListener('change', (e) => {
-      if (e.matches) set(false);
+      if (e.matches) {
+        running?.cancel();
+        btn.setAttribute('aria-expanded', 'false');
+        btn.textContent = btn.dataset.closed ?? '';
+        panel.hidden = true; // no animation when the layout switches to desktop
+      }
     });
   }
 </script>

@@ -13,9 +13,15 @@ const h = ui[lang].home;
 ---
 
 <section class="hero">
+  <span class="edge edge-t" aria-hidden="true"></span>
+  <span class="edge edge-r" aria-hidden="true"></span>
+  <span class="edge edge-b" aria-hidden="true"></span>
+  <span class="edge edge-l" aria-hidden="true"></span>
   <div class="ruler" aria-hidden="true">
     {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-      <div class:list={['zone', { on: n === 1 }]}>{n}</div>
+      <div class:list={['zone', { on: n === 1 }]} style={`--z: ${n - 1}`}>
+        {n}
+      </div>
     ))}
   </div>
   <div class="body">
@@ -109,5 +115,84 @@ const h = ui[lang].home;
     width: var(--corner-mark);
     height: var(--corner-mark);
     background: var(--accent);
+  }
+  /* D03 Home signature: first Home load per session (html.sig, set in HeadCommon). The frame is
+       drawn by four overlay edges; the real border is transparent while they cover it. The h1 only
+       moves (transform), it is never transparent, so the LCP is not delayed. Input is never blocked. */
+  .edge {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.sig) .hero {
+      border-color: transparent;
+    }
+    :global(html.sig) .edge {
+      display: block;
+      position: absolute;
+      background: var(--line-strong);
+      animation: sig-draw var(--dur-draw) var(--ease-draw) both;
+    }
+    :global(html.sig) .edge-t {
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      height: 2px;
+      transform-origin: left;
+      --from: scaleX(0);
+    }
+    :global(html.sig) .edge-r {
+      top: -2px;
+      bottom: -2px;
+      right: -2px;
+      width: 2px;
+      transform-origin: top;
+      --from: scaleY(0);
+      animation-delay: 130ms;
+    }
+    :global(html.sig) .edge-b {
+      bottom: -2px;
+      left: -2px;
+      right: -2px;
+      height: 2px;
+      transform-origin: right;
+      --from: scaleX(0);
+      animation-delay: 260ms;
+    }
+    :global(html.sig) .edge-l {
+      top: -2px;
+      bottom: -2px;
+      left: -2px;
+      width: 2px;
+      transform-origin: bottom;
+      --from: scaleY(0);
+      animation-delay: 390ms;
+    }
+    :global(html.sig) .zone {
+      animation: fm-fade-in var(--dur-enter) var(--ease-out) both;
+      animation-delay: calc(520ms + var(--z) * 30ms);
+    }
+    :global(html.sig) h1 {
+      animation: sig-rise var(--dur-enter) var(--ease-out) 520ms both;
+    }
+    :global(html.sig) .corner {
+      transform-origin: bottom right;
+      animation: sig-corner var(--dur-enter) var(--ease-out) 900ms both;
+    }
+  }
+  @keyframes sig-draw {
+    from {
+      transform: var(--from);
+    }
+  }
+  @keyframes sig-rise {
+    from {
+      transform: translateY(var(--rise));
+    }
+  }
+  @keyframes sig-corner {
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
   }
 </style>

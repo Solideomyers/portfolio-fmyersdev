@@ -23,6 +23,19 @@ const { title, description, noindex } = Astro.props;
         // storage blocked: follow the OS theme
       }
     };
+    const root = document.documentElement;
+    root.classList.add('js');
+    // D03: the Home signature plays on the first Home load of the tab session only.
+    if (/^\/(en|es)\/?$/.test(location.pathname)) {
+      try {
+        if (!sessionStorage.getItem('fm-sig')) {
+          sessionStorage.setItem('fm-sig', '1');
+          root.classList.add('sig');
+        }
+      } catch {
+        // storage blocked: no signature
+      }
+    }
     apply();
     // Pages restored from the back/forward cache don't re-run this script.
     window.addEventListener('pageshow', function (e) {

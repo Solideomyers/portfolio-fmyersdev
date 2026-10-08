@@ -139,4 +139,27 @@ const c = ui[lang].contact;
     height: var(--corner-mark);
     background: var(--accent);
   }
+  /* D11: the panel rises (transform only: it holds the page's LCP), then the check is drawn. */
+  .sent {
+    animation: sent-rise var(--dur-enter) var(--ease-out) both;
+  }
+  .sent path {
+    stroke-dasharray: 1;
+    animation: sent-draw 400ms var(--ease-draw) 200ms both;
+  }
+  @keyframes sent-rise {
+    from {
+      transform: translateY(var(--rise));
+    }
+  }
+  @keyframes sent-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sent path {
+      animation: none;
+    }
+  }
 </style>

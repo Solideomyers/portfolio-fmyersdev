@@ -6,6 +6,7 @@
 @import './tokens/spacing.css';
 @import './tokens/motion.css';
 @import './motion.css';
+@import './transitions.css';
 
 *,
 *::before,
