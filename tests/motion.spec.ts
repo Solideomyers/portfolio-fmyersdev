@@ -140,3 +140,24 @@ test.describe('D07 language swap', () => {
     expect(await page.evaluate(() => sessionStorage.getItem('fm-lang-swap'))).toBeNull();
   });
 });
+
+test.describe('D03 Home signature', () => {
+  test('plays once per session, on Home only, never hiding the h1', async ({ page }) => {
+    await page.goto('/en');
+    await expect(page.locator('html')).toHaveClass(/\bsig\b/);
+    await expect(page.locator('.hero .edge')).toHaveCount(4);
+    await expect(page.locator('.hero .edge-t')).toHaveCSS('display', 'block');
+    expect(await page.locator('.hero h1').evaluate((e) => getComputedStyle(e).opacity)).toBe('1');
+    await page.goto('/en/about');
+    await expect(page.locator('html')).not.toHaveClass(/\bsig\b/);
+    await page.goto('/en');
+    await expect(page.locator('html')).not.toHaveClass(/\bsig\b/);
+  });
+
+  test('reduced motion skips the drawing', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/es');
+    await expect(page.locator('.hero .edge-t')).toHaveCSS('display', 'none');
+    await expect(page.locator('.hero')).not.toHaveCSS('border-top-color', 'rgba(0, 0, 0, 0)');
+  });
+});
