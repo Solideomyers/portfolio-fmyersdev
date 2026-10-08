@@ -208,3 +208,46 @@ test.describe('D08 mobile menu', () => {
     await expect(page.locator('.menu-btn').first()).toHaveAttribute('aria-expanded', 'false');
   });
 });
+
+test.describe('D04 Home cards entrance', () => {
+  test.use({ viewport: { width: 1280, height: 500 } }); // keeps the cards below the fold
+  const first = (page: Page) => page.locator('.cases [data-reveal]').first();
+
+  test('only Home uses data-reveal', async ({ page }) => {
+    for (const url of ['/en/services', '/en/work', '/en/about', '/en/pricing']) {
+      await page.goto(url);
+      await expect(page.locator('[data-reveal]')).toHaveCount(0);
+    }
+  });
+
+  test('cards rise in once when scrolled into view', async ({ page }) => {
+    await page.goto('/en');
+    await expect(first(page)).toHaveCSS('opacity', '0');
+    await first(page).scrollIntoViewIfNeeded();
+    await expect(first(page)).toHaveClass(/is-in/);
+    await expect(first(page)).toHaveCSS('opacity', '1');
+  });
+
+  test('a #hash and print show them immediately', async ({ page }) => {
+    await page.goto('/en#contact');
+    await expect(first(page)).toHaveClass(/is-in/);
+    await page.goto('/en');
+    await page.emulateMedia({ media: 'print' });
+    await expect(first(page)).toHaveCSS('opacity', '1');
+  });
+
+  test('reduced motion: no translation', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/en');
+    const t = await first(page).evaluate((e) => getComputedStyle(e).transform);
+    expect(t).toMatch(/^(none|matrix\(1, 0, 0, 1, 0, 0\))$/);
+  });
+});
+
+test.describe('D04 without JavaScript', () => {
+  test.use({ javaScriptEnabled: false, viewport: { width: 1280, height: 500 } });
+  test('cards are visible', async ({ page }) => {
+    await page.goto('/en');
+    await expect(page.locator('.cases [data-reveal]').first()).toHaveCSS('opacity', '1');
+  });
+});

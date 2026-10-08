@@ -38,9 +38,11 @@ const packages = byOrder(await getCollection('pricing', (e) => e.data.lang === l
             </a>
           </SheetHeader>
         </div>
-        <div class="cases">
-          {cases.map((e) => (
-            <ProjectCard data={e.data} href={caseUrl(lang, e.data.slug)} lang={lang} />
+        <div class="cases" data-reveal-group>
+          {cases.map((e, i) => (
+            <div data-reveal style={`--i: ${Math.min(i, 5)}`}>
+              <ProjectCard data={e.data} href={caseUrl(lang, e.data.slug)} lang={lang} />
+            </div>
           ))}
         </div>
       </section>
@@ -76,6 +78,10 @@ const packages = byOrder(await getCollection('pricing', (e) => e.data.lang === l
   </div>
 </Base>
 
+<script>
+  import '../scripts/reveal';
+</script>
+
 <style>
   .page {
     display: flex;
@@ -99,6 +105,10 @@ const packages = byOrder(await getCollection('pricing', (e) => e.data.lang === l
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
     gap: 24px;
+  }
+  /* D04 wrappers: each card still fills its cell */
+  .cases > div {
+    display: grid;
   }
   .display-l {
     margin: 0;
