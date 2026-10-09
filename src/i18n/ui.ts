@@ -1,4 +1,5 @@
 import type { Lang, NavKey, RouteKey } from './routes';
+import { site } from '../config/site';
 
 interface Ui {
   nav: Record<NavKey, string>;
@@ -428,7 +429,11 @@ export const ui: Record<Lang, Ui> = {
         { k: 'PRACTICES', v: 'Design patterns · Data modelling' },
       ],
     },
-    privacyPage: { sheet: 'SHEET 08 — PRIVACY', updated: 'UPDATED', email: 'HOLA@FMYERS.DEV' },
+    privacyPage: {
+      sheet: 'SHEET 08 — PRIVACY',
+      updated: 'UPDATED',
+      email: site.email.toUpperCase(),
+    },
     contact: {
       sheet: 'SHEET 06 — CONTACT',
       meta: 'REPLY IN 2 BUSINESS DAYS',
@@ -448,7 +453,7 @@ export const ui: Record<Lang, Ui> = {
       privacyLink: 'Privacy',
       send: 'Send brief →',
       sending: 'Sending…',
-      netErr: "The message didn't go through. Try again, or write to hola@fmyers.dev.",
+      netErr: `The message didn't go through. Try again, or write to ${site.email}.`,
       turnstile: 'Spam check',
       received: 'BRIEF RECEIVED',
       sentP:
@@ -466,13 +471,13 @@ export const ui: Record<Lang, Ui> = {
       },
       channels: [
         { k: 'WHATSAPP', v: '+58 424 908 0683', g: '↗' },
-        { k: 'EMAIL', v: 'hola@fmyers.dev', g: '→' },
+        { k: 'EMAIL', v: site.email, g: '→' },
         { k: 'LINKEDIN', v: 'in/franciscomyers', g: '↗' },
       ],
       spec: [
         { k: 'REPLY BY', v: '2 business days' },
         { k: 'TIME ZONE', v: 'VET · UTC−4' },
-        { k: 'FROM', v: 'hola@fmyers.dev' },
+        { k: 'FROM', v: site.email },
       ],
     },
   },
@@ -737,7 +742,7 @@ export const ui: Record<Lang, Ui> = {
     privacyPage: {
       sheet: 'LÁMINA 08 — PRIVACIDAD',
       updated: 'ACTUALIZADO',
-      email: 'HOLA@FMYERS.DEV',
+      email: site.email.toUpperCase(),
     },
     contact: {
       sheet: 'LÁMINA 06 — CONTACTO',
@@ -758,7 +763,7 @@ export const ui: Record<Lang, Ui> = {
       privacyLink: 'Privacidad',
       send: 'Enviar resumen →',
       sending: 'Enviando…',
-      netErr: 'El mensaje no se envió. Inténtalo de nuevo o escribe a hola@fmyers.dev.',
+      netErr: `El mensaje no se envió. Inténtalo de nuevo o escribe a ${site.email}.`,
       turnstile: 'Verificación antispam',
       received: 'RESUMEN RECIBIDO',
       sentP:
@@ -781,13 +786,13 @@ export const ui: Record<Lang, Ui> = {
       },
       channels: [
         { k: 'WHATSAPP', v: '+58 424 908 0683', g: '↗' },
-        { k: 'CORREO', v: 'hola@fmyers.dev', g: '→' },
+        { k: 'CORREO', v: site.email, g: '→' },
         { k: 'LINKEDIN', v: 'in/franciscomyers', g: '↗' },
       ],
       spec: [
         { k: 'RESPUESTA', v: '2 días hábiles' },
         { k: 'ZONA HORARIA', v: 'VET · UTC−4' },
-        { k: 'DESDE', v: 'hola@fmyers.dev' },
+        { k: 'DESDE', v: site.email },
       ],
     },
   },

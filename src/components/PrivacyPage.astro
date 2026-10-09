@@ -1,5 +1,6 @@
 ---
-import { getEntry, render } from 'astro:content';
+import { getEntry } from 'astro:content';
+import { fillTokens } from '../lib/tokens';
 import Base from '../layouts/Base.astro';
 import SheetHeader from './SheetHeader.astro';
 import Prose from './Prose.astro';
@@ -13,7 +14,8 @@ interface Props {
 const { lang } = Astro.props;
 const entry = await getEntry('pages', `${lang}/privacy`);
 if (!entry) throw new Error(`Missing src/content/pages/${lang}/privacy.md`);
-const { Content } = await render(entry);
+// {{email}} in the Markdown comes from site.email (the one public address).
+const html = fillTokens(entry.rendered?.html ?? '', { email: site.email });
 const t = ui[lang].privacyPage;
 const updated = entry.data.updated.toISOString().slice(0, 10);
 ---
@@ -29,7 +31,7 @@ const updated = entry.data.updated.toISOString().slice(0, 10);
     <article>
       <h1 class="h1-page">{entry.data.title}</h1>
       <Prose variant="page">
-        <Content />
+        <Fragment set:html={html} />
       </Prose>
       <a class="mail" href={`mailto:${site.email}`}>
         {t.email} →

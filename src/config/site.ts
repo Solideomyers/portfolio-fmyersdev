@@ -1,8 +1,13 @@
+// Vercel exposes the production domain at build time: the .vercel.app one today, the custom
+// domain once it is added in Vercel. Canonical, OG, RSS and sitemap URLs follow it unchanged.
+const production = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+
 export const site = {
-  url: 'https://fmyers.dev',
+  url: production ? `https://${production}` : 'https://fmyers.dev',
   rev: '2026.10',
   availableFrom: '2026-11',
-  email: 'hola@fmyers.dev',
+  // The one public address. hola@fmyers.dev needs the domain + Cloudflare Email Routing (SP8b).
+  email: 'fmyersdev@gmail.com',
   whatsapp: '+584249080683',
   github: 'https://github.com/Solideomyers',
   linkedin: 'https://linkedin.com/in/franciscomyers',
