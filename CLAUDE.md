@@ -26,8 +26,8 @@ Read first: `docs/handoff/README.md` (design source of truth) and `docs/superpow
 - Format `type(scope): subject`. Scopes: `ui, layout, i18n, content, pages, contact, motion, blog, config, ci, deps, docs` (source: `scripts/scopes.cjs`; change it together with this file and `CONTRIBUTING.md`). `feat`, `fix`, `refactor`, `test` require a scope.
 - **Never commit, push, merge, tag, or change GitHub/Vercel settings without explicit confirmation from the user.** Propose the command or message and wait.
 - Never use `--no-verify`.
-- Templates: commits follow `.gitmessage` (also the format for messages you propose). PRs fill `.github/pull_request_template.md`, and you write the PR body from it. Release PR title: `chore: release v0.N.0`.
-- Tags: annotated `v0.N.0`, created only by `tag.yml` on merge to `develop`. Never create, move or delete tags yourself. `v1.0.0` is reserved for launch.
+- Templates: commits follow `.gitmessage` (also the format for messages you propose). PRs fill `.github/pull_request_template.md`, and you write the PR body from it. Release PR title: `chore: release vX.Y.Z`.
+- Tags: annotated `vX.Y.Z`, created only by `tag.yml` on merge to `develop` (minor bump, or `Release-As: vX.Y.Z` in the PR body). Never create, move or delete tags yourself. `v1.0.0` is reserved for the launch (`Release-As` in the SP8b PR).
 
 ## Workflow
 

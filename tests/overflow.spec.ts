@@ -9,6 +9,8 @@ const extra = [
   '/es/proyectos/chapel',
   '/es/proyectos/churchapp',
   '/ds',
+  '/en/notes/one-page-spec',
+  '/es/notas/especificacion-de-una-pagina',
 ];
 for (const url of [...Object.values(ROUTES).flatMap((r) => [r.en, r.es]), ...extra]) {
   test(`no horizontal overflow on ${url}`, async ({ page }) => {

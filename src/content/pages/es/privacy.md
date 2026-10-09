@@ -31,4 +31,4 @@ El sitio está alojado en Vercel, que guarda registros de servidor de corta dura
 
 ## Tus derechos
 
-Escribe a hola@fmyers.dev para ver, corregir o borrar los datos que tengo sobre ti. Respondo en 2 días hábiles.
+Escribe a {{email}} para ver, corregir o borrar los datos que tengo sobre ti. Respondo en 2 días hábiles.

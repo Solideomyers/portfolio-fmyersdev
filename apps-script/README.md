@@ -11,10 +11,12 @@ The site's `/api/contact` (Vercel function) validates the form, checks Turnstile
 
 **Project Settings → Script properties → Add**:
 
-| Property    | Value                                                                                         |
-| ----------- | --------------------------------------------------------------------------------------------- |
-| `FORM_KEY`  | A long random string (e.g. `openssl rand -hex 32`). Also used as `APPS_SCRIPT_KEY` in Vercel. |
-| `NOTIFY_TO` | The inbox that receives new briefs (e.g. `fmyersdev@gmail.com`).                              |
+| Property    | Value                                                                                                                                                                                                   |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `FORM_KEY`  | A long random string (e.g. `openssl rand -hex 32`). Also used as `APPS_SCRIPT_KEY` in Vercel.                                                                                                           |
+| `NOTIFY_TO` | The inbox that receives new briefs (e.g. `fmyersdev@gmail.com`).                                                                                                                                        |
+| `REPLY_TO`  | The public address shown to senders: their copy replies to it. Today `fmyersdev@gmail.com`; `hola@fmyers.dev` once the domain and Email Routing exist. Must match `site.email` in `src/config/site.ts`. |
+| `SITE_URL`  | The production URL, no trailing slash (today the `.vercel.app` one). Used for the links in the sender's copy.                                                                                           |
 
 ## 3. Deploy
 
@@ -53,3 +55,5 @@ Submit the form on the preview. Expected: a row in `Briefs`, an email to `NOTIFY
 ## Updating the script
 
 Edit `Code.gs` / `Email.gs` in the repo first, paste them into the editor, then **Deploy → Manage deployments → Edit → New version**. The URL stays the same.
+
+Since SP8a the sender copy needs `REPLY_TO` and `SITE_URL`. Without them the brief is still saved and you are notified, but no copy is sent.

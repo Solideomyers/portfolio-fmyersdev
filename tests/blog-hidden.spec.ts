@@ -45,3 +45,10 @@ test('also catches absolute URLs, og:image, src= and non-HTML outputs', () => {
   expect(run(site({ 'sitemap.xml': '<loc>https://fmyers.dev/es/notas</loc>' }))).toBe(1);
   expect(run(site({ 'en/c.html': '<a href="https://fmyers.dev/en/work">w</a>' }))).toBe(0);
 });
+
+test('catches absolute URLs on any host (production runs on the Vercel domain)', () => {
+  expect(run(site({ 'sitemap.xml': '<loc>https://fmyers-dev.vercel.app/en/notes</loc>' }))).toBe(1);
+  expect(run(site({ 'en/a.html': '<link href="https://fmyers-dev.vercel.app/es/notas/x">' }))).toBe(
+    1,
+  );
+});

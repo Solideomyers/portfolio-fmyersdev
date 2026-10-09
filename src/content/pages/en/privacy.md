@@ -31,4 +31,4 @@ The site is hosted on Vercel, which keeps short-lived server logs (such as IP ad
 
 ## Your rights
 
-Write to hola@fmyers.dev to see, correct or delete the data I hold about you. I reply within 2 business days.
+Write to {{email}} to see, correct or delete the data I hold about you. I reply within 2 business days.

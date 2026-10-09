@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { site } from '../src/config/site';
 
 for (const p of [
   { url: '/en/privacy', h1: 'Privacy', updated: 'UPDATED 2026-10-06' },
@@ -11,6 +12,6 @@ for (const p of [
     await expect(page.locator('.prose.page h2')).toHaveCount(7);
     await page.emulateMedia({ colorScheme: 'light' });
     await expect(page.locator('.prose.page p').first()).toHaveCSS('color', 'rgb(91, 98, 106)');
-    await expect(page.locator('a.mail')).toHaveAttribute('href', 'mailto:hola@fmyers.dev');
+    await expect(page.locator('a.mail')).toHaveAttribute('href', `mailto:${site.email}`);
   });
 }

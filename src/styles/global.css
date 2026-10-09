@@ -1,6 +1,7 @@
 /* Mirrors docs/handoff/design/design-system/styles.css.
-   tokens/fonts.css is intentionally NOT imported: fonts load through <link> in the page head
-   (a CSS @import of Google Fonts is a render-blocking request chain). Same families, axes and weights. */
+   tokens/fonts.css is intentionally NOT imported: its Google Fonts @import is a render-blocking
+   third-party chain. fonts.css self-hosts the same files (same families, axes and weights). */
+@import './fonts.css';
 @import './tokens/colors.css';
 @import './tokens/typography.css';
 @import './tokens/spacing.css';

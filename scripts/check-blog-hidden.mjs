@@ -7,8 +7,9 @@ const BLOG = /^\/(en\/notes|es\/notas|og\/notes)(\/|$)/;
 // Relative or absolute (https://fmyers.dev/...) references in attributes, plus bare URLs in
 // text formats such as a sitemap's <loc>.
 const ATTR =
-  /(?:href|src|content)=["'](?:https:\/\/fmyers\.dev)?\/(?:en\/notes|es\/notas|og\/notes)(?:["'/?#])/;
-const URL_TEXT = /https:\/\/fmyers\.dev\/(?:en\/notes|es\/notas|og\/notes)(?:[/"'<?#\s]|$)/;
+  /(?:href|src|content)=["'](?:https?:\/\/[^/"'\s]+)?\/(?:en\/notes|es\/notas|og\/notes)(?:["'/?#])/;
+// Any host: production runs on the Vercel domain until the custom one exists.
+const URL_TEXT = /https?:\/\/[^/"'\s<]+\/(?:en\/notes|es\/notas|og\/notes)(?:[/"'<?#\s]|$)/;
 const SCANNED = /\.(html|xml|json|txt|webmanifest)$/;
 const found = [];
 

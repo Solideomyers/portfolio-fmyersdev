@@ -38,23 +38,23 @@ const SENDER = {
     sheet: 'SHEET 06b — BRIEF RECEIVED',
     received: 'BRIEF RECEIVED',
     h1: "Thanks. I'll reply within 2 business days.",
-    p: 'I read every brief myself and reply from hola@fmyers.dev (Venezuela time, UTC−4). This is a copy of what you sent.',
+    p: 'I read every brief myself and reply from {email} (Venezuela time, UTC−4). This is a copy of what you sent.',
     keys: ['PROJECT TYPE', 'BUDGET', 'LANGUAGE'],
     message: 'YOUR MESSAGE',
     cta: 'See selected work →',
-    work: 'https://fmyers.dev/en/work',
-    why: 'You get this because you sent a brief at fmyers.dev/en/contact. No newsletter, no tracking.',
+    work: '/en/work',
+    why: 'You get this because you sent a brief at {host}/en/contact. No newsletter, no tracking.',
   },
   es: {
     sheet: 'LÁMINA 06b — RESUMEN RECIBIDO',
     received: 'RESUMEN RECIBIDO',
     h1: 'Gracias. Te respondo en 2 días hábiles.',
-    p: 'Leo cada resumen personalmente y respondo desde hola@fmyers.dev (hora de Venezuela, UTC−4). Esta es una copia de lo que enviaste.',
+    p: 'Leo cada resumen personalmente y respondo desde {email} (hora de Venezuela, UTC−4). Esta es una copia de lo que enviaste.',
     keys: ['TIPO DE PROYECTO', 'PRESUPUESTO', 'IDIOMA'],
     message: 'TU MENSAJE',
     cta: 'Ver proyectos →',
-    work: 'https://fmyers.dev/es/proyectos',
-    why: 'Recibes esto porque enviaste un resumen en fmyers.dev/es/contacto. Sin boletín, sin rastreo.',
+    work: '/es/proyectos',
+    why: 'Recibes esto porque enviaste un resumen en {host}/es/contacto. Sin boletín, sin rastreo.',
   },
 };
 const ENTITIES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
@@ -130,26 +130,30 @@ function shell({ lang, title, sheet, meta, inner, footer }) {
   );
 }
 
-/** b: { lang, name, email, type, budget, message, noJs, when, sheetUrl } */
+/** b: { lang, name, email, type, budget, message, noJs, when, sheetUrl, replyTo, siteUrl } */
 function renderSender(b) {
   const c = SENDER[b.lang];
+  // The reply address and the site URL come from script properties (REPLY_TO, SITE_URL).
+  const siteUrl = b.siteUrl.replace(/\/+$/, ''); // tolerate "https://host/" in the property
+  const host = siteUrl.replace(/^https?:\/\//, '');
+  const fill = (s) => s.replace('{email}', b.replyTo).replace('{host}', host);
   const l = LABELS[b.lang];
   const inner =
     `<table width="44" height="44" border="0" cellpadding="0" cellspacing="0" style="border:2px solid ${SIGNAL};margin-bottom:12px;">` +
     `<tr><td align="center" valign="middle" style="color:${SIGNAL};font-size:24px;">✓</td></tr></table>` +
     `<div style="${mono(13, SIGNAL)}margin-bottom:20px;">${esc(c.received)}</div>` +
     headline(c.h1) +
-    `<p style="margin:0 0 32px;font-family:${SANS};font-size:17px;line-height:1.5;color:${MUTED};">${esc(c.p)}</p>` +
+    `<p style="margin:0 0 32px;font-family:${SANS};font-size:17px;line-height:1.5;color:${MUTED};">${esc(fill(c.p))}</p>` +
     specGrid([
       [c.keys[0], l.types[b.type]],
       [c.keys[1], l.budgets[b.budget]],
       [c.keys[2], l.language],
     ]) +
     messageBlock(c.message, b.message) +
-    actions(c.work, c.cta, 'https://wa.me/584249080683', 'WHATSAPP ↗');
+    actions(siteUrl + c.work, c.cta, 'https://wa.me/584249080683', 'WHATSAPP ↗');
   const footer =
-    `<div style="${mono(11, MUTED)}line-height:1.6;margin-bottom:12px;">WHATSAPP +58 424 908 0683 · HOLA@FMYERS.DEV · IN/FRANCISCOMYERS</div>` +
-    `<div style="font-family:${SANS};font-size:12px;line-height:1.5;color:${MUTED};">${esc(c.why)}</div>`;
+    `<div style="${mono(11, MUTED)}line-height:1.6;margin-bottom:12px;">WHATSAPP +58 424 908 0683 · ${esc(b.replyTo.toUpperCase())} · IN/FRANCISCOMYERS</div>` +
+    `<div style="font-family:${SANS};font-size:12px;line-height:1.5;color:${MUTED};">${esc(fill(c.why))}</div>`;
   return shell({
     lang: b.lang,
     title: COPY[b.lang].subject,

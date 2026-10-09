@@ -18,7 +18,7 @@ const cases = listCases(await getCollection('work'), lang);
 const other = (await getCollection('otherWork')).sort((a, b) => a.data.id.localeCompare(b.data.id));
 ---
 
-<Base lang={lang} title={ui[lang].h1.work}>
+<Base lang={lang} title={ui[lang].h1.work} description={t.lead}>
   <div class="page">
     <section class="header">
       <SheetHeader>
@@ -32,8 +32,13 @@ const other = (await getCollection('otherWork')).sort((a, b) => a.data.id.locale
     </section>
 
     <section class="cases">
-      {cases.map(({ entry }) => (
-        <ProjectCard data={entry.data} href={caseUrl(lang, entry.data.slug)} lang={lang} />
+      {cases.map(({ entry }, i) => (
+        <ProjectCard
+          data={entry.data}
+          href={caseUrl(lang, entry.data.slug)}
+          lang={lang}
+          eager={i === 0}
+        />
       ))}
     </section>
 
