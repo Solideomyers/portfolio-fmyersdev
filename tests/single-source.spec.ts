@@ -16,6 +16,8 @@ test('the public email and the production URL have one source each', () => {
   const offenders: string[] = [];
   for (const f of [...walk('src'), ...walk('apps-script')]) {
     if (f.replaceAll('\\', '/').endsWith('src/config/site.ts')) continue;
+    // The Apps Script README documents which address to set in the script properties.
+    if (f.replaceAll('\\', '/').endsWith('apps-script/README.md')) continue;
     if (!/\.(ts|astro|mjs|js|md|mdx|json|gs)$/.test(f)) continue;
     const text = readFileSync(f, 'utf8');
     for (const m of text.matchAll(EMAIL))

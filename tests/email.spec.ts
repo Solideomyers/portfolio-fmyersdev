@@ -14,6 +14,8 @@ const brief = {
   lang: 'en',
   name: 'Ana Pérez',
   email: 'ana@example.com',
+  replyTo: 'fmyersdev@gmail.com',
+  siteUrl: 'https://fmyers-dev.vercel.app',
   type: 'saas',
   budget: '1-5k',
   message: 'Line one\n<script>alert(1)</script> & "quotes"',
@@ -32,7 +34,11 @@ test('sender copy: EN content, escaped message, email-safe markup', () => {
     'Line one<br>&lt;script&gt;alert(1)&lt;/script&gt; &amp; &quot;quotes&quot;',
   );
   expect(html).not.toContain('<script>');
-  expect(html).toContain('href="https://fmyers.dev/en/work"');
+  expect(html).toContain('href="https://fmyers-dev.vercel.app/en/work"');
+  expect(html).toContain('reply from fmyersdev@gmail.com');
+  expect(html).toContain('FMYERSDEV@GMAIL.COM');
+  expect(html).toContain('fmyers-dev.vercel.app/en/contact');
+  expect(html).not.toContain('fmyers.dev/en');
   expect(html).not.toMatch(
     /position:\s*absolute|border-radius:\s*[1-9]|box-shadow|gradient|class="/,
   );
@@ -45,7 +51,8 @@ test('sender copy: ES copy and links; empty optional fields show a dash', () => 
   expect(html).toContain('No lo sé aún');
   expect(html).toContain('TIPO DE PROYECTO');
   expect(html).toMatch(/TIPO DE PROYECTO<\/div>\s*<div[^>]*>—</);
-  expect(html).toContain('href="https://fmyers.dev/es/proyectos"');
+  expect(html).toContain('href="https://fmyers-dev.vercel.app/es/proyectos"');
+  expect(html).toContain('respondo desde fmyersdev@gmail.com');
   expect(html).toContain('lang="es"');
 });
 

@@ -26,6 +26,8 @@ function doPost(e) {
   try {
     const body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
     const props = PropertiesService.getScriptProperties();
+    const replyTo = props.getProperty('REPLY_TO');
+    const siteUrl = props.getProperty('SITE_URL');
     if (!safeEqual(String(body.key || ''), String(props.getProperty('FORM_KEY') || ''))) {
       return out({ ok: false, reason: 'key' });
     }
@@ -62,7 +64,8 @@ function doPost(e) {
         cell(message),
         noJs,
       ]);
-      sendCopy = !noJs && takeCopySlot(props);
+      // Without REPLY_TO/SITE_URL the brief is still saved and you are notified; no broken copy is sent.
+      sendCopy = !noJs && Boolean(replyTo && siteUrl) && takeCopySlot(props);
     } finally {
       lock.releaseLock();
     }
@@ -80,6 +83,8 @@ function doPost(e) {
       noJs,
       when: Utilities.formatDate(new Date(), 'America/Caracas', 'yyyy-MM-dd · HH:mm') + ' VET',
       sheetUrl: SpreadsheetApp.getActiveSpreadsheet().getUrl(),
+      replyTo,
+      siteUrl,
     };
     try {
       MailApp.sendEmail({
@@ -104,7 +109,7 @@ function doPost(e) {
       try {
         MailApp.sendEmail({
           to: email,
-          replyTo: 'hola@fmyers.dev',
+          replyTo: replyTo,
           name: 'Francisco Myers',
           subject: COPY[lang].subject,
           body: COPY[lang].body + '\n\n— — —\n\n' + message,
