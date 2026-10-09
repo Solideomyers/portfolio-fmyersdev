@@ -32,7 +32,10 @@ const siteWith = (env: Record<string, string>) =>
     execFileSync(
       process.execPath,
       ['-e', "import('./src/config/site.ts').then((m) => console.log(JSON.stringify(m.site)))"],
-      { env: { ...process.env, VERCEL_PROJECT_PRODUCTION_URL: '', ...env }, encoding: 'utf8' },
+      {
+        env: { ...process.env, VERCEL_PROJECT_PRODUCTION_URL: '', VERCEL_ENV: '', ...env },
+        encoding: 'utf8',
+      },
     ),
   );
 
@@ -63,3 +66,9 @@ for (const p of [
     expect(html.replace(/\s+/g, ' ')).toContain(p.text);
   });
 }
+
+test('analytics only on the production deploy', () => {
+  expect(siteWith({}).analytics).toBe(false);
+  expect(siteWith({ VERCEL_ENV: 'preview' }).analytics).toBe(false);
+  expect(siteWith({ VERCEL_ENV: 'production' }).analytics).toBe(true);
+});

@@ -77,3 +77,8 @@ for (const lang of ['en', 'es']) {
     expect([b.readUInt32BE(16), b.readUInt32BE(20)]).toEqual([1200, 630]);
   });
 }
+
+test('no analytics script outside production', async ({ page }) => {
+  await page.goto('/en');
+  await expect(page.locator('script[src*="/_vercel/insights/"]')).toHaveCount(0);
+});

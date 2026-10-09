@@ -1,4 +1,6 @@
 ---
+import { site } from '../config/site';
+
 interface Props {
   title: string;
   description?: string;
@@ -56,3 +58,15 @@ const { title, description, noindex } = Astro.props;
   media="(prefers-color-scheme: light)"
 />
 <link rel="icon" type="image/svg+xml" href="/logo-dark.svg" media="(prefers-color-scheme: dark)" />
+{site.analytics && (
+  <>
+    <script is:inline>
+      window.va =
+        window.va ||
+        function (...args) {
+          (window.vaq = window.vaq || []).push(args); // Vercel's queue stub, rest-params form
+        };
+    </script>
+    <script is:inline defer src="/_vercel/insights/script.js"></script>
+  </>
+)}

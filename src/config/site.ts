@@ -11,4 +11,6 @@ export const site = {
   whatsapp: '+584249080683',
   github: 'https://github.com/Solideomyers',
   linkedin: 'https://linkedin.com/in/franciscomyers',
+  // Vercel Web Analytics (cookieless, aggregate): production deploys only, never previews or tests.
+  analytics: process.env.VERCEL_ENV === 'production',
 } as const;
