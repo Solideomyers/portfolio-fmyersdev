@@ -22,15 +22,15 @@ const h = (style: Record<string, unknown>, children?: Child | Child[]): Node => 
   props: { style, children },
 });
 
-export async function renderNoteOg(n: {
-  id: string;
+/** The sheet card shared by every OG image: header row (sheet · meta), title, dek, wordmark. */
+export async function renderSheetOg(n: {
   lang: 'en' | 'es';
-  category: string;
+  sheet: string;
+  meta: string;
   title: string;
   dek: string;
 }): Promise<Uint8Array> {
   const [regular, bold, mono] = await fonts();
-  const sheet = n.lang === 'es' ? 'LÁMINA 07 — NOTAS' : 'SHEET 07 — NOTES';
   const tree = h(
     { width: 1200, height: 630, display: 'flex', padding: 56, background: '#F2F3EF' },
     [
@@ -60,7 +60,7 @@ export async function renderNoteOg(n: {
                 paddingBottom: 14,
                 borderBottom: `1px solid ${INK}`,
               },
-              [h({}, `${sheet} · ${n.id}`), h({}, n.category.toUpperCase())],
+              [h({}, n.sheet), h({}, n.meta)],
             ),
             h(
               {
@@ -102,3 +102,18 @@ export async function renderNoteOg(n: {
   });
   return new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
 }
+
+export const renderNoteOg = (n: {
+  id: string;
+  lang: 'en' | 'es';
+  category: string;
+  title: string;
+  dek: string;
+}) =>
+  renderSheetOg({
+    lang: n.lang,
+    sheet: `${n.lang === 'es' ? 'LÁMINA 07 — NOTAS' : 'SHEET 07 — NOTES'} · ${n.id}`,
+    meta: n.category.toUpperCase(),
+    title: n.title,
+    dek: n.dek,
+  });

@@ -38,3 +38,42 @@ test('robots.txt allows the site and points at the sitemap', async ({ request })
   expect(text).toContain('Disallow: /ds');
   expect(text).toContain('Sitemap: https://fmyers.dev/sitemap.xml');
 });
+
+for (const p of [
+  { url: '/en', type: 'website', image: /\/og\/site\/en\.png$/ },
+  { url: '/es/servicios', type: 'website', image: /\/og\/site\/es\.png$/ },
+  { url: '/en/work/churchapp', type: 'article', image: /\/og\/site\/en\.png$/ },
+  {
+    url: '/es/notas/especificacion-de-una-pagina',
+    type: 'article',
+    image: /\/og\/notes\/es\/.+\.png$/,
+  },
+]) {
+  test(`${p.url}: complete social meta`, async ({ page }) => {
+    await page.goto(p.url);
+    const meta = (prop: string) => page.locator(`meta[property="${prop}"]`).getAttribute('content');
+    expect(await meta('og:title')).toBe(await page.title());
+    expect(await meta('og:url')).toBe(
+      await page.locator('link[rel="canonical"]').getAttribute('href'),
+    );
+    expect(await meta('og:type')).toBe(p.type);
+    expect(await meta('og:site_name')).toBe('fmyers.dev');
+    expect(await meta('og:description')).toBeTruthy();
+    expect(await meta('og:locale')).toMatch(/^(en_US|es_ES)$/);
+    expect(await meta('og:image')).toMatch(p.image);
+    expect(await meta('og:image')).toMatch(/^https:\/\//);
+    await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
+      'content',
+      'summary_large_image',
+    );
+  });
+}
+
+for (const lang of ['en', 'es']) {
+  test(`/og/site/${lang}.png is a 1200×630 PNG`, async ({ request }) => {
+    const res = await request.get(`/og/site/${lang}.png`);
+    expect(res.headers()['content-type']).toBe('image/png');
+    const b = await res.body();
+    expect([b.readUInt32BE(16), b.readUInt32BE(20)]).toEqual([1200, 630]);
+  });
+}
