@@ -134,7 +134,8 @@ function shell({ lang, title, sheet, meta, inner, footer }) {
 function renderSender(b) {
   const c = SENDER[b.lang];
   // The reply address and the site URL come from script properties (REPLY_TO, SITE_URL).
-  const host = b.siteUrl.replace(/^https?:\/\//, '');
+  const siteUrl = b.siteUrl.replace(/\/+$/, ''); // tolerate "https://host/" in the property
+  const host = siteUrl.replace(/^https?:\/\//, '');
   const fill = (s) => s.replace('{email}', b.replyTo).replace('{host}', host);
   const l = LABELS[b.lang];
   const inner =
@@ -149,7 +150,7 @@ function renderSender(b) {
       [c.keys[2], l.language],
     ]) +
     messageBlock(c.message, b.message) +
-    actions(b.siteUrl + c.work, c.cta, 'https://wa.me/584249080683', 'WHATSAPP ↗');
+    actions(siteUrl + c.work, c.cta, 'https://wa.me/584249080683', 'WHATSAPP ↗');
   const footer =
     `<div style="${mono(11, MUTED)}line-height:1.6;margin-bottom:12px;">WHATSAPP +58 424 908 0683 · ${esc(b.replyTo.toUpperCase())} · IN/FRANCISCOMYERS</div>` +
     `<div style="font-family:${SANS};font-size:12px;line-height:1.5;color:${MUTED};">${esc(fill(c.why))}</div>`;

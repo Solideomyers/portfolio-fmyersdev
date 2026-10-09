@@ -59,7 +59,7 @@ Hooks are the fast layer. CI repeats lint, typecheck, build, tests, secrets scan
 - One sub-project = one PR to `develop`. Spec and plan go in the first commit.
 - **Squash merge only into `develop`** (ruleset). The squash commit takes the **PR title** as subject and the PR body as message (repo setting), so the title must be a valid Conventional Commit.
 - Update the sub-project row in `docs/superpowers/roadmap.md` in the same PR.
-- Release PRs go from `release/v0.N.0` to `main`, titled `chore: release v0.N.0`, where `v0.N.0` is the `develop` tag being promoted. They are **merged with a merge commit** (ruleset: main allows only merge commits), whose subject is the PR title.
+- Release PRs go from `release/vX.Y.Z` to `main`, titled `chore: release vX.Y.Z`, where `vX.Y.Z` is the `develop` tag being promoted. They are **merged with a merge commit** (ruleset: main allows only merge commits), whose subject is the PR title.
 
 ### Releasing (keeps `main` and `develop` aligned)
 
@@ -67,14 +67,23 @@ A squash into `main` would create a commit `develop` never has, and every later 
 
 ```bash
 git fetch origin --tags
-git switch -c release/v0.N.0 v0.N.0      # exactly the tagged develop commit
-git push -u origin release/v0.N.0
-gh pr create --base main --title "chore: release v0.N.0" --body-file .github/pull_request_template.md
+git switch -c release/vX.Y.Z vX.Y.Z      # exactly the tagged develop commit
+git push -u origin release/vX.Y.Z
+gh pr create --base main --title "chore: release vX.Y.Z" --body-file .github/pull_request_template.md
 # CI release-source checks branch, title and tag; then merge with "Create a merge commit".
 ```
 
 - Never commit on `release/*`. A fix found while releasing goes to `develop` through a normal PR; delete the release branch and cut it again from the new tag.
 - No back-merge from `main` to `develop` is ever needed: every commit on `main` is either already on `develop` or a release merge commit.
+
+### Domain day (when fmyers.dev is bought)
+
+Until then production runs on the Vercel domain and the public address is `fmyersdev@gmail.com`. The switch is configuration, not code:
+
+1. Add the domain in Vercel and point the DNS (Cloudflare) at it, then **redeploy**: `site.url` comes from `VERCEL_PROJECT_PRODUCTION_URL` at build time, so canonical, OG, RSS and sitemap follow on the next build.
+2. Set up Cloudflare Email Routing for `hola@fmyers.dev`, then change `site.email` in `src/config/site.ts` (the single source; a test enforces it).
+3. In Apps Script, update the `REPLY_TO` and `SITE_URL` script properties (no new deployment needed).
+4. Add the domain to the Turnstile widget's hostnames.
 
 ## Templates
 
@@ -89,7 +98,7 @@ gh pr create --base main --title "chore: release v0.N.0" --body-file .github/pul
 | Who creates them | Only `.github/workflows/tag.yml`. Never tag by hand.                                                                                                   |
 | When             | Every merge to `develop` → minor bump of the highest tag (`scripts/next-tag.mjs`)                                                                      |
 | Override         | A `Release-As: vX.Y.Z` line in the PR description (the squash body). It must be greater than every tag, otherwise the job fails and nothing is tagged. |
-| Message          | `v0.N.0 — <squash commit subject>`, tagger `github-actions[bot]`                                                                                       |
+| Message          | `vX.Y.Z — <squash commit subject>`, tagger `github-actions[bot]`                                                                                       |
 | Re-runs          | A commit that already has a `vX.Y.Z` tag is skipped (idempotent)                                                                                       |
 | `main`           | No new tags. A release PR promotes an existing `develop` tag and names it in its title.                                                                |
 | `v1.0.0`         | Reserved for the public launch: the SP8b launch PR carries `Release-As: v1.0.0`                                                                        |

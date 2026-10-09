@@ -72,3 +72,10 @@ test('analytics only on the production deploy', () => {
   expect(siteWith({ VERCEL_ENV: 'preview' }).analytics).toBe(false);
   expect(siteWith({ VERCEL_ENV: 'production' }).analytics).toBe(true);
 });
+
+test('on Vercel, a missing production domain fails the build instead of falling back', () => {
+  expect(() => siteWith({ VERCEL: '1' })).toThrow(/VERCEL_PROJECT_PRODUCTION_URL/);
+  expect(
+    siteWith({ VERCEL: '1', VERCEL_PROJECT_PRODUCTION_URL: 'fmyers-dev.vercel.app' }).url,
+  ).toBe('https://fmyers-dev.vercel.app');
+});

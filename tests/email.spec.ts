@@ -65,3 +65,10 @@ test('owner notification: sender, flags, reply link and escaped name', () => {
   expect(html).toContain(`href="${brief.sheetUrl}"`);
   expect(html).not.toContain('<b>');
 });
+
+test('a trailing slash in SITE_URL does not break the links', () => {
+  const html = renderSender({ ...brief, siteUrl: 'https://fmyers-dev.vercel.app/' });
+  expect(html).toContain('href="https://fmyers-dev.vercel.app/en/work"');
+  expect(html).not.toContain('vercel.app//');
+  expect(html).not.toContain('vercel.app//en/contact');
+});

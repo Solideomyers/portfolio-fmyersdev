@@ -1,6 +1,12 @@
 // Vercel exposes the production domain at build time: the .vercel.app one today, the custom
 // domain once it is added in Vercel. Canonical, OG, RSS and sitemap URLs follow it unchanged.
 const production = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+// On Vercel a missing value would silently fall back to a domain that doesn't exist yet: fail loudly
+// (Project Settings → Environment Variables → "Automatically expose System Environment Variables").
+if (process.env.VERCEL && !production)
+  throw new Error(
+    'VERCEL_PROJECT_PRODUCTION_URL is not exposed to the build; enable system env vars',
+  );
 
 export const site = {
   url: production ? `https://${production}` : 'https://fmyers.dev',

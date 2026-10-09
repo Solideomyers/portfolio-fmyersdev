@@ -15,3 +15,14 @@ test('Release-As overrides when greater; lower, equal or malformed fail', () => 
   expect(() => nextTag({ tags, message: 'Release-As: v0.3.0' })).toThrow(/greater/);
   expect(() => nextTag({ tags, message: 'Release-As: 1.0' })).toThrow(/vX\.Y\.Z/);
 });
+
+test('Release-As near misses fail instead of being ignored; values are normalised', () => {
+  for (const message of [
+    '- Release-As: v1.0.0',
+    'Release-As: v1.0.0 (launch)',
+    'release-as: v1.0.0',
+    '`Release-As: v1.0.0`',
+  ])
+    expect(() => nextTag({ tags, message }), message).toThrow(/Release-As/);
+  expect(nextTag({ tags, message: 'Release-As: v01.0.0' })).toBe('v1.0.0');
+});
