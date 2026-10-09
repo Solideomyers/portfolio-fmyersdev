@@ -18,16 +18,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
-      - name: Tag next v0.N.0 (annotated, canonical)
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc }
+      - name: Tag the next version (annotated, canonical)
         run: |
-          if git tag --points-at HEAD | grep -q '^v0\.'; then
+          if git tag --points-at HEAD | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
             echo "HEAD already tagged: $(git tag --points-at HEAD)"
             exit 0
           fi
-          LAST=$(git tag --list 'v0.*.0' --sort=-v:refname | head -n1)
-          LAST=${LAST:-v0.0.0}
-          MINOR=$(echo "$LAST" | sed -E 's/^v0\.([0-9]+)\.0$/\1/')
-          NEXT="v0.$((MINOR + 1)).0"
+          NEXT=$(node scripts/next-tag.mjs)
           git -c user.name='github-actions[bot]' \
               -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
               tag -a "$NEXT" -m "$NEXT — $(git log -1 --format=%s)"

@@ -83,16 +83,17 @@ gh pr create --base main --title "chore: release v0.N.0" --body-file .github/pul
 
 ## Tags (canonical)
 
-| Rule             | Value                                                                                   |
-| ---------------- | --------------------------------------------------------------------------------------- |
-| Format           | `vMAJOR.MINOR.PATCH`, always **annotated**                                              |
-| Who creates them | Only `.github/workflows/tag.yml`. Never tag by hand.                                    |
-| When             | Every merge to `develop` → next `v0.N.0` (minor bump)                                   |
-| Message          | `v0.N.0 — <squash commit subject>`, tagger `github-actions[bot]`                        |
-| Re-runs          | A commit that already has a `v0.*` tag is skipped (idempotent)                          |
-| `main`           | No new tags. A release PR promotes an existing `develop` tag and names it in its title. |
-| `v1.0.0`         | Reserved for the public launch (SP8)                                                    |
-| Missed tag       | Never backfilled. The sequence continues forward.                                       |
+| Rule             | Value                                                                                                                                                  |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Format           | `vMAJOR.MINOR.PATCH`, always **annotated**                                                                                                             |
+| Who creates them | Only `.github/workflows/tag.yml`. Never tag by hand.                                                                                                   |
+| When             | Every merge to `develop` → minor bump of the highest tag (`scripts/next-tag.mjs`)                                                                      |
+| Override         | A `Release-As: vX.Y.Z` line in the PR description (the squash body). It must be greater than every tag, otherwise the job fails and nothing is tagged. |
+| Message          | `v0.N.0 — <squash commit subject>`, tagger `github-actions[bot]`                                                                                       |
+| Re-runs          | A commit that already has a `vX.Y.Z` tag is skipped (idempotent)                                                                                       |
+| `main`           | No new tags. A release PR promotes an existing `develop` tag and names it in its title.                                                                |
+| `v1.0.0`         | Reserved for the public launch: the SP8b launch PR carries `Release-As: v1.0.0`                                                                        |
+| Missed tag       | Never backfilled. The sequence continues forward.                                                                                                      |
 
 ## Design rules
 
