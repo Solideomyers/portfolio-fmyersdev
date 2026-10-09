@@ -41,6 +41,7 @@ const img = loader ? (await loader()).default : undefined;
           widths={[640, 960, 1280, 1600]}
           sizes={sizes}
           loading={eager ? 'eager' : 'lazy'}
+          fetchpriority={eager ? 'high' : undefined}
         />
       ) : (
         <div class="hatch" role="img" aria-label={shot.alt}>

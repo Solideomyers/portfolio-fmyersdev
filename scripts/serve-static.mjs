@@ -2,6 +2,7 @@
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, resolve } from 'node:path';
+import { brotliCompressSync } from 'node:zlib';
 
 const root = resolve(process.argv[2] ?? '.vercel/output/static');
 const port = Number(process.argv[3] ?? 4329);
@@ -36,8 +37,22 @@ createServer(async (req, res) => {
   const { pathname } = new URL(req.url ?? '/', 'http://localhost');
   const file = await find(decodeURIComponent(pathname));
   if (file) {
-    res.writeHead(200, { 'Content-Type': types[extname(file)] ?? 'application/octet-stream' });
-    res.end(await readFile(file));
+    const type = types[extname(file)] ?? 'application/octet-stream';
+    let body = await readFile(file);
+    // Like Vercel: Brotli for text, long-lived cache for hashed assets and fonts. Without these,
+    // Lighthouse measures this test server instead of the site.
+    const headers = { 'Content-Type': type };
+    if (
+      /^(text|application\/(json|xml)|image\/svg)/.test(type) &&
+      /\bbr\b/.test(req.headers['accept-encoding'] ?? '')
+    ) {
+      body = brotliCompressSync(body);
+      headers['Content-Encoding'] = 'br';
+    }
+    if (/^\/(_astro|fonts)\//.test(pathname))
+      headers['Cache-Control'] = 'public, max-age=31536000, immutable';
+    res.writeHead(200, headers);
+    res.end(body);
     return;
   }
   res.writeHead(404, { 'Content-Type': types['.html'] });

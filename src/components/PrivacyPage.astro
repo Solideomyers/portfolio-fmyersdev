@@ -16,11 +16,19 @@ const entry = await getEntry('pages', `${lang}/privacy`);
 if (!entry) throw new Error(`Missing src/content/pages/${lang}/privacy.md`);
 // {{email}} in the Markdown comes from site.email (the one public address).
 const html = fillTokens(entry.rendered?.html ?? '', { email: site.email });
+// Meta description: the page's own opening paragraph (verbatim content, no invented copy).
+const description = fillTokens(
+  entry.body
+    ?.split('\n')
+    .find((l) => l.trim() && !l.startsWith('#'))
+    ?.trim() ?? '',
+  { email: site.email },
+);
 const t = ui[lang].privacyPage;
 const updated = entry.data.updated.toISOString().slice(0, 10);
 ---
 
-<Base lang={lang} title={entry.data.title}>
+<Base lang={lang} title={entry.data.title} description={description}>
   <div class="page">
     <SheetHeader>
       {t.sheet}

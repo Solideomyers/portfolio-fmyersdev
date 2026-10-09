@@ -82,3 +82,64 @@ test('no analytics script outside production', async ({ page }) => {
   await page.goto('/en');
   await expect(page.locator('script[src*="/_vercel/insights/"]')).toHaveCount(0);
 });
+
+test.describe('Lighthouse findings', () => {
+  for (const url of [
+    '/en',
+    '/es',
+    '/en/work',
+    '/es/proyectos',
+    '/en/about',
+    '/es/servicios',
+    '/en/pricing',
+    '/en/contact',
+    '/es/privacidad',
+    '/en/notes',
+  ]) {
+    test(`${url} has a meta description`, async ({ page }) => {
+      await page.goto(url);
+      expect(
+        (await page.locator('meta[name="description"]').getAttribute('content'))?.length ?? 0,
+      ).toBeGreaterThan(40);
+    });
+  }
+
+  test('the Turnstile slot is a labelled group (aria-label needs a role)', async ({ page }) => {
+    await page.route('**/challenges.cloudflare.com/**', (r) => r.abort());
+    await page.goto('/en/contact');
+    await expect(page.locator('.cf-turnstile')).toHaveAttribute('role', 'group');
+  });
+
+  test('links inside running text are underlined, not colour-only', async ({ page }) => {
+    await page.route('**/challenges.cloudflare.com/**', (r) => r.abort());
+    await page.goto('/en/contact');
+    await expect(page.locator('.note a')).toHaveCSS('text-decoration-line', 'underline');
+    await page.goto('/en/notes/one-page-spec');
+    await expect(page.locator('.prose p a').first()).toHaveCSS('text-decoration-line', 'underline');
+  });
+
+  test('fonts are self-hosted and preloaded (no render-blocking third-party CSS)', async ({
+    page,
+  }) => {
+    const external: string[] = [];
+    page.on('request', (r) => {
+      if (/fonts\.(googleapis|gstatic)\.com/.test(r.url())) external.push(r.url());
+    });
+    await page.goto('/en');
+    expect(external).toEqual([]);
+    await expect(page.locator('link[rel="preload"][as="font"]')).toHaveCount(2);
+    expect(await page.evaluate(() => document.fonts.check('700 16px Archivo'))).toBe(true);
+  });
+});
+
+test('the work index loads its first card image eagerly with high priority (LCP)', async ({
+  page,
+}) => {
+  await page.goto('/en/work');
+  const imgs = page.locator('a.card.grid figure img');
+  await expect(imgs.first()).toHaveAttribute('loading', 'eager');
+  await expect(imgs.first()).toHaveAttribute('fetchpriority', 'high');
+  // The rest stay lazy (ChurchApp has no screenshot yet: SP8b asset).
+  for (const img of (await imgs.all()).slice(1))
+    await expect(img).toHaveAttribute('loading', 'lazy');
+});
