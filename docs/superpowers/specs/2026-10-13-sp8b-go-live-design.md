@@ -1,6 +1,6 @@
 # SP8b Go live — design
 
-Status: draft for owner review · 2026-10-13 · branch `feature/sp8b-go-live`
+Status: approved by the owner · 2026-10-13 · branch `feature/sp8b-go-live`
 
 ## Goal
 
