@@ -18,7 +18,11 @@ for (const a of [
 ] as const) {
   test(`${a.lang} about: portrait, bio, facts, timeline, stack, cta`, async ({ page }) => {
     await page.goto(a.url);
-    await expect(page.locator('.portrait .hatch')).toHaveText(a.portrait);
+    const img = page.locator('.portrait img');
+    await expect(img).toHaveAttribute('alt', 'Francisco Myers');
+    await expect(page.locator('.portrait .hatch')).toHaveCount(0);
+    const box = await img.boundingBox();
+    expect(Math.abs(box!.width / box!.height - 0.8)).toBeLessThan(0.02);
     await expect(page.locator('.portrait figcaption')).toContainText('FIG. 1');
     await expect(page.locator('.portrait .corner')).toHaveCount(1);
     await expect(page.locator('.bio')).toHaveCount(2);
