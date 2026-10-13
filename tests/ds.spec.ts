@@ -100,5 +100,5 @@ test('/ds has the SP4 specimens', async ({ page }) => {
   }
   await expect(page.locator('#hero .ruler .zone')).toHaveCount(8);
   await expect(page.locator('#spec-rows .spec-grid.rows .cell')).toHaveCount(4);
-  await expect(page.locator('#portrait .hatch')).toContainText('PORTRAIT');
+  await expect(page.locator('#portrait img')).toHaveAttribute('alt', 'Francisco Myers');
 });
