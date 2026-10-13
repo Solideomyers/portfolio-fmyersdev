@@ -50,3 +50,18 @@ test('privacy pages exist in both languages with title and updated date', () => 
     expect(text).toMatch(/^updated: \d{4}-\d{2}-\d{2}$/m);
   }
 });
+
+test('no retired price remains in live content', () => {
+  const files = [
+    ...['en', 'es'].flatMap((l) =>
+      readdirSync(`src/content/pricing/${l}`).map((f) => `src/content/pricing/${l}/${f}`),
+    ),
+    'src/content/faq/en.json',
+    'src/content/faq/es.json',
+    'src/i18n/ui.ts',
+  ];
+  for (const f of files) {
+    const text = readFileSync(f, 'utf8');
+    expect(text, f).not.toMatch(/\$150|^from: (4500|900|2800)$|\$4,500|\$2,800|\$900\b/m);
+  }
+});

@@ -83,7 +83,7 @@ const faqItems = faqFor(await getCollection('faq'), 'pricing', 'en').map((e) => 
       <SheetHeader>C12 — FIGURE (IMAGE / HATCH)</SheetHeader>
       <div class="two">
         <Figure shot={chapel.shots[0]} n={1} lang="en" />
-        <Figure shot={church.shots[0]} n={2} lang="en" />
+        <Figure shot={{ ...church.shots[0], src: '/work/specimen/missing.png' }} n={2} lang="en" />
       </div>
     </section>
     <section id="metrics">

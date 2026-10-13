@@ -18,7 +18,7 @@ const cases = [
     twin: '/es/proyectos/churchapp',
     next: '/en/work/chapel',
     nextMeta: '02 / 02',
-    img: false,
+    img: true,
     fig2: true,
   },
   {
@@ -38,7 +38,7 @@ const cases = [
     twin: '/en/work/churchapp',
     next: '/es/proyectos/chapel',
     nextMeta: '02 / 02',
-    img: false,
+    img: true,
     fig2: true,
   },
 ] as const;
@@ -52,6 +52,7 @@ for (const c of cases) {
     await expect(page.locator('.case-frame .spec-grid .cell')).toHaveCount(4);
     await expect(page.locator('.fig1 figcaption')).toContainText('FIG. 1');
     await expect(page.locator('.fig1 img')).toHaveCount(c.img ? 1 : 0);
+    await expect(page.locator('figure .hatch')).toHaveCount(0);
     await expect(page.locator('.prose h2')).toHaveCount(5);
     // FIG. 2 sits between the 4th and 5th h2; metrics after the 5th.
     const order = await page

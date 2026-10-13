@@ -4,7 +4,7 @@ lang: en
 order: 3
 name: Fullstack contract
 for: For teams that need a senior pair of hands on an existing product.
-from: 2800
+from: 2000
 billing: month
 includes:
   - ~20 hours a week

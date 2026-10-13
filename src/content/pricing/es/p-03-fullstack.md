@@ -4,7 +4,7 @@ lang: es
 order: 3
 name: Fullstack por contrato
 for: Para equipos que necesitan manos senior en un producto existente.
-from: 2800
+from: 2000
 billing: month
 includes:
   - ~20 horas por semana

@@ -4,7 +4,7 @@ lang: en
 order: 1
 name: SaaS MVP
 for: For founders and teams with a validated idea that needs a real product.
-from: 4500
+from: 3200
 billing: project
 includes:
   - One-page spec and data model
@@ -38,6 +38,6 @@ compare:
   weeklyBuilds: 'Yes'
   ownership: Yours from day one
   fixes: 30 days
-  maintenance: From $150/month
+  maintenance: From $100/month
   payment: 50% / 50%
 ---

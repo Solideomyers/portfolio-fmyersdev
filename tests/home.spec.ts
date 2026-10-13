@@ -40,7 +40,7 @@ for (const h of homes) {
     await expect(page.locator('.work-head a')).toHaveAttribute('href', h.work);
     await expect(page.locator('.services-head a')).toHaveAttribute('href', h.pricing);
     await expect(page.locator('.package-card.compact')).toHaveCount(3);
-    await expect(page.locator('.package-card.compact.featured .c-amount')).toHaveText('$4,500');
+    await expect(page.locator('.package-card.compact.featured .c-amount')).toHaveText('$3,200');
     await expect(page.locator('.package-card.compact .c-teaser li')).toHaveCount(9);
     await expect(page.locator('.process-grid .cell')).toHaveCount(4);
     await expect(page.locator('.contact-block a[href^="https://wa.me/"]')).toHaveCount(1);
