@@ -6,14 +6,14 @@ const services = [
     url: '/en/services',
     pricing: '/en/pricing',
     contact: '/en/contact',
-    monthly: '$2,800 / mo',
+    monthly: '$2,000 / mo',
   },
   {
     lang: 'es',
     url: '/es/servicios',
     pricing: '/es/precios',
     contact: '/es/contacto',
-    monthly: '$2,800 / mes',
+    monthly: '$2,000 / mes',
   },
 ] as const;
 
@@ -49,7 +49,7 @@ for (const p of pricing) {
     const featured = page.locator('.package-card.featured');
     await expect(featured).toHaveCount(1);
     await expect(featured.locator('.corner')).toHaveCount(1);
-    await expect(featured.locator('.amount')).toHaveText('$4,500');
+    await expect(featured.locator('.amount')).toHaveText('$3,200');
     await expect(cards.nth(2).locator('.price')).toContainText(p.unit);
     await expect(page.locator('.compare .row')).toHaveCount(8);
     await expect(page.locator('.compare .val')).toHaveCount(21);

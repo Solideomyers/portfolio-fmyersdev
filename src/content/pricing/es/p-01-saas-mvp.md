@@ -4,7 +4,7 @@ lang: es
 order: 1
 name: SaaS MVP
 for: Para fundadores y equipos con una idea validada que necesita un producto real.
-from: 4500
+from: 3200
 billing: project
 includes:
   - Especificación de una página y modelo de datos
@@ -38,6 +38,6 @@ compare:
   weeklyBuilds: Sí
   ownership: Tuyo desde el día uno
   fixes: 30 días
-  maintenance: Desde $150/mes
+  maintenance: Desde $100/mes
   payment: 50% / 50%
 ---

@@ -4,7 +4,7 @@ lang: es
 order: 2
 name: Automatización
 for: Para equipos en Google Workspace ahogados en hojas de cálculo y pasos manuales.
-from: 900
+from: 600
 billing: project
 includes:
   - Revisión del proceso y especificación
@@ -38,6 +38,6 @@ compare:
   weeklyBuilds: Sí
   ownership: Tuyo, en tu Workspace
   fixes: 30 días
-  maintenance: Desde $150/mes
+  maintenance: Desde $100/mes
   payment: 50% / 50%
 ---

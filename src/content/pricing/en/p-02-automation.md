@@ -4,7 +4,7 @@ lang: en
 order: 2
 name: Automation
 for: For teams on Google Workspace drowning in spreadsheets and manual steps.
-from: 900
+from: 600
 billing: project
 includes:
   - Process review and spec
@@ -38,6 +38,6 @@ compare:
   weeklyBuilds: 'Yes'
   ownership: Yours, on your Workspace
   fixes: 30 days
-  maintenance: From $150/month
+  maintenance: From $100/month
   payment: 50% / 50%
 ---
