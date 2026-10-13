@@ -1,0 +1,81 @@
+---
+import { site } from '../config/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+}
+const { title, description, noindex } = Astro.props;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+{description && <meta name="description" content={description} />}
+{noindex && <meta name="robots" content="noindex" />}
+<script is:inline>
+  (function () {
+    const apply = function () {
+      try {
+        const t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        else delete document.documentElement.dataset.theme;
+      } catch {
+        // storage blocked: follow the OS theme
+      }
+    };
+    const root = document.documentElement;
+    root.classList.add('js');
+    // D03: the Home signature plays on the first Home load of the tab session only.
+    if (/^\/(en|es)\/?$/.test(location.pathname)) {
+      try {
+        if (!sessionStorage.getItem('fm-sig')) {
+          sessionStorage.setItem('fm-sig', '1');
+          root.classList.add('sig');
+        }
+      } catch {
+        // storage blocked: no signature
+      }
+    }
+    apply();
+    // Pages restored from the back/forward cache don't re-run this script.
+    window.addEventListener('pageshow', function (e) {
+      if (e.persisted) apply();
+    });
+  })();
+</script>
+<!-- Self-hosted fonts (src/styles/fonts.css), fetched early so the first paint already uses them. -->
+<link
+  rel="preload"
+  href="/fonts/archivo-latin-wdth-wght.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+<link
+  rel="preload"
+  href="/fonts/jetbrains-mono-latin-500.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+<link
+  rel="icon"
+  type="image/svg+xml"
+  href="/logo-light.svg"
+  media="(prefers-color-scheme: light)"
+/>
+<link rel="icon" type="image/svg+xml" href="/logo-dark.svg" media="(prefers-color-scheme: dark)" />
+{site.analytics && (
+  <>
+    <script is:inline>
+      window.va =
+        window.va ||
+        function (...args) {
+          (window.vaq = window.vaq || []).push(args); // Vercel's queue stub, rest-params form
+        };
+    </script>
+    <script is:inline defer src="/_vercel/insights/script.js"></script>
+  </>
+)}

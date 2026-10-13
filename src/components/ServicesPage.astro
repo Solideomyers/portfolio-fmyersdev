@@ -1,0 +1,76 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import SheetHeader from './SheetHeader.astro';
+import ServiceSheet from './ServiceSheet.astro';
+import ProcessRows from './ProcessRows.astro';
+import Faq from './Faq.astro';
+import CtaRow from './CtaRow.astro';
+import { path, type Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { byOrder, faqFor } from '../lib/offer';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const s = ui[lang].services;
+const packages = byOrder(await getCollection('pricing', (e) => e.data.lang === lang));
+if (!packages.length) throw new Error(`No pricing packages for ${lang}`);
+const faq = faqFor(await getCollection('faq'), 'services', lang).map((e) => e.data);
+---
+
+<Base lang={lang} title={ui[lang].h1.services} description={s.lead}>
+  <div class="page">
+    <section class="header">
+      <SheetHeader>
+        {s.sheet}
+        <span slot="meta">{s.meta}</span>
+      </SheetHeader>
+      <h1 class="h1-page">{ui[lang].h1.services}</h1>
+      <p class="lead">{s.lead}</p>
+    </section>
+    <div class="sheets">
+      {packages.map(({ data }) => (
+        <ServiceSheet pkg={data} lang={lang} />
+      ))}
+    </div>
+    <ProcessRows lang={lang} />
+    <Faq items={faq} lang={lang} heading={s.faqH} />
+    <CtaRow
+      lang={lang}
+      heading={s.ctaH}
+      secondary={{ href: path('pricing', lang), label: s.pricing }}
+    />
+  </div>
+</Base>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(48px, 7cqi, 80px);
+  }
+  .header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .header h1 {
+    max-width: 900px;
+    text-wrap: balance;
+  }
+  .lead {
+    margin: 0;
+    font-size: clamp(17px, 1.5cqi, 19px);
+    line-height: 1.45;
+    color: var(--text-muted);
+    max-width: 640px;
+    text-wrap: pretty;
+  }
+  .sheets {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+</style>

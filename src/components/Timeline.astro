@@ -1,0 +1,66 @@
+---
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+---
+
+<ol class="timeline">
+  {ui[lang].about.timeline.map((t, i) => (
+    <li class="row">
+      <span class:list={['year', { now: i < 2 }]}>{t.y}</span>
+      <div class="body">
+        <span class="m">{t.m}</span>
+        <span class="d">{t.d}</span>
+      </div>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 32px;
+    padding: 18px 0;
+    border-bottom: var(--border-rule);
+  }
+  .year {
+    flex: 0 0 160px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  .year.now {
+    color: var(--accent);
+  }
+  .body {
+    flex: 1 1 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .m {
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(19px, 1.8cqi, 22px);
+  }
+  .d {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+</style>

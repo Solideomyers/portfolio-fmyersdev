@@ -1,0 +1,198 @@
+---
+import Button from './Button.astro';
+import SpecGrid from './SpecGrid.astro';
+import Availability from './Availability.astro';
+import { path, type Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const h = ui[lang].home;
+---
+
+<section class="hero">
+  <span class="edge edge-t" aria-hidden="true"></span>
+  <span class="edge edge-r" aria-hidden="true"></span>
+  <span class="edge edge-b" aria-hidden="true"></span>
+  <span class="edge edge-l" aria-hidden="true"></span>
+  <div class="ruler" aria-hidden="true">
+    {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+      <div class:list={['zone', { on: n === 1 }]} style={`--z: ${n - 1}`}>
+        {n}
+      </div>
+    ))}
+  </div>
+  <div class="body">
+    <div class="intro">
+      <span class="sheet">{h.sheet00}</span>
+      <h1>{ui[lang].h1.home}</h1>
+      <p class="lead">{h.lead}</p>
+      <Availability lang={lang} />
+      <div class="actions">
+        <Button href={path('contact', lang)} glyph="→">
+          {ui[lang].work.start}
+        </Button>
+        <Button href={path('work', lang)} variant="secondary">
+          {h.see}
+        </Button>
+      </div>
+    </div>
+    <SpecGrid variant="rows" items={h.facts} />
+  </div>
+  <div class="corner" aria-hidden="true"></div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    border: var(--border-frame);
+  }
+  .ruler {
+    height: 32px;
+    border-bottom: var(--border-rule);
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+  }
+  .zone {
+    border-right: var(--border-rule);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .zone.on {
+    color: var(--accent);
+  }
+  .body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+    gap: 32px 48px;
+    padding: clamp(24px, 4cqi, 48px);
+    align-items: end;
+  }
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .sheet {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    text-wrap: pretty;
+  }
+  h1 {
+    margin: 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(40px, 6.6cqi, 84px);
+    letter-spacing: var(--ls-display);
+    line-height: var(--lh-display);
+    text-wrap: balance;
+  }
+  .lead {
+    margin: 0;
+    font-size: clamp(17px, 1.5cqi, 19px);
+    line-height: 1.45;
+    color: var(--text-muted);
+    max-width: 560px;
+    text-wrap: pretty;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .corner {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: var(--corner-mark);
+    height: var(--corner-mark);
+    background: var(--accent);
+  }
+  /* D03 Home signature: first Home load per session (html.sig, set in HeadCommon). The frame is
+       drawn by four overlay edges; the real border is transparent while they cover it. The h1 only
+       moves (transform), it is never transparent, so the LCP is not delayed. Input is never blocked. */
+  .edge {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.sig) .hero {
+      border-color: transparent;
+    }
+    :global(html.sig) .edge {
+      display: block;
+      position: absolute;
+      background: var(--line-strong);
+      animation: sig-draw var(--dur-draw) var(--ease-draw) both;
+    }
+    :global(html.sig) .edge-t {
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      height: 2px;
+      transform-origin: left;
+      --from: scaleX(0);
+    }
+    :global(html.sig) .edge-r {
+      top: -2px;
+      bottom: -2px;
+      right: -2px;
+      width: 2px;
+      transform-origin: top;
+      --from: scaleY(0);
+      animation-delay: 130ms;
+    }
+    :global(html.sig) .edge-b {
+      bottom: -2px;
+      left: -2px;
+      right: -2px;
+      height: 2px;
+      transform-origin: right;
+      --from: scaleX(0);
+      animation-delay: 260ms;
+    }
+    :global(html.sig) .edge-l {
+      top: -2px;
+      bottom: -2px;
+      left: -2px;
+      width: 2px;
+      transform-origin: bottom;
+      --from: scaleY(0);
+      animation-delay: 390ms;
+    }
+    :global(html.sig) .zone {
+      animation: fm-fade-in var(--dur-enter) var(--ease-out) both;
+      animation-delay: calc(520ms + var(--z) * 30ms);
+    }
+    :global(html.sig) h1 {
+      animation: sig-rise var(--dur-enter) var(--ease-out) 520ms both;
+    }
+    :global(html.sig) .corner {
+      transform-origin: bottom right;
+      animation: sig-corner var(--dur-enter) var(--ease-out) 900ms both;
+    }
+  }
+  @keyframes sig-draw {
+    from {
+      transform: var(--from);
+    }
+  }
+  @keyframes sig-rise {
+    from {
+      transform: translateY(var(--rise));
+    }
+  }
+  @keyframes sig-corner {
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
+  }
+</style>

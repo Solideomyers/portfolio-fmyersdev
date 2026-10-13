@@ -1,0 +1,63 @@
+---
+import Button from './Button.astro';
+import { path, type Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  heading: string;
+  sub?: string;
+  secondary?: { href: string; label: string };
+}
+const { lang, heading, sub, secondary } = Astro.props;
+---
+
+<section class="cta-row">
+  <div class="text">
+    <div class="h">{heading}</div>
+    {sub && <div class="sub">{sub}</div>}
+  </div>
+  <div class="actions">
+    {secondary && (
+      <Button href={secondary.href} variant="secondary">
+        {secondary.label}
+      </Button>
+    )}
+    <Button href={path('contact', lang)} glyph="→">
+      {ui[lang].work.start}
+    </Button>
+  </div>
+</section>
+
+<style>
+  .cta-row {
+    border-top: var(--border-frame);
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .h {
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(26px, 2.7cqi, 34px);
+    letter-spacing: -0.5px;
+    text-wrap: balance;
+  }
+  .sub {
+    font-size: 15px;
+    color: var(--text-muted);
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+</style>

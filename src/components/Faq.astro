@@ -1,0 +1,146 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Lang } from '../i18n/routes';
+import { pad2 } from '../lib/work';
+
+interface Props {
+  items: CollectionEntry<'faq'>['data'][];
+  lang: Lang;
+  heading: string;
+  intro?: string;
+}
+const { items, lang, heading, intro } = Astro.props;
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  inLanguage: lang,
+  mainEntity: items.map((i) => ({
+    '@type': 'Question',
+    name: i.q,
+    acceptedAnswer: { '@type': 'Answer', text: i.a },
+  })),
+};
+---
+
+{items.length > 0 && (
+  <section class="faq">
+    <div class="lead">
+      <span class="count">FAQ · {pad2(items.length)}</span>
+      <h2>{heading}</h2>
+      {intro && <p>{intro}</p>}
+    </div>
+    <div class="items">
+      {items.map((i, n) => (
+        <details open={n === 0}>
+          <summary>
+            <span class="qid">{i.qid}</span>
+            <span class="q">{i.q}</span>
+            <span class="plus" aria-hidden="true">
+              +
+            </span>
+          </summary>
+          <div class="a">{i.a}</div>
+        </details>
+      ))}
+    </div>
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+  </section>
+)}
+
+<style>
+  .faq {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px 64px;
+    align-items: flex-start;
+  }
+  .lead {
+    flex: 1 1 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .count {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+  h2 {
+    margin: 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(32px, 4.1cqi, 52px);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+  .lead p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+  .items {
+    flex: 2 1 460px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    border-top: var(--border-ink);
+  }
+  details {
+    border-bottom: var(--border-rule);
+  }
+  summary {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 24px;
+    gap: 8px;
+    align-items: baseline;
+    min-height: 52px;
+    padding: 14px 0;
+    cursor: pointer;
+    color: var(--text);
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .qid {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  .q {
+    font-weight: 600;
+    font-size: 17px;
+    text-wrap: pretty;
+  }
+  .plus {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    line-height: 1;
+    justify-self: end;
+    transition: transform 200ms var(--ease-out);
+  }
+  details[open] .plus {
+    transform: rotate(45deg);
+  }
+  .a {
+    padding: 0 32px 16px 52px;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    summary:hover {
+      color: var(--accent);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .plus {
+      transition: none;
+    }
+  }
+</style>

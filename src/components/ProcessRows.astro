@@ -1,0 +1,84 @@
+---
+import SheetHeader from './SheetHeader.astro';
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { pad2 } from '../lib/work';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const p = ui[lang].process;
+---
+
+<section class="process">
+  <SheetHeader>
+    {p.h}
+    <span slot="meta">{pad2(p.steps.length)}</span>
+  </SheetHeader>
+  <ol class="rows">
+    {p.steps.map((s) => (
+      <li class="process-row">
+        <div class="title">
+          <span class="n">{s.n}</span>
+          <span class="t">{s.t}</span>
+        </div>
+        <span class="time">{s.time}</span>
+        <span class="d">{s.d}</span>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .process {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    border-top: var(--border-ink);
+  }
+  .process-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 24px;
+    padding: 16px 0;
+    border-bottom: var(--border-rule);
+    align-items: baseline;
+  }
+  .title {
+    flex: 1 1 200px;
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+  }
+  .n {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .t {
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .time {
+    flex: 0 1 140px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  .d {
+    flex: 2 1 320px;
+    font-size: 15px;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+</style>

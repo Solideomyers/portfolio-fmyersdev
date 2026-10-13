@@ -1,0 +1,66 @@
+---
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+---
+
+<ol class="process-grid">
+  {ui[lang].home.process.map((s) => (
+    <li class="cell">
+      <div class="top">
+        <span class="n">{s.n}</span>
+        <span class="time">{s.time}</span>
+      </div>
+      <div class="t">{s.t}</div>
+      <div class="d">{s.d}</div>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .process-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: var(--border-ink);
+  }
+  .cell {
+    background: var(--surface);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  .n {
+    color: var(--accent);
+  }
+  .time {
+    color: var(--text-muted);
+  }
+  .t {
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .d {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+</style>

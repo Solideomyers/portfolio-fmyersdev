@@ -1,0 +1,39 @@
+---
+// Root: send each visitor to their language. The stored LangSwitch choice wins; otherwise the
+// browser's first preferred language. Without JS, a meta refresh goes to /en.
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>fmyers.dev</title>
+    <script is:inline>
+      (function () {
+        let lang = null;
+        try {
+          lang = localStorage.getItem('lang');
+        } catch {
+          // storage blocked: fall back to the browser language
+        }
+        if (lang !== 'en' && lang !== 'es') {
+          const first = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+          lang = /^es\b/i.test(first) ? 'es' : 'en';
+        }
+        location.replace('/' + lang);
+      })();
+    </script>
+    <noscript>
+      <meta http-equiv="refresh" content="0; url=/en" />
+    </noscript>
+  </head>
+  <body>
+    <noscript>
+      <p>
+        <a href="/en">English</a> · <a href="/es">Español</a>
+      </p>
+    </noscript>
+  </body>
+</html>

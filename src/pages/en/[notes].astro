@@ -1,0 +1,11 @@
+---
+import NotesIndexPage from '../../components/NotesIndexPage.astro';
+import { blogEnabled } from '../../config/blog';
+
+// A one-value param instead of index.astro: a static page would always be built.
+export function getStaticPaths() {
+  return blogEnabled ? [{ params: { notes: 'notes' } }] : [];
+}
+---
+
+<NotesIndexPage lang="en" />

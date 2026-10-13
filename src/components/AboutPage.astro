@@ -1,0 +1,115 @@
+---
+import Base from '../layouts/Base.astro';
+import SheetHeader from './SheetHeader.astro';
+import Portrait from './Portrait.astro';
+import SpecGrid from './SpecGrid.astro';
+import Timeline from './Timeline.astro';
+import CtaRow from './CtaRow.astro';
+import { path, type Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { site } from '../config/site';
+import { pad2 } from '../lib/work';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const a = ui[lang].about;
+---
+
+<Base lang={lang} title={ui[lang].h1.about} description={a.bio[0]}>
+  <div class="page">
+    <section class="intro">
+      <SheetHeader>
+        {a.sheet}
+        <span slot="meta">REV {site.rev}</span>
+      </SheetHeader>
+      <div class="row">
+        <Portrait lang={lang} />
+        <div class="text">
+          <span class="role">{a.role}</span>
+          <h1 class="h1-page">{ui[lang].h1.about}</h1>
+          {a.bio.map((p) => (
+            <p class="bio">{p}</p>
+          ))}
+          <div class="about-facts">
+            <SpecGrid items={a.facts} min={170} />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <SheetHeader>
+        {a.timelineH}
+        <span slot="meta">2018 — 2026</span>
+      </SheetHeader>
+      <Timeline lang={lang} />
+    </section>
+
+    <section class="block">
+      <SheetHeader>
+        STACK<span slot="meta">{pad2(a.stack.length)}</span>
+      </SheetHeader>
+      <div class="about-stack">
+        <SpecGrid items={a.stack} min={260} roomy />
+      </div>
+    </section>
+
+    <CtaRow lang={lang} heading={a.ctaH} secondary={{ href: path('work', lang), label: a.work }} />
+  </div>
+</Base>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(48px, 7cqi, 80px);
+  }
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px 64px;
+    align-items: flex-start;
+  }
+  .text {
+    flex: 1.6 1 380px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .role {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+  }
+  .text h1 {
+    text-wrap: balance;
+  }
+  .bio {
+    margin: 0;
+    font-size: clamp(17px, 1.5cqi, 19px);
+    line-height: 1.55;
+    max-width: 640px;
+    text-wrap: pretty;
+  }
+  .about-facts {
+    max-width: 640px;
+    border: var(--border-ink);
+  }
+  .block {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .about-stack {
+    border: var(--border-ink);
+  }
+</style>

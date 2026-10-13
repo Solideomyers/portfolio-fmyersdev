@@ -1,0 +1,31 @@
+---
+---
+
+<div class="sheet-header">
+  <span>
+    <slot />
+  </span>
+  <span class="meta">
+    <slot name="meta" />
+  </span>
+</div>
+
+<style>
+  .sheet-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    border-bottom: var(--border-ink);
+    padding-bottom: 10px;
+  }
+  .meta {
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+</style>

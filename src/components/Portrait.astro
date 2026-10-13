@@ -1,0 +1,93 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const a = ui[lang].about;
+// The final portrait (B&W, home session) goes to src/assets/portrait.jpg; until then, the hatch.
+const found = Object.values(
+  import.meta.glob<{ default: ImageMetadata }>('/src/assets/portrait.{jpg,jpeg,png,webp}', {
+    eager: true,
+  }),
+)[0]?.default;
+---
+
+<figure class="portrait">
+  <div class="frame">
+    {found ? (
+      <Image
+        src={found}
+        alt="Francisco Myers"
+        widths={[420, 840]}
+        sizes="(min-width: 768px) 420px, 100vw"
+        loading="eager"
+      />
+    ) : (
+      <div class="hatch" role="img" aria-label="Francisco Myers">
+        {a.portrait}
+      </div>
+    )}
+    <div class="corner" aria-hidden="true"></div>
+  </div>
+  <figcaption>
+    <span class="n">FIG. 1</span>
+    <span>{a.caption}</span>
+  </figcaption>
+</figure>
+
+<style>
+  .portrait {
+    margin: 0;
+    flex: 1 1 260px;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .frame {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    border: var(--border-frame);
+  }
+  .frame :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hatch {
+    height: 100%;
+    background: repeating-linear-gradient(135deg, var(--hatch) 0 1px, transparent 1px 10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  .corner {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: var(--corner-mark);
+    height: var(--corner-mark);
+    background: var(--accent);
+  }
+  figcaption {
+    display: flex;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+  }
+  .n {
+    color: var(--accent);
+  }
+</style>

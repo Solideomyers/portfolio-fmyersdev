@@ -1,0 +1,56 @@
+---
+id: 'N-02'
+lang: 'en'
+slug: 'one-page-spec'
+title: 'Why every project starts with a one-page spec'
+dek: 'A day of writing saves weeks of rework. What goes on the page, and what I leave out.'
+date: '2026-11-01'
+category: 'process'
+minutes: 6
+tags: ['Process', 'Pricing', 'Specs']
+---
+
+Before I write a line of code, I write one page. The client reads it, we fix what is wrong, and they sign it. Only then do I send a fixed price.
+
+## One page, not a document
+
+Long specs get skimmed. A single page forces both of us to decide what matters. If something does not fit, it is probably not part of the first version.
+
+> The spec is the contract with whoever maintains the code — usually me.
+
+## What goes on it
+
+Every spec has the same five blocks, in the same order, so clients learn to read them fast.
+
+```text
+SPEC FM-NN
+01 PROBLEM   one sentence
+02 USERS     roles, and what each can do
+03 MODULES   max 6, each with one verb
+04 DATA      the tables that matter
+05 METRIC    the one number that says it worked
+```
+
+### What I leave out
+
+- Screens and pixels. Those come in week one, on a live link.
+- Nice-to-haves. They go in a "later" list at the bottom.
+- Technology choices the client does not need to approve.
+
+## What it saves
+
+On ChurchApp the spec took one afternoon. It named seven modules and one metric. The first public release shipped ten days later, with no module added or dropped. The full story is in the [case study](/en/work/churchapp).
+
+<Figure
+  n={1}
+  lang="en"
+  shot={{
+    src: '/notes/n-02-spec.png',
+    alt: 'The ChurchApp spec, page one of one',
+    caption: 'The ChurchApp spec, page one of one',
+  }}
+/>
+
+## When I skip it
+
+For a contract month on an existing product, there is nothing to spec up front. I still write one page per larger task, so the team can say no before I start.

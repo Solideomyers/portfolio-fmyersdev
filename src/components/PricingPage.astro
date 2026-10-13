@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import SheetHeader from './SheetHeader.astro';
+import PackageCard from './PackageCard.astro';
+import CompareTable from './CompareTable.astro';
+import Faq from './Faq.astro';
+import CtaRow from './CtaRow.astro';
+import type { Lang } from '../i18n/routes';
+import { ui } from '../i18n/ui';
+import { site } from '../config/site';
+import { byOrder, faqFor } from '../lib/offer';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang].pricing;
+const packages = byOrder(await getCollection('pricing', (e) => e.data.lang === lang)).map(
+  (e) => e.data,
+);
+if (!packages.length) throw new Error(`No pricing packages for ${lang}`);
+const faq = faqFor(await getCollection('faq'), 'pricing', lang).map((e) => e.data);
+---
+
+<Base lang={lang} title={ui[lang].h1.pricing} description={t.lead}>
+  <div class="page">
+    <section class="header">
+      <SheetHeader>
+        {t.sheet}
+        <span slot="meta">USD · REV {site.rev}</span>
+      </SheetHeader>
+      <h1 class="h1-page">{ui[lang].h1.pricing}</h1>
+      <p class="lead">{t.lead}</p>
+    </section>
+    <section class="packages">
+      <div class="cards">
+        {packages.map((p) => (
+          <PackageCard pkg={p} lang={lang} />
+        ))}
+      </div>
+      <p class="ngo">{t.ngo}</p>
+    </section>
+    <CompareTable packages={packages} lang={lang} />
+    <Faq items={faq} lang={lang} heading={t.faqH} intro={t.faqP} />
+    <CtaRow lang={lang} heading={t.ctaH} sub={t.ctaP} />
+  </div>
+</Base>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(48px, 7cqi, 80px);
+  }
+  .header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .header h1 {
+    max-width: 900px;
+    text-wrap: balance;
+  }
+  .lead {
+    margin: 0;
+    font-size: clamp(17px, 1.5cqi, 19px);
+    line-height: 1.45;
+    color: var(--text-muted);
+    max-width: 640px;
+    text-wrap: pretty;
+  }
+  .packages {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 24px;
+    align-items: stretch;
+  }
+  .ngo {
+    margin: 0;
+    font-size: 15px;
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+</style>

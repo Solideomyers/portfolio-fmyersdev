@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "targets": {
+    "email/sender-copy": {
+      "targetKind": "new-target",
+      "projectId": "9307fea7-f947-4973-b39f-e55f1e287e57",
+      "activeDraftId": "9e306739-f933-41a3-90a2-79dd18fc0696",
+      "designSystemPath": ".superdesign/design-system.md",
+      "model": "gemini-3.1-pro",
+      "device": {
+        "mode": "custom",
+        "width": 720,
+        "height": 1300
+      },
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        ".superdesign/init/theme.md:1:20",
+        "src/components/ContactSentPage.astro",
+        "src/components/SpecGrid.astro",
+        "src/components/SheetHeader.astro"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "c3246a100bc86e2b4083983e8fe3a0dea933665855d269e3cfd354e6662e8f6a",
+        ".superdesign/init/theme.md": "312c51b40d42189137a97cb05ec7fe655214b8bb47fe2f390f2d569c76d4f44c",
+        "src/components/ContactSentPage.astro": "082eff436d307ff9319a30434b76ee77c0c8c7abd0301df2c64a2f679f3325d4",
+        "src/components/SpecGrid.astro": "ba0c0a9978f20955d7d27c66c761d5a5d27e30e528edc785be2a3cbf4f2cdbe2",
+        "src/components/SheetHeader.astro": "d53e4a63f5d00372768a57e14dfa8cda4cf76341cb5cbbec158604dd45279224"
+      }
+    },
+    "email/owner-notification": {
+      "targetKind": "flow-page",
+      "projectId": "9307fea7-f947-4973-b39f-e55f1e287e57",
+      "sourceDraftId": "9e306739-f933-41a3-90a2-79dd18fc0696",
+      "activeDraftId": "02c5be06-2c57-451d-963d-3570d83a85a7",
+      "designSystemPath": ".superdesign/design-system.md",
+      "contextFiles": [".superdesign/design-system.md", ".superdesign/init/theme.md:1:20"]
+    }
+  }
+}

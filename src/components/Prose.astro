@@ -1,0 +1,158 @@
+---
+interface Props {
+  variant?: 'case' | 'page' | 'note';
+}
+const { variant = 'case' } = Astro.props;
+---
+
+<div class:list={['prose', variant]}>
+  <slot />
+</div>
+
+<style>
+  .prose {
+    counter-reset: h2;
+    max-width: var(--prose-max);
+  }
+  .prose :global(h2) {
+    counter-increment: h2;
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    margin: clamp(36px, 4cqi, 48px) 0 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: clamp(24px, 2.2cqi, 28px);
+    letter-spacing: -0.5px;
+    scroll-margin-top: 88px;
+  }
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .prose :global(h2)::before {
+    content: counter(h2, decimal-leading-zero);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    font-stretch: 100%;
+    color: var(--accent);
+  }
+  .prose :global(p) {
+    margin: 14px 0 0;
+    font-size: 17px;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+  .prose :global(ul) {
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .prose :global(li) {
+    position: relative;
+    padding-left: 26px;
+    font-size: 17px;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+  .prose :global(li)::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+  }
+  /* Links inside running text must not rely on colour alone (WCAG 1.4.1). */
+  .prose :global(p a),
+  .prose :global(li a) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .prose :global(strong) {
+    font-weight: 600;
+  }
+  .prose :global(blockquote) {
+    margin: 14px 0 0;
+    padding-left: 20px;
+    border-left: 2px solid var(--line-strong);
+    font-size: clamp(19px, 1.8cqi, 22px);
+    line-height: 1.45;
+  }
+  .prose :global(code) {
+    font-family: var(--font-mono);
+    font-size: 14px;
+  }
+  .prose :global(pre) {
+    margin: 14px 0 0;
+    padding: 16px;
+    background: var(--surface);
+    border: var(--border-rule);
+    overflow-x: auto;
+  }
+  .prose :global(.figure) {
+    margin-top: 22px;
+  }
+  .prose :global(.metrics) {
+    margin-top: 14px;
+  }
+  /* Privacy-style page: smaller numbered h2, each section ruled on top. */
+  .page :global(h2) {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: var(--border-rule);
+    font-size: clamp(21px, 2cqi, 24px);
+    letter-spacing: -0.3px;
+  }
+  .page :global(p) {
+    margin-top: 8px;
+    line-height: 1.65;
+  }
+  .page :global(p:first-child) {
+    margin-top: 0;
+    font-size: clamp(17px, 1.5cqi, 19px);
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+  /* Note (P09): no h2 numbers; the article spacing of Blog Post.dc.html. */
+  .note :global(h2) {
+    margin-top: 40px;
+  }
+  .note :global(h2)::before {
+    content: none;
+  }
+  .note :global(h3) {
+    margin: 28px 0 0;
+    font-stretch: var(--stretch-display);
+    font-weight: 700;
+    font-size: 21px;
+  }
+  .note :global(p),
+  .note :global(pre),
+  .note :global(ul) {
+    margin-top: 20px;
+  }
+  .note :global(p) {
+    line-height: 1.65;
+  }
+  .note :global(blockquote),
+  .note :global(.figure) {
+    margin-top: 24px;
+  }
+  .note :global(blockquote) {
+    padding: 4px 0 4px 16px;
+  }
+  .note :global(blockquote p) {
+    margin-top: 0;
+  }
+  .note :global(pre) {
+    padding: 14px 16px;
+    line-height: 1.6;
+  }
+  .note > :global(:first-child) {
+    margin-top: 0;
+  }
+</style>

@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content';
+import CasePage from '../../../components/CasePage.astro';
+import { casePaths } from '../../../lib/work';
+
+export async function getStaticPaths() {
+  return casePaths(await getCollection('work'), 'es');
+}
+const { entry, fallback } = Astro.props;
+---
+
+<CasePage lang="es" entry={entry} fallback={fallback} />
