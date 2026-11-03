@@ -5,7 +5,6 @@ const ENV: ContactEnv = {
   turnstileSecret: 'secret-xyz',
   appsScriptUrl: 'https://script.google.test/exec',
   appsScriptKey: 'form-key-123',
-  testMode: false,
 };
 
 type Call = { url: string; body: string };
@@ -114,7 +113,7 @@ test('upstream rejection or failure: 502 / 303 error; body never echoes secrets'
   expect(redirect.headers.get('location')).toBe('/en/contact#send-error');
 });
 
-test('missing configuration: 503 unless test mode supplies the Turnstile test secret', async () => {
+test('missing configuration: 503, never a fallback secret', async () => {
   const { fn } = stubFetch();
   expect((await handleContact(req(valid), { ...ENV, appsScriptUrl: undefined }, fn)).status).toBe(
     503,
@@ -122,12 +121,6 @@ test('missing configuration: 503 unless test mode supplies the Turnstile test se
   expect((await handleContact(req(valid), { ...ENV, turnstileSecret: undefined }, fn)).status).toBe(
     503,
   );
-  const ok = await handleContact(
-    req(valid),
-    { ...ENV, turnstileSecret: undefined, testMode: true },
-    fn,
-  );
-  expect(ok.status).toBe(200);
 });
 
 test('non-POST is 405', async () => {
