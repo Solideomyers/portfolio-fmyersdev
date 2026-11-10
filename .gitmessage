@@ -9,7 +9,7 @@
 # Types:  feat · fix · refactor · test  (scope REQUIRED)
 #         docs · chore · ci · build · style · perf · revert  (scope optional)
 # Scopes: ui · layout · i18n · content · pages · contact · motion · blog
-#         config · ci · deps · docs   (source: scripts/scopes.cjs)
+#         config · ci · deps · docs · admin · db   (source: scripts/scopes.cjs)
 #
 # Valid:   feat(ui): add Button component
 #          chore: bump astro
