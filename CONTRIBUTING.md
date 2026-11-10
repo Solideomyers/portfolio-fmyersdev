@@ -36,7 +36,7 @@ git worktree remove .worktrees/sp1-shell   # after the merge
 
 Conventional Commits, checked by commitlint locally and on the PR title in CI.
 
-`type(scope): subject`. Scopes: `ui, layout, i18n, content, pages, contact, motion, blog, config, ci, deps, docs` (from `scripts/scopes.cjs`). `feat`, `fix`, `refactor` and `test` must have a scope. Other types may omit it, but a given scope must be in the list.
+`type(scope): subject`. Scopes: `ui, layout, i18n, content, pages, contact, motion, blog, config, ci, deps, docs, admin, db` (from `scripts/scopes.cjs`). `feat`, `fix`, `refactor` and `test` must have a scope. Other types may omit it, but a given scope must be in the list.
 
 | Message                                              | Valid? | Why                                   |
 | ---------------------------------------------------- | ------ | ------------------------------------- |
