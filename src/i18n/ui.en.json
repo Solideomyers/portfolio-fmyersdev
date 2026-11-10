@@ -1,0 +1,394 @@
+{
+  "nav": {
+    "services": "SERVICES",
+    "work": "WORK",
+    "about": "ABOUT",
+    "pricing": "PRICING",
+    "contact": "CONTACT",
+    "notes": "NOTES"
+  },
+  "menu": "MENU",
+  "close": "CLOSE",
+  "startCaps": "START A PROJECT",
+  "privacy": "PRIVACY",
+  "langName": "ENGLISH",
+  "themeLabel": "Toggle theme",
+  "homeLabel": "fmyers.dev home",
+  "navLabel": "Main",
+  "h1": {
+    "home": "I build SaaS products end to end.",
+    "services": "Three ways to work together.",
+    "work": "Work",
+    "about": "Francisco Myers",
+    "pricing": "Clear starting prices. A fixed quote after the spec.",
+    "contact": "Tell me what you're building.",
+    "contactSent": "Thanks. I'll reply within 2 business days.",
+    "privacy": "Privacy",
+    "notes": "Notes"
+  },
+  "notes": {
+    "sheet": "SHEET 07 — NOTES",
+    "lead": "How I scope, price and build small products and automations. Written when there is something worth saying.",
+    "filterLabel": "Filter by category",
+    "cats": ["All", "Process", "Automation", "Engineering", "Cases"],
+    "onlyEn": "ONLY IN SPANISH",
+    "emptyK": "0 NOTES",
+    "emptyH": "Nothing in this category yet.",
+    "showAll": "SHOW ALL NOTES",
+    "allNotes": "ALL NOTES",
+    "author": "Fullstack developer in Venezuela. I build SaaS products and Google Workspace automations.",
+    "write": "WRITE TO ME",
+    "related": "MORE NOTES",
+    "prev": "PREVIOUS",
+    "next": "NEXT",
+    "latest": "This is the latest note",
+    "rssTitle": "fmyers.dev — Notes"
+  },
+  "notFound": {
+    "sheet": "SHEET 404",
+    "missing": "NOT FOUND",
+    "h1": "This sheet isn't in the set.",
+    "p": "The link may be old or mistyped. Everything that exists is one click away.",
+    "home": "Back home",
+    "links": ["WORK", "CONTACT"]
+  },
+  "work": {
+    "sheet": "SHEET 01 — WORK",
+    "cases": "CASE STUDIES",
+    "repos": "REPOS",
+    "lead": "Case studies of products in production, newest first. Below, smaller open-source pieces.",
+    "shot": "SCREENSHOT",
+    "readCaps": "READ CASE",
+    "otherH": "OTHER WORK",
+    "otherNote": "OPEN SOURCE · GITHUB",
+    "ctaH": "Want yours on this sheet?",
+    "start": "Start a project",
+    "keys": {
+      "sector": "SECTOR",
+      "stack": "STACK",
+      "role": "ROLE",
+      "year": "YEAR"
+    }
+  },
+  "case": {
+    "allWork": "ALL WORK",
+    "caseStudy": "CASE STUDY",
+    "contents": "CONTENTS",
+    "next": "NEXT PROJECT",
+    "similar": "Want something similar?",
+    "onlyIn": "ONLY IN ENGLISH",
+    "asOf": "AS OF",
+    "keys": {
+      "sector": "SECTOR",
+      "modules": "MODULES",
+      "stack": "STACK",
+      "status": "STATUS"
+    }
+  },
+  "status": {
+    "live": "LIVE",
+    "inUse": "IN USE",
+    "wip": "PILOT"
+  },
+  "months": ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+  "offer": {
+    "common": "MOST CHOSEN",
+    "from": "FROM",
+    "units": {
+      "project": "PER PROJECT",
+      "month": "PER MONTH",
+      "monthShort": "mo"
+    }
+  },
+  "services": {
+    "sheet": "SHEET 02 — SERVICES",
+    "meta": "P-01 — P-03",
+    "lead": "A product built from zero, an automation on the tools you already use, or a senior developer on your team. Each one starts with a short spec.",
+    "timing": "TYPICAL TIMELINE",
+    "seePrice": "SEE PRICING",
+    "scope": "WHAT I DO",
+    "deliver": "WHAT YOU GET",
+    "faqH": "Working together.",
+    "ctaH": "Have a problem that fits?",
+    "pricing": "See pricing"
+  },
+  "pricing": {
+    "sheet": "SHEET 05 — PRICING",
+    "lead": "Every project starts with a one-page spec. Once it is signed, the price is fixed. Prices in USD.",
+    "choose": "Start with this",
+    "ngo": "I work with churches and nonprofits; ask me about it. Payment: 50% to start, 50% on delivery, by bank transfer, Zelle or crypto.",
+    "compareH": "COMPARE",
+    "compareLabel": "Package comparison",
+    "swipe": "SWIPE",
+    "faqH": "Before you ask.",
+    "faqP": "Anything else goes in the brief. I reply within 2 business days.",
+    "ctaH": "Not sure which one fits?",
+    "ctaP": "Describe the problem and I will suggest a package."
+  },
+  "process": {
+    "h": "HOW A PROJECT RUNS",
+    "steps": [
+      {
+        "n": "01",
+        "t": "Spec",
+        "time": "1 WEEK",
+        "d": "One page with modules, data and the metric that matters. You sign it, and the price is fixed."
+      },
+      {
+        "n": "02",
+        "t": "Build",
+        "time": "3–5 WEEKS",
+        "d": "Weekly builds on a live link. One call a week; the rest in writing."
+      },
+      {
+        "n": "03",
+        "t": "Launch",
+        "time": "1 WEEK",
+        "d": "Deploy to your domain, hand over access and docs, record a walkthrough."
+      },
+      {
+        "n": "04",
+        "t": "Support",
+        "time": "30 DAYS",
+        "d": "Bug fixes included. Then an optional maintenance plan from $100 a month."
+      }
+    ]
+  },
+  "compare": {
+    "timeline": "TIMELINE",
+    "spec": "SPEC",
+    "weeklyBuilds": "WEEKLY BUILDS",
+    "ownership": "CODE OWNERSHIP",
+    "fixes": "FIXES AFTER LAUNCH",
+    "maintenance": "MAINTENANCE PLAN",
+    "payment": "PAYMENT"
+  },
+  "home": {
+    "sheet00": "SHEET 00 — FRANCISCO MYERS · FULLSTACK DEVELOPER",
+    "lead": "From a validated idea to a product in production: spec, interface, API, database and deployment. One person accountable from start to finish.",
+    "see": "See work",
+    "available": "Available for new projects from {date}",
+    "availableNow": "Available for new projects",
+    "sheet01": "SHEET 01 — SELECTED WORK",
+    "allWork": "ALL WORK",
+    "sheet02": "SHEET 02 — SERVICES",
+    "pricing": "PRICING DETAILS",
+    "servicesH": "Three ways to work together.",
+    "ngo": "I work with churches and nonprofits. Ask me about it. Prices in USD.",
+    "sheet03": "SHEET 03 — PROCESS",
+    "steps": "STEPS",
+    "sheet04": "SHEET 04 — CONTACT",
+    "contactH": "Tell me what you're building.",
+    "contactP": "Send a short brief and I reply within 2 business days, Venezuela time (UTC−4).",
+    "facts": [
+      {
+        "k": "STACK",
+        "v": "Next.js · NestJS · PostgreSQL",
+        "accent": true
+      },
+      {
+        "k": "AUTOMATION",
+        "v": "Google Workspace · Apps Script"
+      },
+      {
+        "k": "BASED IN",
+        "v": "Venezuela · UTC−4 · remote"
+      },
+      {
+        "k": "LANGUAGES",
+        "v": "Spanish · English"
+      }
+    ],
+    "process": [
+      {
+        "n": "01",
+        "time": "1 WK",
+        "t": "Spec",
+        "d": "One page with modules, data and the metric that matters. You sign it before any code."
+      },
+      {
+        "n": "02",
+        "time": "3–5 WKS",
+        "t": "Build",
+        "d": "Every week you get a working build on a live link."
+      },
+      {
+        "n": "03",
+        "time": "1 WK",
+        "t": "Launch",
+        "d": "Deploy, access and docs. The repository is yours from day one."
+      },
+      {
+        "n": "04",
+        "time": "30 DAYS",
+        "t": "Support",
+        "d": "Bug fixes included. After that, an optional maintenance plan."
+      }
+    ]
+  },
+  "about": {
+    "sheet": "SHEET 03 — ABOUT",
+    "role": "FULLSTACK DEVELOPER · VENEZUELA · REMOTE",
+    "portrait": "PORTRAIT · B&W · 4:5",
+    "caption": "FRANCISCO MYERS · CIUDAD GUAYANA",
+    "timelineH": "TIMELINE",
+    "ctaH": "Let's build the next one.",
+    "work": "See work",
+    "bio": [
+      "I build web products with JavaScript and TypeScript, React and Node.js, and automations on Google Workspace. Before I wrote code, I ran the contracts database for works and services at an aluminium plant. That is where I learned to organise how information moves between users, contractors and internal teams.",
+      "Today I apply that judgement to APIs, databases and interfaces, mostly for organisations with small teams and real constraints. I like projects where one person owns the whole thing, from the spec to the deploy."
+    ],
+    "facts": [
+      {
+        "k": "BASED IN",
+        "v": "Ciudad Guayana, VE"
+      },
+      {
+        "k": "TIME ZONE",
+        "v": "VET · UTC−4"
+      },
+      {
+        "k": "LANGUAGES",
+        "v": "Spanish (native) · English (B1)"
+      },
+      {
+        "k": "WORKS",
+        "v": "Remote, US · EU · LatAm"
+      }
+    ],
+    "timeline": [
+      {
+        "y": "2026 — NOW",
+        "m": "Freelance · ChurchApp (Gracia Eterna)",
+        "d": "Membership system for a local church in Next.js and Supabase. Public v1.0 ten days after the first commit."
+      },
+      {
+        "y": "2025 — NOW",
+        "m": "Developer · Chapel Library",
+        "d": "Nonprofit publisher, Pensacola (US), remote. Inventory and distribution across warehouses on Apps Script and Workspace."
+      },
+      {
+        "y": "2024",
+        "m": "Full Stack · La Web del Colchón",
+        "d": "E-commerce, Spain, remote. New database, data migration, REST API and new frontend in Laravel."
+      },
+      {
+        "y": "2023",
+        "m": "Full Stack · Skills EMPLI",
+        "d": "Job platform, Lima (PE), remote. Landing pages, dashboards and the candidate–company matching flow in React."
+      },
+      {
+        "y": "2023",
+        "m": "Henry · Full Stack bootcamp",
+        "d": "Formal switch from operations to software."
+      },
+      {
+        "y": "2018 — 2022",
+        "m": "Procurement admin · CVG Venalum",
+        "d": "Aluminium industry, Puerto Ordaz. Ran the contracts database for works and services."
+      }
+    ],
+    "stack": [
+      {
+        "k": "LANGUAGES",
+        "v": "JavaScript · TypeScript · PHP"
+      },
+      {
+        "k": "FRONTEND",
+        "v": "React · Redux Toolkit · Vite · Tailwind CSS"
+      },
+      {
+        "k": "BACKEND",
+        "v": "Node.js · NestJS · Laravel · REST APIs"
+      },
+      {
+        "k": "DATA",
+        "v": "PostgreSQL · MongoDB · Prisma · Supabase"
+      },
+      {
+        "k": "TOOLS",
+        "v": "Git · Figma · Google Apps Script"
+      },
+      {
+        "k": "PRACTICES",
+        "v": "Design patterns · Data modelling"
+      }
+    ]
+  },
+  "privacyPage": {
+    "sheet": "SHEET 08 — PRIVACY",
+    "updated": "UPDATED",
+    "email": "{{EMAIL}}"
+  },
+  "contact": {
+    "sheet": "SHEET 06 — CONTACT",
+    "meta": "REPLY IN 2 BUSINESS DAYS",
+    "sentMeta": "06b",
+    "lead": "A few lines are enough. I reply within 2 business days with questions or a first estimate.",
+    "fName": "NAME",
+    "phName": "Your name",
+    "fEmail": "EMAIL",
+    "phEmail": "you@company.com",
+    "errEmail": "Write the full address, e.g. you@company.com",
+    "errMsg": "Write a few lines about the project.",
+    "fType": "PROJECT TYPE",
+    "fBudget": "BUDGET · OPTIONAL",
+    "fMsg": "MESSAGE",
+    "phMsg": "What problem should it solve? Who uses it?",
+    "privacyNote": "I only use this to reply to you.",
+    "privacyLink": "Privacy",
+    "send": "Send brief →",
+    "sending": "Sending…",
+    "netErr": "The message didn't go through. Try again, or write to {{email}}.",
+    "turnstile": "Spam check",
+    "received": "BRIEF RECEIVED",
+    "sentP": "A copy of your message is on its way to your inbox. If it is urgent, WhatsApp is the fastest way to reach me.",
+    "sentNoCopy": "Your brief is in. If it is urgent, WhatsApp is the fastest way to reach me.",
+    "home": "Back home",
+    "whileWait": "SEE SELECTED WORK",
+    "types": {
+      "saas": "SaaS MVP",
+      "automation": "Automation",
+      "contract": "Contract",
+      "other": "Other"
+    },
+    "budgets": {
+      "lt1k": "< $1k",
+      "1-5k": "$1–5k",
+      "5-10k": "$5–10k",
+      "10k+": "$10k+",
+      "unsure": "Not sure yet"
+    },
+    "channels": [
+      {
+        "k": "WHATSAPP",
+        "v": "+58 424 908 0683",
+        "g": "↗"
+      },
+      {
+        "k": "EMAIL",
+        "v": "{{email}}",
+        "g": "→"
+      },
+      {
+        "k": "LINKEDIN",
+        "v": "in/franciscomyers",
+        "g": "↗"
+      }
+    ],
+    "spec": [
+      {
+        "k": "REPLY BY",
+        "v": "2 business days"
+      },
+      {
+        "k": "TIME ZONE",
+        "v": "VET · UTC−4"
+      },
+      {
+        "k": "FROM",
+        "v": "{{email}}"
+      }
+    ]
+  }
+}
