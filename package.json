@@ -7,7 +7,9 @@
     "node": "24.x"
   },
   "scripts": {
+    "predev": "node scripts/content.mjs pull",
     "dev": "astro dev",
+    "prebuild": "node scripts/content.mjs pull",
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",

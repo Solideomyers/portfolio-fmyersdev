@@ -63,6 +63,8 @@ jobs:
         with: { node-version-file: .nvmrc, cache: npm }
       - run: npm ci
       - run: npm run build
+      # The prebuild materialiser must regenerate exactly the committed content (removed at cutover, Task 5).
+      - run: git diff --exit-code -- src/content src/i18n src/config/site.data.json
       - run: node scripts/check-blog-hidden.mjs
 
   test:
