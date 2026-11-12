@@ -5,7 +5,7 @@ Read first: `docs/handoff/README.md` (design source of truth) and `docs/superpow
 ## Stack (closed)
 
 - Astro (static output; the only on-demand route is `/api/contact` via `@astrojs/vercel`), TypeScript strict, plain CSS, vanilla TypeScript `<script>`. Package manager: **npm** only.
-- Do not add React, Tailwind, shadcn, UI kits, icon libraries or CSS-in-JS without the user asking. The only optional extra the handoff allows is `motion` (vanilla).
+- Do not add React, Tailwind, shadcn, UI kits, icon libraries or CSS-in-JS without the user asking. The only optional extra the handoff allows is `motion` (vanilla). Exception: the private admin panel in `admin/` is its own npm project (React + Vite + `@supabase/supabase-js`); React never reaches the public site.
 - Every new dependency is justified in the PR description.
 - Secrets (Turnstile secret, Apps Script URL/key) live only in Vercel env and Apps Script properties, typed through `astro:env`; never in the repo, client code, logs or responses.
 
