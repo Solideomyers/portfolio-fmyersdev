@@ -15,8 +15,24 @@ declare
   s jsonb;
 begin
   if owner_id is null then raise exception 'FAIL: owner user missing in auth.users'; end if;
+
+  -- Supabase loads pg_safeupdate for API requests and it rejects an UPDATE/DELETE without WHERE. It
+  -- cannot be loaded from the SQL editor (this script runs as a superuser, where the check is off), so
+  -- look for the same mistake in the function bodies instead.
+  if exists (
+    select 1
+    from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    cross join lateral regexp_split_to_table(p.prosrc, ';') stmt
+    where n.nspname in ('public', 'private')
+      and stmt ~* '\m(update\s+\S+\s+set|delete\s+from\s+\S+)'
+      and stmt !~* '\mwhere\M'
+  ) then
+    raise exception 'FAIL: a function runs UPDATE/DELETE without WHERE (pg_safeupdate rejects it for API calls)';
+  end if;
+
   owner_claims := json_build_object('sub', owner_id, 'role', 'authenticated', 'email', (select email from private.owner))::text;
-  update public.draft set files = '{}';
+  update public.draft set files = '{}' where singleton;
 
   perform set_config('request.jwt.claims', owner_claims, true);
   set local role authenticated;
