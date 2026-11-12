@@ -9,6 +9,10 @@ Read first: `docs/handoff/README.md` (design source of truth) and `docs/superpow
 - Every new dependency is justified in the PR description.
 - Secrets (Turnstile secret, Apps Script URL/key) live only in Vercel env and Apps Script properties, typed through `astro:env`; never in the repo, client code, logs or responses.
 
+## Content
+
+- `src/content/`, `src/i18n/ui.{en,es}.json` and `src/config/site.data.json` are generated from Supabase (or `tests/fixtures/content.snapshot.json`) by `scripts/content.mjs pull` and are gitignored. Never edit or commit them; content changes go through the admin panel. See `CONTRIBUTING.md` → "Content".
+
 ## Design fidelity
 
 - The handoff is high-fidelity: copy values from `docs/handoff/`, never approximate.

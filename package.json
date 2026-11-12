@@ -12,6 +12,7 @@
     "prebuild": "node scripts/content.mjs pull",
     "build": "astro build",
     "preview": "astro preview",
+    "precheck": "node scripts/content.mjs pull",
     "check": "astro check",
     "test": "playwright test",
     "lint": "eslint . --fix && prettier --write .",
