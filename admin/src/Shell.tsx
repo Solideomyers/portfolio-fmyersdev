@@ -6,6 +6,7 @@ import { ItemEditor } from './ItemEditor';
 import { COLLECTIONS, draftRows } from './lib/collections';
 import { go, useRoute } from './route';
 import { supabase } from './supabase';
+import { Texts } from './Texts';
 import { setTheme, type Theme } from './theme';
 import { useWorking } from './useWorking';
 
@@ -72,6 +73,17 @@ export function Shell({ session }: { session: string }) {
       );
     if (view === undefined || view === 'dashboard')
       return <Dashboard rows={rows} revision={data.revision} onDiscardAll={discardAll} />;
+    if (view === 'content' && coll === 'texts' && id)
+      return (
+        <Texts
+          working={data.working}
+          current={data.current}
+          draft={data.draft}
+          save={save}
+          edit={edit}
+          discard={discard}
+        />
+      );
     if (view === 'content' && editable && id)
       return (
         <ItemEditor
