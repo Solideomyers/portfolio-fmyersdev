@@ -11,7 +11,7 @@ export const SHARED_KEYS = {
   faq: ['id', 'page', 'order'],
 } as const;
 
-export type Kind = keyof typeof SHARED_KEYS | 'site';
+export type Kind = keyof typeof SHARED_KEYS | 'site' | 'texts';
 
 export const kindOf = (path: string): Kind | null =>
   /^src\/content\/pricing\/(en|es)\/.+\.md$/.test(path)
@@ -20,7 +20,9 @@ export const kindOf = (path: string): Kind | null =>
       ? 'faq'
       : path === 'src/config/site.data.json'
         ? 'site'
-        : null;
+        : /^src\/i18n\/ui\.(en|es)\.json$/.test(path)
+          ? 'texts' // each language is edited on its own (lib/texts.ts setLeaf), nothing is shared
+          : null;
 
 const other = (l: string) => (l === 'en' ? 'es' : 'en');
 
@@ -70,7 +72,8 @@ export function applyEdit(
 ): Files {
   const kind = kindOf(path);
   const shared =
-    kind !== null && kind !== 'site' && (SHARED_KEYS[kind] as readonly string[]).includes(key);
+    (kind === 'pricing' || kind === 'faq') &&
+    (SHARED_KEYS[kind] as readonly string[]).includes(key);
   const next = { ...files };
   for (const p of shared ? [path, twinPath(path)] : [path])
     next[p] = write(files[p], p, key, value, id);

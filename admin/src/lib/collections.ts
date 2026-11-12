@@ -2,6 +2,7 @@ import type { Files } from '../../../src/lib/snapshot.ts';
 import type { Draft } from './draft.ts';
 import { LABELS } from './fields.ts';
 import { usd } from './preview.ts';
+import { flatten } from './texts.ts';
 import { kindOf, readItem, twinPath } from './twins.ts';
 
 export type CollectionKey = 'pricing' | 'work' | 'other' | 'faq' | 'texts' | 'site';
@@ -46,7 +47,7 @@ export const COLLECTIONS: {
     key: 'texts',
     id: 'C-05',
     name: 'Textos',
-    editable: false,
+    editable: true,
     owns: (p) => p.startsWith('src/i18n/ui.'),
   },
   {
@@ -71,6 +72,7 @@ const uiUnit = (files: Files, billing: string) =>
 
 const PRICING_EN = /^src\/content\/pricing\/en\/.+\.md$/;
 const FAQ_EN = 'src/content/faq/en.json';
+const UI_EN = 'src/i18n/ui.en.json';
 
 export function itemsOf(key: CollectionKey, files: Files): Item[] {
   if (key === 'pricing')
@@ -104,6 +106,15 @@ export function itemsOf(key: CollectionKey, files: Files): Item[] {
         paths: ['src/config/site.data.json'],
       },
     ];
+  if (key === 'texts')
+    return [
+      {
+        id: 'texts',
+        title: 'Textos de la interfaz',
+        meta: `${Object.keys(flatten(JSON.parse(files[UI_EN]))).length} cadenas · ES · EN`,
+        paths: [UI_EN, twinPath(UI_EN)],
+      },
+    ];
   return [];
 }
 
@@ -118,6 +129,14 @@ const changedLabels = (a: Record<string, unknown>, b: Record<string, unknown>) =
   [...new Set([...Object.keys(a), ...Object.keys(b)])]
     .filter((k) => JSON.stringify(a[k]) !== JSON.stringify(b[k]))
     .map((k) => LABELS[k] ?? k);
+
+/** How many texts differ from the published ones, in both languages together. */
+const changedTexts = (current: Files, working: Files) =>
+  [UI_EN, twinPath(UI_EN)].reduce((n, p) => {
+    const was = flatten(JSON.parse(current[p]));
+    const now = flatten(JSON.parse(working[p]));
+    return n + Object.keys(now).filter((k) => was[k] !== now[k]).length;
+  }, 0);
 
 /** One row per edited item (the ES and EN files of an item are one row). */
 export function draftRows(current: Files, working: Files, draft: Draft): DraftRow[] {
@@ -152,6 +171,12 @@ export function draftRows(current: Files, working: Files, draft: Draft): DraftRo
         { collection: 'site', id: 'site', title: 'Datos del sitio', what: '' },
         changedLabels(JSON.parse(current[path]), JSON.parse(working[path])),
       );
+    } else if (kind === 'texts') {
+      if (rows.has('texts:texts')) continue; // the ES and EN files are one row
+      const n = changedTexts(current, working);
+      add({ collection: 'texts', id: 'texts', title: 'Textos de la interfaz', what: '' }, [
+        n === 1 ? '1 cadena' : `${n} cadenas`,
+      ]);
     } else {
       const owner = COLLECTIONS.find((c) => c.owns(path));
       add({ collection: owner?.key ?? null, id: path, title: path, what: 'Archivo' }, ['Archivo']);

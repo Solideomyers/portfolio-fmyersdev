@@ -2,6 +2,9 @@ import type { Files } from '../../src/lib/snapshot.ts';
 import { COLLECTIONS, itemsOf } from './lib/collections';
 import { go } from './route';
 
+// Collections with a single item show a code instead of an id.
+const ITEM_TAG: Record<string, string> = { site: 'S-01', texts: 'T-01' };
+
 const count = (n: number) => `${n} ${n === 1 ? 'elemento' : 'elementos'}`;
 
 export function Explorer({
@@ -57,7 +60,7 @@ export function Explorer({
           )}
           {items.map((it) => (
             <div key={it.id} className="ad-item">
-              <span className="ad-k">{it.id === 'site' ? 'S-01' : it.id}</span>
+              <span className="ad-k">{ITEM_TAG[it.id] ?? it.id}</span>
               <span className="ad-row-main">
                 <span className="ad-item-title">
                   <span className="ad-row-title">{it.title}</span>

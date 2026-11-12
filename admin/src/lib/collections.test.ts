@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import type { Files } from '../../../src/lib/snapshot.ts';
 import { draftRows, itemsOf } from './collections.ts';
+import { setLeaf } from './texts.ts';
 import { applyEdit } from './twins.ts';
 
 const files: Files = JSON.parse(
@@ -52,4 +53,20 @@ test('faq, site facts and files without an editor yet each get a row', () => {
 
   const ui = { 'src/i18n/ui.en.json': '{}' };
   assert.equal(draftRows(files, { ...files, ...ui }, ui)[0].collection, 'texts');
+});
+
+test('the texts collection is one editable item, and its edits are one draft row', () => {
+  const [item] = itemsOf('texts', files);
+  assert.equal(item.id, 'texts');
+  assert.match(item.meta, /^\d+ cadenas · ES · EN$/);
+  assert.deepEqual(item.paths, ['src/i18n/ui.en.json', 'src/i18n/ui.es.json']);
+
+  const en = setLeaf(files['src/i18n/ui.en.json'], 'nav.work', 'WORK!');
+  const es = setLeaf(files['src/i18n/ui.es.json'], 'nav.work', 'PROYECTOS!');
+  const es2 = setLeaf(es, 'nav.about', 'SOBRE MÍ!');
+  const working = { ...files, 'src/i18n/ui.en.json': en, 'src/i18n/ui.es.json': es2 };
+  const draft = { 'src/i18n/ui.en.json': en, 'src/i18n/ui.es.json': es2 };
+  assert.deepEqual(draftRows(files, working, draft), [
+    { collection: 'texts', id: 'texts', title: 'Textos de la interfaz', what: '3 cadenas' },
+  ]);
 });

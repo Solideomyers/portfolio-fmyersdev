@@ -34,7 +34,7 @@ body {
   font-family: var(--font-sans);
 }
 /* :where() keeps this reset at zero specificity so the ad-* colours below can override it. */
-:where(.ad button, .ad input) {
+:where(.ad button, .ad input, .ad textarea) {
   font: inherit;
   border-radius: 0;
   color: inherit;
@@ -791,6 +791,74 @@ textarea.ad-input {
   align-items: center;
   gap: 10px;
   font-size: 16px;
+}
+
+/* ---- S3c texts ---- */
+.ad-text-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.ad-text-search {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 260px;
+  max-width: 420px;
+}
+.ad-text-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 0;
+  border-bottom: var(--border-ink);
+  background: var(--bg);
+  text-align: left;
+  cursor: pointer;
+}
+.ad-text-head:disabled {
+  cursor: default;
+}
+.ad-text-head:not(:disabled):hover {
+  background: var(--hatch);
+}
+.ad-text-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 8px 12px;
+  align-items: start;
+  padding: 10px 16px;
+  border-bottom: var(--border-rule);
+}
+.ad-text-key {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.ad-text-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.ad-cell-error {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--danger);
 }
 
 /* Below 860px the nav is a full-width menu that replaces the page (mockup mobile). */
