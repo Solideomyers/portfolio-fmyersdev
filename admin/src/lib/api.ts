@@ -54,3 +54,12 @@ export async function lastRevision(): Promise<LastRevision | null> {
   if (error) throw error;
   return data;
 }
+
+/** Publishes the draft as a new revision (the database then fires the deploy hook); returns its REV. */
+export async function publish(note?: string): Promise<number> {
+  const { data, error } = await supabase.rpc('publish', { p_note: note?.trim() || null });
+  if (error) throw error;
+  return Number(data);
+}
+
+export { waitForLive, type LiveState } from './live';
