@@ -9,6 +9,8 @@ type Props = {
   rejectedVia?: string;
   /** Set when the owner check itself failed. */
   verifyFailed?: boolean;
+  /** The provider (or the magic link) sent the browser back with an error; already worded for the owner. */
+  providerError?: string;
 };
 
 const PROVIDERS: { id: Provider; label: string }[] = [
@@ -16,7 +18,7 @@ const PROVIDERS: { id: Provider; label: string }[] = [
   { id: 'google', label: 'Continuar con Google' },
 ];
 
-export function Login({ theme, rejectedVia, verifyFailed }: Props) {
+export function Login({ theme, rejectedVia, verifyFailed, providerError }: Props) {
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
   const [email, setEmail] = useState('');
@@ -56,12 +58,14 @@ export function Login({ theme, rejectedVia, verifyFailed }: Props) {
           title: 'Err · No pudimos verificar tu cuenta',
           body: 'Revisa tu conexión y recarga la página para volver a intentarlo.',
         }
-      : failed
-        ? {
-            title: 'Err · No se pudo iniciar sesión',
-            body: 'El proveedor no respondió. Inténtalo de nuevo en un momento.',
-          }
-        : null;
+      : providerError
+        ? { title: 'Err · No se pudo iniciar sesión', body: providerError }
+        : failed
+          ? {
+              title: 'Err · No se pudo iniciar sesión',
+              body: 'El proveedor no respondió. Inténtalo de nuevo en un momento.',
+            }
+          : null;
 
   return (
     <div className="ad-login">
