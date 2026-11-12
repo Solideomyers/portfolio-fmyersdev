@@ -28,7 +28,7 @@ npm run dev                    # http://localhost:5173
 npm run build && npm test      # what the `admin` CI job runs
 ```
 
-Sign-in needs the provider enabled in Supabase Auth and the panel's origin (`http://localhost:5173`, and the Vercel URL) in its redirect URLs. Only the account in `private.owner` gets past `is_owner()`; anyone else is signed out. Lint and format run from the repo root.
+Sign-in needs the provider enabled in Supabase Auth and the panel's origin (`http://localhost:5173`, and the Vercel URL) in its redirect URLs. Only the account in `private.owner` gets past `is_owner()`; anyone else is signed out. Lint and format run from the repo root. The panel imports `../src/lib` (schemas, snapshot validation), so its unit tests need `npm install` at the root too; the Vite build needs only `admin/node_modules`.
 
 ## Branches
 
