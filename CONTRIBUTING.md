@@ -9,6 +9,14 @@
 5. Optional: `cp .env.example .env` to exercise `/api/contact` locally (`npm run dev`). The contact backend is documented in `apps-script/README.md`. Tests serve the static build with `scripts/serve-static.mjs`, because the Vercel adapter disables `astro preview`.
 6. The notes section is off by default. Set `BLOG_ENABLED=true` (exactly `true`; Vercel env + redeploy, or locally) to build it; tests always build with it on. Turn it on through the Vercel env, not by changing the default in `astro.config.mjs`: CI's `check-blog-hidden` step asserts that the default build has no blog, so flipping the default also means removing that step.
 
+## Content
+
+Site content (`src/content/`, `src/i18n/ui.{en,es}.json`, `src/config/site.data.json`) lives in Supabase and is edited from the admin panel. It is **not in git**: `npm run dev`, `build` and `check` run `node scripts/content.mjs pull`, which writes those files and `public/rev.json`.
+
+- **Source:** `CONTENT_SOURCE=live` (plus `SUPABASE_URL` and `SUPABASE_ANON_KEY`) builds from the published snapshot; Vercel sets it for Production and Preview. Without it the pull uses the committed fixture `tests/fixtures/content.snapshot.json`, which is what CI and the tests build from.
+- **Never edit the generated files by hand**: the next pull overwrites them.
+- **Refresh the fixture** after a content or schema change that tests depend on: `CONTENT_SOURCE=live ... node scripts/content.mjs pull`, then `node scripts/content.mjs export tests/fixtures/content.snapshot.json`.
+
 ## Branches
 
 | Branch                  | Purpose                                                          |

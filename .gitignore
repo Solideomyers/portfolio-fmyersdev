@@ -2,6 +2,12 @@ node_modules/
 dist/
 .astro/
 public/rev.json
+
+# Content lives in Supabase; `prebuild`/`predev` generate these (scripts/content.mjs pull)
+src/content/
+src/i18n/ui.en.json
+src/i18n/ui.es.json
+src/config/site.data.json
 .vercel/
 .env
 .env.*
