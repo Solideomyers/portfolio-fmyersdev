@@ -3,6 +3,9 @@ import { Brand } from './Brand';
 import { Dashboard, revLabel } from './Dashboard';
 import { Explorer } from './Explorer';
 import { ItemEditor } from './ItemEditor';
+import { Progress } from './Progress';
+import { Review } from './Review';
+import { publish } from './lib/api';
 import { blankFor, newId, nextNumber, OTHER_WORK, restoreEntry } from './lib/blank';
 import { COLLECTIONS, draftRows, type CollectionKey, type Item } from './lib/collections';
 import { go, useRoute } from './route';
@@ -34,7 +37,7 @@ export function Shell({ session }: { session: string }) {
   const [theme, setThemeState] = useState<Theme>(
     () => document.documentElement.dataset.theme as Theme,
   );
-  const { data, failed, save, edit, discard, discardAll } = useWorking();
+  const { data, failed, save, edit, discard, discardAll, flush, reload } = useWorking();
 
   const key = route.join('/');
   useEffect(() => setMenu(false), [key]);
@@ -99,6 +102,22 @@ export function Shell({ session }: { session: string }) {
       );
     if (view === undefined || view === 'dashboard')
       return <Dashboard rows={rows} revision={data.revision} onDiscardAll={discardAll} />;
+    if (view === 'publish' && coll === 'progress' && Number(id) > 0)
+      return <Progress rev={Number(id)} />;
+    if (view === 'publish')
+      return (
+        <Review
+          current={data.current}
+          working={data.working}
+          onDiscardAll={discardAll}
+          onPublish={async (note) => {
+            await flush(); // edits still inside the 600 ms debounce must be in the draft first
+            const rev = await publish(note);
+            await reload().catch(() => {}); // the revision exists either way: show its progress
+            go('publish', 'progress', String(rev));
+          }}
+        />
+      );
     if (view === 'content' && coll === 'texts' && id)
       return (
         <Texts

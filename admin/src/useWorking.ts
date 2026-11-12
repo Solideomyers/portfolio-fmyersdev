@@ -102,5 +102,11 @@ export function useWorking() {
     }
   }, []);
 
-  return { data, failed, save, edit, discard, discardAll };
+  /** Writes pending edits now, then re-reads the published files and the draft (after a publish). */
+  const reload = useCallback(async () => {
+    await flush();
+    setData(await loadWorking());
+  }, [flush]);
+
+  return { data, failed, save, edit, discard, discardAll, flush, reload };
 }
