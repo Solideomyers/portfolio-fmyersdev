@@ -46,3 +46,29 @@ test('validateFiles names a pricing twin that disagrees on price', () => {
   expect(errors.length).toBeGreaterThan(0);
   expect(errors.join('\n')).toContain('p-01');
 });
+
+test('validateFiles: a published case study needs its texts, a draft one does not', () => {
+  const files = readFiles('.');
+  const p = Object.keys(files).find((k) => /work\/en\/fm-01/.test(k))!;
+  const emptyTitle = files[p].replace(/^title: .*/m, "title: ''");
+  expect(validateFiles({ ...files, [p]: emptyTitle }).join('\n')).toContain(
+    `${p}: title: required text`,
+  );
+  const asDraft = emptyTitle.replace(/^draft: .*/m, 'draft: true');
+  expect(validateFiles({ ...files, [p]: asDraft })).toEqual([]);
+});
+
+test('validateFiles: a published case study needs a cover image path', () => {
+  const files = readFiles('.');
+  const p = Object.keys(files).find((k) => /work\/es\/fm-02/.test(k))!;
+  const noCover = files[p].replace(/(cover:[\s\S]*?src: )[^,\n]+/, '$1""');
+  expect(noCover).not.toBe(files[p]);
+  expect(validateFiles({ ...files, [p]: noCover }).join('\n')).toContain(`${p}: cover.src`);
+});
+
+test('validateFiles: two case studies with the same slug in one language are refused', () => {
+  const files = readFiles('.');
+  const [a, b] = Object.keys(files).filter((k) => /work\/en\/.+\.mdx$/.test(k));
+  files[b] = files[b].replace(/^slug: .*/m, files[a].match(/^slug: .*/m)![0]);
+  expect(validateFiles(files).join('\n')).toContain('is also used by');
+});

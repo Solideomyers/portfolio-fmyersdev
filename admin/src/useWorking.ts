@@ -14,7 +14,8 @@ export function useWorking() {
   const [data, setData] = useState<Working | null>(null);
   const [failed, setFailed] = useState(false);
   const [save, setSave] = useState<SaveState>('idle');
-  const pending = useRef(new Map<string, string>());
+  // null = the file is removed in the draft
+  const pending = useRef(new Map<string, string | null>());
   const timer = useRef(0);
 
   useEffect(() => {
@@ -46,16 +47,16 @@ export function useWorking() {
     }
   }, []);
 
+  /** Writes a file into the draft; `null` removes it (a project taken out, a new one put back). */
   const edit = useCallback(
-    (path: string, text: string) => {
-      setData(
-        (d) =>
-          d && {
-            ...d,
-            working: { ...d.working, [path]: text },
-            draft: withDraft(d.draft, d.current, path, text),
-          },
-      );
+    (path: string, text: string | null) => {
+      setData((d) => {
+        if (!d) return d;
+        const working = { ...d.working };
+        if (text === null) delete working[path];
+        else working[path] = text;
+        return { ...d, working, draft: withDraft(d.draft, d.current, path, text) };
+      });
       pending.current.set(path, text);
       setSave('saving');
       window.clearTimeout(timer.current);
@@ -70,14 +71,15 @@ export function useWorking() {
       for (const p of paths) pending.current.delete(p);
       setData((d) => {
         if (!d) return d;
-        let next = d;
-        for (const p of paths)
-          next = {
-            ...next,
-            working: { ...next.working, [p]: d.current[p] },
-            draft: withDraft(next.draft, d.current, p, d.current[p]),
-          };
-        return next;
+        const working = { ...d.working };
+        let draft = d.draft;
+        for (const p of paths) {
+          // a file that was never published (a new project) disappears; a removed one comes back
+          if (p in d.current) working[p] = d.current[p];
+          else delete working[p];
+          draft = withDraft(draft, d.current, p, d.current[p] ?? null);
+        }
+        return { ...d, working, draft };
       });
       try {
         for (const p of paths) await saveFile(p, data?.current[p] ?? null);

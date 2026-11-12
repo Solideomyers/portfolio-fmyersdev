@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { lastRevision, type LastRevision } from './lib/api';
-import { COLLECTIONS, type DraftRow } from './lib/collections';
+import type { DraftRow } from './lib/collections';
 import { go } from './route';
 
 export const revLabel = (n: number | null) =>
@@ -21,10 +21,13 @@ const KIND = {
   restore: 'Restauración',
 } as const;
 
-/** Where "Editar →" for a drafted row goes: its editor if it has one, else the collection list. */
+/**
+ * Where "Editar →" for a drafted row goes: its editor, or the collection list for an item the draft
+ * removes (no editor to open there, but the list offers "Restaurar") and for files without a row of
+ * their own.
+ */
 export function rowTarget(row: DraftRow): string[] {
-  const editable = COLLECTIONS.find((c) => c.key === row.collection)?.editable;
-  return row.collection && editable
+  return row.collection && !row.removed
     ? ['content', row.collection, row.id]
     : ['content', row.collection ?? ''];
 }
@@ -121,7 +124,7 @@ export function Dashboard({
                 <span className="ad-row-title">{r.title}</span>
                 <span className="ad-row-meta">{r.what}</span>
               </span>
-              <span className="ad-mono ad-accent">Editar →</span>
+              <span className="ad-mono ad-accent">{r.removed ? 'Ver →' : 'Editar →'}</span>
             </button>
           ))}
           {n === 0 && (
