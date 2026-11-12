@@ -27,6 +27,7 @@ export function splitFrontmatter(text: string): { data: unknown; body: string } 
 
 export const SITE_KEYS = ['rev', 'availableFrom', 'email', 'whatsapp', 'github', 'linkedin'];
 const TWIN_KEYS = ['id', 'order', 'from', 'billing', 'featured'] as const;
+const WORK_REQUIRED = ['title', 'summary', 'client', 'role', 'timeline'] as const;
 
 const leafPaths = (v: unknown, p = ''): string[] =>
   v && typeof v === 'object'
@@ -52,13 +53,14 @@ export function validateFiles(files: Files): string[] {
   };
 
   const pricing: Record<string, Record<string, unknown>> = {};
+  const work: Record<string, Record<string, unknown> | null> = {};
   for (const [path, text] of Object.entries(files)) {
     const frontmatter = (schema: ZodType) => {
       const { data } = splitFrontmatter(text);
       check(path, schema, data);
       return data as Record<string, unknown>;
     };
-    if (/^src\/content\/work\/.+\.mdx$/.test(path)) frontmatter(workSchema);
+    if (/^src\/content\/work\/.+\.mdx$/.test(path)) work[path] = frontmatter(workSchema);
     else if (/^src\/content\/notes\/.+\.mdx$/.test(path)) frontmatter(notesSchema);
     else if (/^src\/content\/pages\/.+\.md$/.test(path)) frontmatter(pagesSchema);
     else if (/^src\/content\/pricing\/.+\.md$/.test(path))
@@ -74,6 +76,25 @@ export function validateFiles(files: Files): string[] {
       for (const k of SITE_KEYS)
         if (typeof site?.[k] !== 'string' || !site[k]) errors.push(`${path}: ${k}: required text`);
     }
+  }
+
+  // A published case study needs its texts and a cover; a draft one (draft: true) may be unfinished.
+  // Two cases with the same slug in one language fail the site build (casePaths), so refuse them here.
+  const slugs = new Map<string, string>();
+  for (const [path, d] of Object.entries(work)) {
+    if (!d) continue;
+    if (d.draft !== true) {
+      for (const k of WORK_REQUIRED) {
+        const v = d[k];
+        if (typeof v !== 'string' || !v.trim()) errors.push(`${path}: ${k}: required text`);
+      }
+      const src = (d.cover as { src?: unknown } | undefined)?.src;
+      if (typeof src !== 'string' || !src.trim()) errors.push(`${path}: cover.src: required text`);
+    }
+    const slug = `${d.lang}/${d.slug}`;
+    const first = slugs.get(slug);
+    if (first) errors.push(`${path}: slug "${d.slug}" is also used by ${first}`);
+    else slugs.set(slug, path);
   }
 
   for (const [path, a] of Object.entries(pricing)) {

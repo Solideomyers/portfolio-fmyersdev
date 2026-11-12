@@ -861,6 +861,49 @@ textarea.ad-input {
   color: var(--danger);
 }
 
+/* ---- S3b projects and other work ---- */
+.ad-add {
+  min-height: 44px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+.ad-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.ad-item-removed {
+  background: var(--hatch);
+}
+.ad-item-removed .ad-row-title {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+.ad-item-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  margin: 0;
+  padding: 12px;
+  border: var(--border-rule);
+  min-width: 0;
+}
+.ad-item-card legend {
+  padding: 0 6px;
+}
+.ad-item-card .ad-link {
+  align-self: flex-start;
+}
+.ad-code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  tab-size: 2;
+}
+
 /* Below 860px the nav is a full-width menu that replaces the page (mockup mobile). */
 @media (max-width: 859px) {
   .ad-desk-only {

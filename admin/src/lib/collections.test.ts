@@ -27,7 +27,17 @@ test('collections list their items with a readable summary', () => {
     itemsOf('site', files).map((i) => i.id),
     ['site'],
   );
-  assert.deepEqual(itemsOf('work', files), []);
+  assert.deepEqual(
+    itemsOf('work', files).map((i) => [i.id, i.title, i.meta]),
+    [
+      ['FM-01', 'ChurchApp', 'En vivo · 2026'],
+      ['FM-02', 'Chapel', 'En uso · 2025'],
+    ],
+  );
+  assert.deepEqual(
+    itemsOf('other', files).map((i) => i.id),
+    (JSON.parse(files['src/content/other-work.json']) as { id: string }[]).map((e) => e.id),
+  );
 });
 
 test('an edited item is one draft row, however many files it touched', () => {

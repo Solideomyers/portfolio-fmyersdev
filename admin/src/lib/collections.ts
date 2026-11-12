@@ -1,60 +1,55 @@
 import type { Files } from '../../../src/lib/snapshot.ts';
 import type { Draft } from './draft.ts';
-import { LABELS } from './fields.ts';
+import { OTHER_WORK } from './blank.ts';
+import { LABELS, OPTION_LABELS } from './fields.ts';
 import { usd } from './preview.ts';
 import { flatten } from './texts.ts';
 import { kindOf, readItem, twinPath } from './twins.ts';
+import { bodyText } from './yaml-edit.ts';
 
 export type CollectionKey = 'pricing' | 'work' | 'other' | 'faq' | 'texts' | 'site';
 
-/** `editable: false` collections get their editor in a later SP10 task; they still show draft markers. */
 export const COLLECTIONS: {
   key: CollectionKey;
   id: string;
   name: string;
-  editable: boolean;
+  /** Which files of the snapshot belong to it (for the "Borrador" markers). */
   owns: (path: string) => boolean;
 }[] = [
   {
     key: 'pricing',
     id: 'C-01',
     name: 'Precios',
-    editable: true,
     owns: (p) => p.startsWith('src/content/pricing/'),
   },
   {
     key: 'work',
     id: 'C-02',
     name: 'Proyectos',
-    editable: false,
     owns: (p) => p.startsWith('src/content/work/'),
   },
   {
     key: 'other',
     id: 'C-03',
     name: 'Otros trabajos',
-    editable: false,
     owns: (p) => p === 'src/content/other-work.json',
   },
   {
     key: 'faq',
     id: 'C-04',
     name: 'Preguntas frecuentes',
-    editable: true,
     owns: (p) => p.startsWith('src/content/faq/'),
   },
   {
     key: 'texts',
     id: 'C-05',
     name: 'Textos',
-    editable: true,
     owns: (p) => p.startsWith('src/i18n/ui.'),
   },
   {
     key: 'site',
     id: 'C-06',
     name: 'Datos del sitio',
-    editable: true,
     owns: (p) => p === 'src/config/site.data.json',
   },
 ];
@@ -71,6 +66,7 @@ const uiUnit = (files: Files, billing: string) =>
   String(JSON.parse(files['src/i18n/ui.es.json']).offer.units[billing]).toLowerCase();
 
 const PRICING_EN = /^src\/content\/pricing\/en\/.+\.md$/;
+const WORK_EN = /^src\/content\/work\/en\/.+\.mdx$/;
 const FAQ_EN = 'src/content/faq/en.json';
 const UI_EN = 'src/i18n/ui.en.json';
 
@@ -106,6 +102,28 @@ export function itemsOf(key: CollectionKey, files: Files): Item[] {
         paths: ['src/config/site.data.json'],
       },
     ];
+  if (key === 'work')
+    return Object.keys(files)
+      .filter((p) => WORK_EN.test(p))
+      .sort()
+      .map((p) => {
+        const it = readItem(files, p);
+        return {
+          id: String(it.id),
+          title: String(it.title || 'Sin nombre'),
+          meta: `${OPTION_LABELS[String(it.status)] ?? it.status} · ${it.year}${it.draft ? ' · borrador' : ''}`,
+          paths: [p, twinPath(p)],
+        };
+      });
+  if (key === 'other')
+    return (JSON.parse(files[OTHER_WORK]) as { id: string; title: string; repo: string }[]).map(
+      (e) => ({
+        id: e.id,
+        title: e.title || 'Sin nombre',
+        meta: e.repo || 'Sin repositorio',
+        paths: [OTHER_WORK],
+      }),
+    );
   if (key === 'texts')
     return [
       {
@@ -118,12 +136,22 @@ export function itemsOf(key: CollectionKey, files: Files): Item[] {
   return [];
 }
 
+/** Published items that the draft removes (their files, or their entry in other-work.json). */
+export function removedItems(key: CollectionKey, current: Files, working: Files): Item[] {
+  const left = new Set(itemsOf(key, working).map((i) => i.id));
+  return itemsOf(key, current).filter((i) => !left.has(i.id));
+}
+
 export type DraftRow = {
   collection: CollectionKey | null;
   id: string;
   title: string;
   what: string;
+  /** The item is removed in the draft, so there is no editor to open: the list offers "Restaurar". */
+  removed?: boolean;
 };
+
+type Obj = Record<string, unknown>;
 
 const changedLabels = (a: Record<string, unknown>, b: Record<string, unknown>) =>
   [...new Set([...Object.keys(a), ...Object.keys(b)])]
@@ -171,6 +199,40 @@ export function draftRows(current: Files, working: Files, draft: Draft): DraftRo
         { collection: 'site', id: 'site', title: 'Datos del sitio', what: '' },
         changedLabels(JSON.parse(current[path]), JSON.parse(working[path])),
       );
+    } else if (kind === 'work') {
+      const front = (files: Files, p: string) => (p in files ? readItem(files, p) : undefined);
+      const en = path.replace('/work/es/', '/work/en/');
+      const [was, now] = [front(current, path), front(working, path)];
+      const id = String((now ?? was)?.id);
+      const row = {
+        collection: 'work' as const,
+        id,
+        title: String(front(working, en)?.title || front(current, en)?.title || id),
+        what: '',
+      };
+      if (!was) add(row, ['Nuevo']);
+      else if (!now) add({ ...row, removed: true }, ['Quitado']);
+      else
+        add(row, [
+          ...changedLabels(was, now),
+          ...(bodyText(current[path]) !== bodyText(working[path]) ? ['Narrativa'] : []),
+        ]);
+    } else if (kind === 'other') {
+      const was = JSON.parse(current[path] ?? '[]') as Obj[];
+      const now = JSON.parse(working[path] ?? '[]') as Obj[];
+      const row = (e: Obj) => ({
+        collection: 'other' as const,
+        id: String(e.id),
+        title: String(e.title || e.id),
+        what: '',
+      });
+      for (const e of now) {
+        const old = was.find((x) => x.id === e.id);
+        if (!old) add(row(e), ['Nuevo']);
+        else if (JSON.stringify(old) !== JSON.stringify(e)) add(row(e), changedLabels(old, e));
+      }
+      for (const old of was)
+        if (!now.some((x) => x.id === old.id)) add({ ...row(old), removed: true }, ['Quitado']);
     } else if (kind === 'texts') {
       if (rows.has('texts:texts')) continue; // the ES and EN files are one row
       const n = changedTexts(current, working);

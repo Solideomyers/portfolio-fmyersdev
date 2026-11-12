@@ -3,7 +3,8 @@ import { Brand } from './Brand';
 import { Dashboard, revLabel } from './Dashboard';
 import { Explorer } from './Explorer';
 import { ItemEditor } from './ItemEditor';
-import { COLLECTIONS, draftRows } from './lib/collections';
+import { blankFor, newId, nextNumber, OTHER_WORK, restoreEntry } from './lib/blank';
+import { COLLECTIONS, draftRows, type CollectionKey, type Item } from './lib/collections';
 import { go, useRoute } from './route';
 import { supabase } from './supabase';
 import { Texts } from './Texts';
@@ -25,7 +26,7 @@ const today = new Date().toLocaleDateString('es', {
   year: 'numeric',
 });
 
-const EDITABLE = ['pricing', 'faq', 'site'] as const;
+const EDITABLE = ['pricing', 'faq', 'site', 'work', 'other'] as const;
 
 export function Shell({ session }: { session: string }) {
   const route = useRoute();
@@ -57,6 +58,31 @@ export function Shell({ session }: { session: string }) {
   );
   const collName = COLLECTIONS.find((c) => c.key === coll)?.name;
   const editable = EDITABLE.find((c) => c === coll);
+
+  // Adding or removing a project (or an other-work entry) is one more draft: nothing is published.
+  const addItem = (key: CollectionKey) => {
+    if (!data || (key !== 'work' && key !== 'other')) return;
+    const kind = key === 'work' ? 'work' : 'otherWork';
+    const n = nextNumber(data.working, kind);
+    for (const [path, text] of Object.entries(blankFor(kind, n, data.working))) edit(path, text);
+    go('content', key, newId(kind, n));
+  };
+  const removeItem = (key: CollectionKey, item: Item) => {
+    if (!data) return;
+    if (key === 'work') for (const path of item.paths) edit(path, null);
+    else if (key === 'other') {
+      const rest = (JSON.parse(data.working[OTHER_WORK]) as { id: string }[]).filter(
+        (e) => e.id !== item.id,
+      );
+      edit(OTHER_WORK, JSON.stringify(rest, null, 2) + '\n');
+    }
+  };
+  const restoreItem = (key: CollectionKey, item: Item) => {
+    if (!data) return;
+    if (key === 'work') discard(item.paths);
+    else if (key === 'other')
+      edit(OTHER_WORK, restoreEntry(data.current[OTHER_WORK], data.working[OTHER_WORK], item.id));
+  };
 
   const screen = () => {
     if (failed)
@@ -99,7 +125,17 @@ export function Shell({ session }: { session: string }) {
         />
       );
     if (view === 'content')
-      return <Explorer coll={coll} working={data.working} draftPaths={Object.keys(data.draft)} />;
+      return (
+        <Explorer
+          coll={coll}
+          working={data.working}
+          current={data.current}
+          draftPaths={Object.keys(data.draft)}
+          onAdd={addItem}
+          onRemove={removeItem}
+          onRestore={restoreItem}
+        />
+      );
     return (
       <>
         <h1 className="ad-h1">{VIEWS[index].label}</h1>
