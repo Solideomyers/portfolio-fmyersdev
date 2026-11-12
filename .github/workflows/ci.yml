@@ -65,6 +65,23 @@ jobs:
       - run: npm run build
       - run: node scripts/check-blog-hidden.mjs
 
+  # The admin panel is its own npm project (lint is covered by the root lint job).
+  admin:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: admin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: admin/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+
   test:
     runs-on: ubuntu-latest
     steps:

@@ -1,0 +1,429 @@
+/* Panel styles. Tokens, fonts and motion come from the site by relative path (never copied);
+   the ad-* classes are the ones in docs/mockup de referencia – Admin.html (values verbatim).
+   Same import order as src/styles/global.css. */
+@import '../../src/styles/fonts.css';
+@import '../../src/styles/tokens/colors.css';
+@import '../../src/styles/tokens/typography.css';
+@import '../../src/styles/tokens/spacing.css';
+@import '../../src/styles/tokens/motion.css';
+@import '../../src/styles/motion.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  background: var(--bg);
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+/* ---- mockup primitives ---- */
+.ad {
+  container-type: inline-size;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+/* :where() keeps this reset at zero specificity so the ad-* colours below can override it. */
+:where(.ad button, .ad input) {
+  font: inherit;
+  border-radius: 0;
+  color: inherit;
+}
+.ad button:focus-visible,
+.ad a:focus-visible,
+.ad input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.ad-mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.ad-k {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.ad-accent {
+  color: var(--accent);
+}
+.ad-danger {
+  color: var(--danger);
+}
+.ad-h1 {
+  margin: 0;
+  font-stretch: 110%;
+  font-weight: 700;
+  font-size: clamp(30px, 3.6cqi, 44px);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  text-wrap: balance;
+}
+.ad-p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  text-wrap: pretty;
+}
+.ad-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  border: var(--border-ink);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 200ms ease;
+}
+.ad-btn:active {
+  transform: scale(0.97);
+}
+.ad-btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-fg);
+}
+.ad-btn-ink {
+  background: var(--invert-bg);
+  color: var(--invert-fg);
+}
+.ad-btn[aria-disabled='true'] {
+  background: var(--hatch);
+  border-color: var(--line);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+.ad-link {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  padding: 0;
+  min-height: 28px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ad-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ad-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  font-size: 16px;
+  line-height: 1.45;
+  border: var(--border-ink);
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+}
+.ad-input:focus {
+  border-color: var(--accent);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+.ad-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border: var(--border-ink);
+  white-space: nowrap;
+}
+.ad-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: none;
+  display: inline-block;
+}
+.ad-nav {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-bottom: var(--border-rule);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.ad-nav:hover {
+  background: var(--hatch);
+}
+.ad-nav[aria-current='page'] {
+  background: var(--invert-bg);
+  color: var(--invert-fg);
+}
+.ad-nav-id {
+  color: var(--text-muted);
+}
+.ad-nav[aria-current='page'] .ad-nav-id {
+  color: var(--invert-fg);
+}
+
+/* ---- S0 sign-in ---- */
+.ad-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+}
+.ad-brand img {
+  height: 22px;
+  display: block;
+}
+.ad-login {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+  padding: clamp(20px, 4cqi, 48px);
+}
+.ad-login-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-bottom: var(--border-ink);
+  padding-bottom: 12px;
+}
+.ad-login-main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px 64px;
+  align-items: center;
+  max-width: 1040px;
+  width: 100%;
+  margin: 0 auto;
+}
+.ad-login-copy {
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ad-login-copy .ad-h1 {
+  font-size: clamp(38px, 5cqi, 60px);
+  line-height: 0.95;
+}
+.ad-login-copy .ad-p {
+  font-size: 17px;
+}
+.ad-login-card {
+  flex: 1 1 340px;
+  min-width: 0;
+  position: relative;
+  border: var(--border-frame);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+}
+.ad-alert {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--danger);
+  color: var(--danger);
+}
+.ad-alert span:last-child {
+  font-size: 15px;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+.ad-providers {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+}
+.ad-provider {
+  justify-content: space-between;
+  min-height: 52px;
+  font-size: 17px;
+}
+.ad-mail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-top: var(--border-rule);
+}
+.ad-mail label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ad-mail p {
+  margin: 0;
+}
+.ad-mail-btn {
+  align-self: flex-start;
+}
+.ad-corner {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+}
+.ad-login-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-top: var(--border-rule);
+  padding-top: 12px;
+}
+
+/* ---- shell ---- */
+.ad-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px clamp(16px, 2.4cqi, 28px);
+  border-bottom: var(--border-ink);
+  background: var(--bg);
+}
+.ad-header-r {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.ad-live {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 6px;
+}
+.ad-pub,
+.ad-menu-btn {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+.ad-pub {
+  min-height: 40px;
+  padding: 0 14px;
+}
+.ad-icon-btn {
+  width: 40px;
+  min-height: 40px;
+  padding: 0;
+  font-family: var(--font-mono);
+}
+.ad-menu-btn {
+  display: none;
+  padding: 0 12px;
+}
+.ad-body {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+}
+.ad-sidebar {
+  flex: none;
+  width: 228px;
+  border-right: var(--border-ink);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--bg);
+}
+.ad-session {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px;
+  border-top: var(--border-rule);
+  font-size: 15px;
+}
+.ad-main {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: clamp(18px, 3cqi, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.ad-sheet {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-bottom: var(--border-ink);
+  padding-bottom: 10px;
+}
+.ad-sheet span:last-child {
+  color: var(--text-muted);
+}
+
+/* Below 860px the nav is a full-width menu that replaces the page (mockup mobile). */
+@media (max-width: 859px) {
+  .ad-desk-only {
+    display: none;
+  }
+  .ad-menu-btn {
+    display: inline-flex;
+  }
+  .ad-pub {
+    min-height: 44px;
+  }
+  .ad-sidebar {
+    display: none;
+    width: 100%;
+    border-right: 0;
+  }
+  .ad-body[data-menu='true'] .ad-sidebar {
+    display: flex;
+  }
+  .ad-body[data-menu='true'] .ad-main {
+    display: none;
+  }
+}

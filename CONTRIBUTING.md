@@ -17,6 +17,19 @@ Site content (`src/content/`, `src/i18n/ui.{en,es}.json`, `src/config/site.data.
 - **Never edit the generated files by hand**: the next pull overwrites them.
 - **Refresh the fixture** after a content or schema change that tests depend on: `CONTENT_SOURCE=live ... node scripts/content.mjs pull`, then `node scripts/content.mjs export tests/fixtures/content.snapshot.json`.
 
+## Admin panel
+
+`admin/` is the private content panel: its own npm project (React + Vite + `@supabase/supabase-js`), deployed as a second Vercel project with Root Directory `admin` and "Include source files outside of the Root Directory" enabled, because it imports the site's tokens, fonts and wordmarks by relative path.
+
+```bash
+cd admin && npm install
+cp .env.example .env.local     # VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (both public)
+npm run dev                    # http://localhost:5173
+npm run build && npm test      # what the `admin` CI job runs
+```
+
+Sign-in needs the provider enabled in Supabase Auth and the panel's origin (`http://localhost:5173`, and the Vercel URL) in its redirect URLs. Only the account in `private.owner` gets past `is_owner()`; anyone else is signed out. Lint and format run from the repo root.
+
 ## Branches
 
 | Branch                  | Purpose                                                          |

@@ -5,6 +5,7 @@ export default [
   {
     ignores: [
       'dist/',
+      'admin/dist/',
       '.astro/',
       'docs/',
       '.worktrees/',
