@@ -65,22 +65,27 @@ jobs:
       - run: npm run build
       - run: node scripts/check-blog-hidden.mjs
 
-  # The admin panel is its own npm project (lint is covered by the root lint job).
+  # The admin panel is its own npm project (lint is covered by the root lint job). Its unit tests run
+  # under Node and import ../src/lib (zod, yaml), which Node resolves from the root, so the root is
+  # installed too. The Vite build needs only admin/node_modules (resolve.dedupe + tsconfig paths).
   admin:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: admin
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
-          cache-dependency-path: admin/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            admin/package-lock.json
       - run: npm ci
+      - run: npm ci
+        working-directory: admin
       - run: npm run build
+        working-directory: admin
       - run: npm test
+        working-directory: admin
 
   test:
     runs-on: ubuntu-latest

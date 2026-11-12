@@ -1,7 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Brand } from './Brand';
+import { Dashboard, revLabel } from './Dashboard';
+import { Explorer } from './Explorer';
+import { ItemEditor } from './ItemEditor';
+import { COLLECTIONS, draftRows } from './lib/collections';
+import { go, useRoute } from './route';
 import { supabase } from './supabase';
 import { setTheme, type Theme } from './theme';
+import { useWorking } from './useWorking';
 
 const VIEWS = [
   { id: 'dashboard', label: 'Panel', title: 'Panel de control' },
@@ -10,9 +16,7 @@ const VIEWS = [
   { id: 'history', label: 'Historial', title: 'Historial' },
   { id: 'settings', label: 'Ajustes', title: 'Ajustes' },
 ] as const;
-type View = (typeof VIEWS)[number]['id'];
 
-const rev = (n: number | null) => (n === null ? 'REV —' : `REV ${String(n).padStart(4, '0')}`);
 const today = new Date().toLocaleDateString('es', {
   weekday: 'short',
   day: 'numeric',
@@ -20,42 +24,77 @@ const today = new Date().toLocaleDateString('es', {
   year: 'numeric',
 });
 
+const EDITABLE = ['pricing', 'faq', 'site'] as const;
+
 export function Shell({ session }: { session: string }) {
-  const [view, setView] = useState<View>('dashboard');
+  const route = useRoute();
   const [menu, setMenu] = useState(false);
   const [theme, setThemeState] = useState<Theme>(
     () => document.documentElement.dataset.theme as Theme,
   );
-  const [live, setLive] = useState<number | null>(null);
-  const [drafts, setDrafts] = useState(0);
+  const { data, failed, save, edit, discard, discardAll } = useWorking();
 
-  useEffect(() => {
-    let off = false;
-    (async () => {
-      const [snap, draft] = await Promise.all([
-        supabase.rpc('get_current_snapshot'),
-        supabase.from('draft').select('files').maybeSingle(),
-      ]);
-      if (off) return;
-      setLive(snap.data?.revision ?? null);
-      setDrafts(draft.data ? Object.keys(draft.data.files).length : 0);
-    })();
-    return () => {
-      off = true;
-    };
-  }, []);
+  const key = route.join('/');
+  useEffect(() => setMenu(false), [key]);
 
-  const go = (id: View) => {
-    setView(id);
-    setMenu(false);
-  };
+  const rows = useMemo(
+    () => (data ? draftRows(data.current, data.working, data.draft) : []),
+    [data],
+  );
+  const drafts = rows.length;
+
   const toggleTheme = () => {
     const next: Theme = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
     setThemeState(next);
   };
 
-  const current = VIEWS.findIndex((v) => v.id === view);
+  const [view, coll, id] = route;
+  const index = Math.max(
+    0,
+    VIEWS.findIndex((v) => v.id === (view ?? 'dashboard')),
+  );
+  const collName = COLLECTIONS.find((c) => c.key === coll)?.name;
+  const editable = EDITABLE.find((c) => c === coll);
+
+  const screen = () => {
+    if (failed)
+      return (
+        <p role="alert" className="ad-p">
+          No se pudo cargar el contenido. Recarga la página para intentarlo de nuevo.
+        </p>
+      );
+    if (!data)
+      return (
+        <p role="status" className="ad-p">
+          Cargando…
+        </p>
+      );
+    if (view === undefined || view === 'dashboard')
+      return <Dashboard rows={rows} revision={data.revision} onDiscardAll={discardAll} />;
+    if (view === 'content' && editable && id)
+      return (
+        <ItemEditor
+          key={`${editable}/${id}`}
+          coll={editable}
+          id={id}
+          working={data.working}
+          current={data.current}
+          draft={data.draft}
+          save={save}
+          edit={edit}
+          discard={discard}
+        />
+      );
+    if (view === 'content')
+      return <Explorer coll={coll} working={data.working} draftPaths={Object.keys(data.draft)} />;
+    return (
+      <>
+        <h1 className="ad-h1">{VIEWS[index].label}</h1>
+        <p className="ad-p">Esta sección llega en una de las siguientes tareas.</p>
+      </>
+    );
+  };
 
   return (
     <>
@@ -63,11 +102,8 @@ export function Shell({ session }: { session: string }) {
         <Brand theme={theme} />
         <div className="ad-header-r">
           <span className="ad-k ad-live ad-desk-only">
-            <span
-              className="ad-dot"
-              style={{ background: live === null ? 'var(--line)' : 'var(--ok)' }}
-            />
-            En vivo · {rev(live)}
+            <span className="ad-dot" style={{ background: data ? 'var(--ok)' : 'var(--line)' }} />
+            En vivo · {revLabel(data?.revision ?? null)}
           </span>
           <button
             type="button"
@@ -104,8 +140,8 @@ export function Shell({ session }: { session: string }) {
                 key={v.id}
                 type="button"
                 className="ad-nav"
-                aria-current={i === current ? 'page' : undefined}
-                onClick={() => go(v.id)}
+                aria-current={i === index ? 'page' : undefined}
+                onClick={() => (v.id === 'dashboard' ? go() : go(v.id))}
               >
                 <span className="ad-nav-id">{`0${i + 1}`}</span>
                 <span>{v.label}</span>
@@ -124,11 +160,13 @@ export function Shell({ session }: { session: string }) {
 
         <main className="ad-main">
           <div className="ad-mono ad-sheet">
-            <span>{`Admin 0${current + 1} — ${VIEWS[current].title}`}</span>
+            <span>
+              {`Admin 0${index + 1} — ${VIEWS[index].title}`}
+              {view === 'content' && collName ? ` · ${collName}` : ''}
+            </span>
             <span>{today}</span>
           </div>
-          <h1 className="ad-h1">{VIEWS[current].label}</h1>
-          <p className="ad-p">Esta sección llega en una de las siguientes tareas.</p>
+          {screen()}
         </main>
       </div>
     </>

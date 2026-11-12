@@ -25,7 +25,7 @@ export function splitFrontmatter(text: string): { data: unknown; body: string } 
   return m ? { data: parse(m[1]), body: m[2] } : { data: null, body: text };
 }
 
-const SITE_KEYS = ['rev', 'availableFrom', 'email', 'whatsapp', 'github', 'linkedin'];
+export const SITE_KEYS = ['rev', 'availableFrom', 'email', 'whatsapp', 'github', 'linkedin'];
 const TWIN_KEYS = ['id', 'order', 'from', 'billing', 'featured'] as const;
 
 const leafPaths = (v: unknown, p = ''): string[] =>

@@ -7,5 +7,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   publicDir: '../public',
+  // ../src/lib imports zod and yaml: resolve them from admin/node_modules, not the repo root's.
+  resolve: { dedupe: ['zod', 'yaml'] },
   server: { fs: { allow: ['..'] } },
 });

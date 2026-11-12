@@ -10,7 +10,10 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "allowImportingTsExtensions": true,
-    "types": ["vite/client"]
+    "types": ["vite/client", "node"],
+    // The shared modules in ../src/lib import these; resolve them from admin/node_modules so the
+    // build also works where only admin/ is installed (the panel's own Vercel project).
+    "paths": { "zod": ["./node_modules/zod"], "yaml": ["./node_modules/yaml"] }
   },
   "include": ["src", "vite.config.ts"]
 }
