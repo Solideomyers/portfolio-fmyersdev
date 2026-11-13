@@ -2,10 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { Brand } from './Brand';
 import { Dashboard, revLabel } from './Dashboard';
 import { Explorer } from './Explorer';
+import { History } from './History';
 import { ItemEditor } from './ItemEditor';
 import { Progress } from './Progress';
 import { Review } from './Review';
-import { publish } from './lib/api';
+import { publish, restore } from './lib/api';
 import { blankFor, newId, nextNumber, OTHER_WORK, restoreEntry } from './lib/blank';
 import { COLLECTIONS, draftRows, type CollectionKey, type Item } from './lib/collections';
 import { go, useRoute } from './route';
@@ -102,6 +103,17 @@ export function Shell({ session }: { session: string }) {
       );
     if (view === undefined || view === 'dashboard')
       return <Dashboard rows={rows} revision={data.revision} onDiscardAll={discardAll} />;
+    if (view === 'history')
+      return (
+        <History
+          current={data.revision}
+          onRestore={async (id) => {
+            const rev = await restore(id);
+            await reload().catch(() => {}); // the new revision exists either way
+            go('publish', 'progress', String(rev));
+          }}
+        />
+      );
     if (view === 'publish' && coll === 'progress' && Number(id) > 0)
       return <Progress rev={Number(id)} />;
     if (view === 'publish')
