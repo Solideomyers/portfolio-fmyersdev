@@ -5,11 +5,8 @@ export interface ContactEnv {
   turnstileSecret?: string;
   appsScriptUrl?: string;
   appsScriptKey?: string;
-  /** dev/test only: allows Cloudflare's always-pass test secret when none is configured */
-  testMode: boolean;
 }
 
-const TEST_SECRET = '1x0000000000000000000000000000000AA';
 const SITEVERIFY = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
 const json = (status: number, body: unknown) =>
@@ -73,7 +70,7 @@ export async function handleContact(
   if (!parsed.ok)
     return wantsJson ? json(422, { ok: false, errors: parsed.errors }) : redirect(errorUrl(lang));
 
-  const secret = env.turnstileSecret ?? (env.testMode ? TEST_SECRET : undefined);
+  const secret = env.turnstileSecret;
   if (!secret || !env.appsScriptUrl || !env.appsScriptKey) {
     console.error('contact: missing configuration');
     return reply(wantsJson, 503, lang, false);

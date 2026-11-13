@@ -7,9 +7,12 @@
     "node": "24.x"
   },
   "scripts": {
+    "predev": "node scripts/content.mjs pull",
     "dev": "astro dev",
+    "prebuild": "node scripts/content.mjs pull",
     "build": "astro build",
     "preview": "astro preview",
+    "precheck": "node scripts/content.mjs pull",
     "check": "astro check",
     "test": "playwright test",
     "lint": "eslint . --fix && prettier --write .",
@@ -19,7 +22,9 @@
   "dependencies": {
     "@astrojs/mdx": "^8.0.3",
     "@astrojs/vercel": "^11.0.12",
-    "astro": "^7.3.6"
+    "astro": "^7.3.6",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
   },
   "allowScripts": {
     "esbuild": true

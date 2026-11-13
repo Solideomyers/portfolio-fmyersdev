@@ -9,6 +9,27 @@
 5. Optional: `cp .env.example .env` to exercise `/api/contact` locally (`npm run dev`). The contact backend is documented in `apps-script/README.md`. Tests serve the static build with `scripts/serve-static.mjs`, because the Vercel adapter disables `astro preview`.
 6. The notes section is off by default. Set `BLOG_ENABLED=true` (exactly `true`; Vercel env + redeploy, or locally) to build it; tests always build with it on. Turn it on through the Vercel env, not by changing the default in `astro.config.mjs`: CI's `check-blog-hidden` step asserts that the default build has no blog, so flipping the default also means removing that step.
 
+## Content
+
+Site content (`src/content/`, `src/i18n/ui.{en,es}.json`, `src/config/site.data.json`) lives in Supabase and is edited from the admin panel. It is **not in git**: `npm run dev`, `build` and `check` run `node scripts/content.mjs pull`, which writes those files and `public/rev.json`.
+
+- **Source:** `CONTENT_SOURCE=live` (plus `SUPABASE_URL` and `SUPABASE_ANON_KEY`) builds from the published snapshot; Vercel sets it for Production and Preview. Without it the pull uses the committed fixture `tests/fixtures/content.snapshot.json`, which is what CI and the tests build from.
+- **Never edit the generated files by hand**: the next pull overwrites them.
+- **Refresh the fixture** after a content or schema change that tests depend on: `CONTENT_SOURCE=live ... node scripts/content.mjs pull`, then `node scripts/content.mjs export tests/fixtures/content.snapshot.json`.
+
+## Admin panel
+
+`admin/` is the private content panel: its own npm project (React + Vite + `@supabase/supabase-js`), deployed as a second Vercel project with Root Directory `admin` and "Include source files outside of the Root Directory" enabled, because it imports the site's tokens, fonts and wordmarks by relative path.
+
+```bash
+cd admin && npm install
+cp .env.example .env.local     # VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (both public)
+npm run dev                    # http://localhost:5173
+npm run build && npm test      # what the `admin` CI job runs
+```
+
+Sign-in needs the provider enabled in Supabase Auth and the panel's origin (`http://localhost:5173`, and the Vercel URL) in its redirect URLs. Only the account in `private.owner` gets past `is_owner()`; anyone else is signed out. Lint and format run from the repo root. The panel imports `../src/lib` (schemas, snapshot validation), so its unit tests need `npm install` at the root too; the Vite build needs only `admin/node_modules`.
+
 ## Branches
 
 | Branch                  | Purpose                                                          |
@@ -36,7 +57,7 @@ git worktree remove .worktrees/sp1-shell   # after the merge
 
 Conventional Commits, checked by commitlint locally and on the PR title in CI.
 
-`type(scope): subject`. Scopes: `ui, layout, i18n, content, pages, contact, motion, blog, config, ci, deps, docs` (from `scripts/scopes.cjs`). `feat`, `fix`, `refactor` and `test` must have a scope. Other types may omit it, but a given scope must be in the list.
+`type(scope): subject`. Scopes: `ui, layout, i18n, content, pages, contact, motion, blog, config, ci, deps, docs, admin, db` (from `scripts/scopes.cjs`). `feat`, `fix`, `refactor` and `test` must have a scope. Other types may omit it, but a given scope must be in the list.
 
 | Message                                              | Valid? | Why                                   |
 | ---------------------------------------------------- | ------ | ------------------------------------- |

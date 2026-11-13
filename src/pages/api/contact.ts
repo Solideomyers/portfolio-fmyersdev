@@ -9,8 +9,7 @@ const env = () => ({
   turnstileSecret: TURNSTILE_SECRET_KEY,
   appsScriptUrl: APPS_SCRIPT_URL,
   appsScriptKey: APPS_SCRIPT_KEY,
-  testMode: import.meta.env.DEV || process.env.CONTACT_TEST_MODE === '1',
 });
 
-export const POST: APIRoute = ({ request }) => handleContact(request, env());
+// ALL covers POST; the handler answers 405 for every other method.
 export const ALL: APIRoute = ({ request }) => handleContact(request, env());

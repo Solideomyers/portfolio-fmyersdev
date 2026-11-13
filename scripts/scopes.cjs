@@ -12,4 +12,6 @@ module.exports = [
   'ci',
   'deps',
   'docs',
+  'admin',
+  'db',
 ];

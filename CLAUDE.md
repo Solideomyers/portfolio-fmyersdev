@@ -5,9 +5,13 @@ Read first: `docs/handoff/README.md` (design source of truth) and `docs/superpow
 ## Stack (closed)
 
 - Astro (static output; the only on-demand route is `/api/contact` via `@astrojs/vercel`), TypeScript strict, plain CSS, vanilla TypeScript `<script>`. Package manager: **npm** only.
-- Do not add React, Tailwind, shadcn, UI kits, icon libraries or CSS-in-JS without the user asking. The only optional extra the handoff allows is `motion` (vanilla).
+- Do not add React, Tailwind, shadcn, UI kits, icon libraries or CSS-in-JS without the user asking. The only optional extra the handoff allows is `motion` (vanilla). Exception: the private admin panel in `admin/` is its own npm project (React + Vite + `@supabase/supabase-js`); React never reaches the public site.
 - Every new dependency is justified in the PR description.
 - Secrets (Turnstile secret, Apps Script URL/key) live only in Vercel env and Apps Script properties, typed through `astro:env`; never in the repo, client code, logs or responses.
+
+## Content
+
+- `src/content/`, `src/i18n/ui.{en,es}.json` and `src/config/site.data.json` are generated from Supabase (or `tests/fixtures/content.snapshot.json`) by `scripts/content.mjs pull` and are gitignored. Never edit or commit them; content changes go through the admin panel. See `CONTRIBUTING.md` → "Content".
 
 ## Design fidelity
 
@@ -23,7 +27,7 @@ Read first: `docs/handoff/README.md` (design source of truth) and `docs/superpow
 - Branches: `main` (production), `develop` (integration, default), `feature/sp<N>-<topic>`, `fix/<desc>`, `release/<version>`.
 - Every change reaches `develop` through a PR. **Squash merge only into `develop`.** The PR title is the final commit and must be a valid Conventional Commit.
 - **`main` only receives release PRs, merged with a merge commit** (never squash): `release/vX.Y.Z` points exactly at the `develop` commit tagged `vX.Y.Z`, with no commits of its own. `main` then holds `develop`'s real history: no divergence, no back-merges. A fix found while releasing goes to `develop` first, then the release is re-cut. Enforced by rulesets (develop: squash only; main: merge only) and the `release-source` CI job.
-- Format `type(scope): subject`. Scopes: `ui, layout, i18n, content, pages, contact, motion, blog, config, ci, deps, docs` (source: `scripts/scopes.cjs`; change it together with this file and `CONTRIBUTING.md`). `feat`, `fix`, `refactor`, `test` require a scope.
+- Format `type(scope): subject`. Scopes: `ui, layout, i18n, content, pages, contact, motion, blog, config, ci, deps, docs, admin, db` (source: `scripts/scopes.cjs`; change it together with this file and `CONTRIBUTING.md`). `feat`, `fix`, `refactor`, `test` require a scope.
 - **Never commit, push, merge, tag, or change GitHub/Vercel settings without explicit confirmation from the user.** Propose the command or message and wait.
 - Never use `--no-verify`.
 - Templates: commits follow `.gitmessage` (also the format for messages you propose). PRs fill `.github/pull_request_template.md`, and you write the PR body from it. Release PR title: `chore: release vX.Y.Z`.
