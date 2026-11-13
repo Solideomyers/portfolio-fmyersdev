@@ -3,7 +3,7 @@ import { revLabel } from './Dashboard';
 import { waitForLive, type LiveState } from './lib/api';
 import { go } from './route';
 
-const SITE = (import.meta.env.VITE_SITE_URL ?? 'https://fmyers.dev').replace(/\/$/, '');
+const SITE = (import.meta.env.VITE_SITE_URL ?? 'https://fmyers-dev.vercel.app').replace(/\/$/, '');
 const VERCEL = 'https://vercel.com/dashboard';
 
 const STEPS = [
