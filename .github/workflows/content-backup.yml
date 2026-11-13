@@ -1,0 +1,60 @@
+name: Content backup
+
+# Nightly: reads the published snapshot from Supabase (the request is also the keep-alive that stops
+# the free project from pausing) and commits the materialised files to the content-backup branch.
+# Needs repository variables SUPABASE_URL and SUPABASE_ANON_KEY (both public). Restore: see the
+# README that this job writes into the branch (docs/content-backup-README.md).
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: content-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - run: npm ci --ignore-scripts
+
+      - name: Check out content-backup (orphan on the first run)
+        run: |
+          if git ls-remote --exit-code --heads origin content-backup >/dev/null; then
+            git fetch origin content-backup
+            git worktree add -B content-backup backup origin/content-backup
+          else
+            git worktree add --orphan -b content-backup backup
+          fi
+          # Files removed from the site must disappear from the backup too.
+          find backup -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+
+      - name: Pull the published content
+        env:
+          CONTENT_SOURCE: live
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+        run: |
+          node scripts/content.mjs pull backup
+          cp docs/content-backup-README.md backup/README.md
+
+      - name: Commit and push when something changed
+        working-directory: backup
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes since the last backup."
+            exit 0
+          fi
+          REV="$(node -p "require('./public/rev.json').rev")"
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -m "backup: REV $(printf '%04d' "$REV")"
+          git push origin content-backup
