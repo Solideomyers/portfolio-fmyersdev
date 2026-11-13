@@ -1101,3 +1101,47 @@ textarea.ad-input {
     }
   }
 }
+
+/* S6 history */
+.ad-rev {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  gap: 6px 16px;
+  align-items: center;
+  min-height: 60px;
+  padding: 10px 16px;
+  border-bottom: var(--border-rule);
+}
+.ad-rev[data-current='true'] {
+  background: var(--bg);
+}
+.ad-rev-id {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ad-rev-sum {
+  font-size: 15px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.ad-rev-act {
+  display: flex;
+  justify-content: flex-end;
+}
+.ad-ask {
+  position: relative;
+  margin: 12px 16px 16px;
+  border: var(--border-frame);
+  background: var(--bg);
+  padding: 18px 18px 38px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ad-ask-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}

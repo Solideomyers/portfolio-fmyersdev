@@ -1,7 +1,7 @@
 # fmyers.dev — Roadmap
 
 Source of truth for the design: `docs/handoff/` (moved from `design_handoff_fmyers_dev/` in SP0).
-Since SP2, sub-projects are vertical slices (components arrive with the screens that use them; decided 2026-10-06). Each sub-project (SP) has its own spec + plan, its own branch/worktree, one PR to `develop`, and an automatic tag on merge.
+Since SP2, sub-projects are vertical slices (components arrive with the screens that use them; decided 2026-10-06). Each sub-project (SP) has its own spec + plan, its own branch/worktree, and one PR to `develop`. Tags are created when a release reaches `main`.
 
 ## Stack (closed — decided 2026-10-06)
 
@@ -27,11 +27,11 @@ Since SP2, sub-projects are vertical slices (components arrive with the screens 
 | SP8a Launch readiness | `feature/sp8a-launch-readiness`           | Production URL + public email single sources, sitemap, robots, site OG + meta, Vercel Web Analytics, `Release-As` tagging, Lighthouse, QA checklist                                             | Lighthouse ≥ 95 ×4 on key pages, QA checklist passes, nothing points at missing domain/email                           | done (v0.10.0)            | [spec](specs/2026-10-08-sp8a-launch-readiness-design.md) · [plan](plans/2026-10-09-sp8a-launch-readiness.md) | —                                              |
 | SP8b Go live          | `feature/sp8b-go-live`                    | Real portrait + ChurchApp screenshots, launch prices, first release to `main` as v1.0.0 (domain + hola@: CONTRIBUTING "Domain day")                                                             | Site live on production, v1.0.0                                                                                        | done (v1.0.0)             | [spec](specs/2026-10-13-sp8b-go-live-design.md) · [plan](plans/2026-10-13-sp8b-go-live.md)                   | —                                              |
 | SP9 Products          | `feature/sp9-products`                    | Catalogue of ready-made products behind `PRODUCTS_ENABLED`: install (requested via contact `?product=`) and download (external hosted checkout); Apps Script product column                     | Index + product pages, contact preselection, flag-off build clean                                                      | planned (not scheduled)   | [spec](specs/2026-10-13-sp9-products-design.md) · [plan](plans/2026-10-13-sp9-products.md)                   | —                                              |
-| SP10 Content admin    | `feature/sp10-<n>-<topic>` (one per task) | Content moves to Supabase (file snapshot per revision); private React+Vite panel in `admin/` to edit, review, publish and restore it without a code release; nightly backup to `content-backup` | Owner publishes a real change from the panel and it is live without a release; restore works                           | in progress (10/13 tasks) | [spec](specs/2026-11-03-sp10-content-admin-design.md)                                                        | [plan](plans/2026-11-10-sp10-content-admin.md) |
+| SP10 Content admin    | `feature/sp10-<n>-<topic>` (one per task) | Content moves to Supabase (file snapshot per revision); private React+Vite panel in `admin/` to edit, review, publish and restore it without a code release; nightly backup to `content-backup` | Owner publishes a real change from the panel and it is live without a release; restore works                           | in progress (12/13 tasks) | [spec](specs/2026-11-03-sp10-content-admin-design.md)                                                        | [plan](plans/2026-11-10-sp10-content-admin.md) |
 
 ## Process per SP
 
 1. Brainstorm → spec → plan (superpowers). Spec + plan are the **first commit** on the SP branch; push the branch and open a draft PR immediately so nothing is lost.
 2. Work in `.worktrees/sp<N>-<topic>/` (`git worktree add .worktrees/sp<N>-<topic> -b feature/sp<N>-<topic> develop`).
-3. PR to `develop`, squash merge, auto-tag. Update this table in the same PR.
-4. `release/vX.Y.Z` (cut exactly at the `develop` tag, no own commits) promotes `develop` → `main` with a **merge commit** when a milestone is ready for production. See CONTRIBUTING "Releasing".
+3. PR to `develop`, squash merge (no tag). Update this table in the same PR.
+4. `release/vX.Y.Z` (cut at a `develop` commit, no own commits; you pick the version) promotes `develop` → `main` with a **merge commit** when a milestone is ready for production. See CONTRIBUTING "Releasing".

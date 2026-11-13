@@ -88,13 +88,14 @@ A squash into `main` would create a commit `develop` never has, and every later 
 
 ```bash
 git fetch origin --tags
-git switch -c release/vX.Y.Z vX.Y.Z      # exactly the tagged develop commit
+git switch -c release/vX.Y.Z origin/develop   # vX.Y.Z: your choice, greater than the highest tag
 git push -u origin release/vX.Y.Z
 gh pr create --base main --title "chore: release vX.Y.Z" --body-file .github/pull_request_template.md
-# CI release-source checks branch, title and tag; then merge with "Create a merge commit".
+# CI release-source checks branch, title and version; then merge with "Create a merge commit".
+# tag.yml then tags the released develop commit vX.Y.Z.
 ```
 
-- Never commit on `release/*`. A fix found while releasing goes to `develop` through a normal PR; delete the release branch and cut it again from the new tag.
+- Never commit on `release/*`. A fix found while releasing goes to `develop` through a normal PR; delete the release branch and cut it again from the new `develop` head.
 - No back-merge from `main` to `develop` is ever needed: every commit on `main` is either already on `develop` or a release merge commit.
 
 ### Domain day (when fmyers.dev is bought)
@@ -113,17 +114,16 @@ Until then production runs on the Vercel domain and the public address is `fmyer
 
 ## Tags (canonical)
 
-| Rule             | Value                                                                                                                                                  |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Format           | `vMAJOR.MINOR.PATCH`, always **annotated**                                                                                                             |
-| Who creates them | Only `.github/workflows/tag.yml`. Never tag by hand.                                                                                                   |
-| When             | Every merge to `develop` → minor bump of the highest tag (`scripts/next-tag.mjs`)                                                                      |
-| Override         | A `Release-As: vX.Y.Z` line in the PR description (the squash body). It must be greater than every tag, otherwise the job fails and nothing is tagged. |
-| Message          | `vX.Y.Z — <squash commit subject>`, tagger `github-actions[bot]`                                                                                       |
-| Re-runs          | A commit that already has a `vX.Y.Z` tag is skipped (idempotent)                                                                                       |
-| `main`           | No new tags. A release PR promotes an existing `develop` tag and names it in its title.                                                                |
-| `v1.0.0`         | Reserved for the public launch: the SP8b launch PR carries `Release-As: v1.0.0`                                                                        |
-| Missed tag       | Never backfilled. The sequence continues forward.                                                                                                      |
+| Rule             | Value                                                                                                                     |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Format           | `vMAJOR.MINOR.PATCH`, always **annotated**                                                                                |
+| Who creates them | Only `.github/workflows/tag.yml`. Never tag by hand.                                                                      |
+| When             | When a `release/vX.Y.Z` PR is merged into `main`. Merges to `develop` are **not** tagged.                                 |
+| Version          | The one in the branch name, chosen by you at release time (minor for features, patch for fixes). Must be the highest tag. |
+| Target           | The released `develop` commit (the release branch tip), not the merge commit.                                             |
+| Message          | `vX.Y.Z — <subject of that commit>`, tagger `github-actions[bot]`                                                         |
+| Re-runs          | A version whose tag already exists is skipped (idempotent)                                                                |
+| History          | Tags created before this rule (v0.1.0–v1.17.0, one per merge) stay as they are. Never backfilled, moved or deleted.       |
 
 ## Design rules
 
