@@ -63,3 +63,23 @@ export async function publish(note?: string): Promise<number> {
 }
 
 export { waitForLive, type LiveState } from './live';
+
+export type Revision = LastRevision & { restored_from: number | null };
+
+/** The newest 50 revisions, without their snapshots (those are large and never shown). */
+export async function listRevisions(): Promise<Revision[]> {
+  const { data, error } = await supabase
+    .from('revisions')
+    .select('id,created_at,kind,note,summary,restored_from')
+    .order('id', { ascending: false })
+    .limit(50);
+  if (error) throw error;
+  return data;
+}
+
+/** Republishes an old revision as a new one (the database fires the deploy hook); returns its REV. */
+export async function restore(id: number): Promise<number> {
+  const { data, error } = await supabase.rpc('restore', { p_revision: id });
+  if (error) throw error;
+  return Number(data);
+}
