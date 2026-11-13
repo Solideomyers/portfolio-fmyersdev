@@ -6,6 +6,7 @@ import { History } from './History';
 import { ItemEditor } from './ItemEditor';
 import { Progress } from './Progress';
 import { Review } from './Review';
+import { Settings } from './Settings';
 import { publish, restore } from './lib/api';
 import { blankFor, newId, nextNumber, OTHER_WORK, restoreEntry } from './lib/blank';
 import { COLLECTIONS, draftRows, type CollectionKey, type Item } from './lib/collections';
@@ -114,6 +115,7 @@ export function Shell({ session }: { session: string }) {
           }}
         />
       );
+    if (view === 'settings') return <Settings />;
     if (view === 'publish' && coll === 'progress' && Number(id) > 0)
       return <Progress rev={Number(id)} />;
     if (view === 'publish')

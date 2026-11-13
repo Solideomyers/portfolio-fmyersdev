@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Brand } from './Brand';
-import { sendMagicLink, signIn, type Provider } from './supabase';
+import { sendMagicLink, signIn, signInWithPasskey, type Provider } from './supabase';
 import type { Theme } from './theme';
 
 type Props = {
@@ -30,6 +30,20 @@ export function Login({ theme, rejectedVia, verifyFailed, providerError }: Props
     setFailed(false);
     try {
       await signIn(provider);
+    } catch {
+      setFailed(true);
+      setBusy(false);
+    }
+  };
+
+  // The session lands in storage; reloading re-runs the one-time owner check in main.tsx.
+  const passkey = async () => {
+    if (busy) return;
+    setBusy(true);
+    setFailed(false);
+    try {
+      await signInWithPasskey();
+      location.reload();
     } catch {
       setFailed(true);
       setBusy(false);
@@ -106,6 +120,15 @@ export function Login({ theme, rejectedVia, verifyFailed, providerError }: Props
                 <span aria-hidden="true">→</span>
               </button>
             ))}
+            <button
+              type="button"
+              className="ad-btn ad-provider"
+              aria-disabled={busy}
+              onClick={passkey}
+            >
+              <span>Entrar con passkey</span>
+              <span aria-hidden="true">→</span>
+            </button>
           </div>
 
           <form className="ad-mail" onSubmit={send}>
