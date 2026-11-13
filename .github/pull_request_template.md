@@ -1,8 +1,8 @@
 <!--
 TITLE = the squash commit that lands on develop. It must pass commitlint:
   type(scope): subject        e.g. feat(ui): add Button component
-Release PRs (release/vX.Y.Z → main): chore: release vX.Y.Z   (vX.Y.Z = the develop tag being promoted)
-  Merged with a MERGE COMMIT (never squash); the branch must point exactly at tag vX.Y.Z.
+Release PRs (release/vX.Y.Z → main): chore: release vX.Y.Z   (vX.Y.Z = the new version, greater than every existing tag)
+  Merged with a MERGE COMMIT (never squash); the branch is cut at a develop commit, with no commits of its own.
 -->
 
 ## What and why
@@ -29,7 +29,7 @@ Release PRs (release/vX.Y.Z → main): chore: release vX.Y.Z   (vX.Y.Z = the dev
 
 <!-- Release PR only — delete otherwise:
 ## Release
-- Promotes tag: vX.Y.Z (release/vX.Y.Z points exactly at it; CI release-source checks)
+- Releases: vX.Y.Z (tag.yml creates it on merge; CI release-source checks the branch, title and version)
 - [ ] Preview of develop checked
 - [ ] No open PRs meant for this release
 -->
