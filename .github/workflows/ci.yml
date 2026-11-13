@@ -51,9 +51,12 @@ jobs:
           VERSION="${HEAD_REF#release/}"
           [[ "$TITLE" == "chore: release $VERSION" ]] || { echo "::error::The release PR title must be 'chore: release $VERSION'"; exit 1; }
           git fetch --force --tags origin develop
-          TAGGED="$(git rev-parse "refs/tags/$VERSION^{commit}" 2>/dev/null)" || { echo "::error::Tag $VERSION does not exist (tag.yml creates it on merge to develop)"; exit 1; }
-          [[ "$TAGGED" == "$HEAD_SHA" ]] || { echo "::error::$HEAD_REF must point at the commit tagged $VERSION on develop, with no commits of its own (fix on develop, then re-cut the release)"; exit 1; }
-          git merge-base --is-ancestor "$HEAD_SHA" origin/develop || { echo "::error::$VERSION is not on develop"; exit 1; }
+          # The tag does not exist yet (tag.yml creates it when this PR is merged) and must be the highest.
+          git rev-parse -q --verify "refs/tags/$VERSION" >/dev/null && { echo "::error::Tag $VERSION already exists: pick the next version"; exit 1; }
+          HIGHEST="$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -1)"
+          [[ -z "$HIGHEST" || "$(printf '%s\n%s\n' "$HIGHEST" "$VERSION" | sort -V | tail -1)" == "$VERSION" ]] || { echo "::error::$VERSION must be greater than the highest tag $HIGHEST"; exit 1; }
+          # A commit already on develop, with no commits of its own on the release branch.
+          git merge-base --is-ancestor "$HEAD_SHA" origin/develop || { echo "::error::$HEAD_REF has commits that are not on develop (fix on develop, then re-cut the release)"; exit 1; }
 
   build:
     runs-on: ubuntu-latest

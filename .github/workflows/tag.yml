@@ -1,13 +1,16 @@
 name: Auto-tag
 
+# A tag marks what was released, not every merge: it is created when a release/vX.Y.Z PR is merged
+# into main, on the develop commit that PR promoted (the release branch tip, the merge's 2nd parent).
+
 on:
   push:
-    branches: [develop]
+    branches: [main]
 
 permissions:
   contents: write
+  pull-requests: read
 
-# Serialise runs so two close merges can't compute the same tag.
 concurrency:
   group: auto-tag
   cancel-in-progress: false
@@ -18,16 +21,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
-      - uses: actions/setup-node@v4
-        with: { node-version-file: .nvmrc }
-      - name: Tag the next version (annotated, canonical)
+      - name: Tag the released develop commit (annotated)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if git tag --points-at HEAD | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "HEAD already tagged: $(git tag --points-at HEAD)"
+          # The PR that produced this push names the version: its head branch is release/vX.Y.Z.
+          HEAD_REF="$(gh api "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/pulls" --jq '.[0].head.ref // empty')"
+          if [[ ! "$HEAD_REF" =~ ^release/(v[0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            echo "Not a release merge (PR head: '${HEAD_REF}'): nothing to tag"
             exit 0
           fi
-          NEXT=$(node scripts/next-tag.mjs)
+          VERSION="${BASH_REMATCH[1]}"
+          if git rev-parse -q --verify "refs/tags/$VERSION" >/dev/null; then
+            echo "$VERSION already exists: skipped"
+            exit 0
+          fi
+          # A merge commit: parent 1 is main before, parent 2 the released develop commit.
+          SOURCE="$(git rev-parse "${GITHUB_SHA}^2")"
           git -c user.name='github-actions[bot]' \
               -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
-              tag -a "$NEXT" -m "$NEXT — $(git log -1 --format=%s)"
-          git push origin "$NEXT"
+              tag -a "$VERSION" "$SOURCE" -m "$VERSION — $(git log -1 --format=%s "$SOURCE")"
+          git push origin "$VERSION"
