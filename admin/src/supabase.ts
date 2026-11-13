@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY,
+  { auth: { experimental: { passkey: true } } }, // passkeys are opt-in (experimental) in supabase-js
 );
 
 export type Provider = 'github' | 'google';
@@ -23,6 +24,12 @@ export async function sendMagicLink(email: string): Promise<void> {
     email,
     options: { shouldCreateUser: false, emailRedirectTo: location.origin },
   });
+  if (error) throw error;
+}
+
+/** Discoverable-credential sign-in: only a passkey registered from Ajustes works. The caller reloads. */
+export async function signInWithPasskey(): Promise<void> {
+  const { error } = await supabase.auth.signInWithPasskey();
   if (error) throw error;
 }
 
