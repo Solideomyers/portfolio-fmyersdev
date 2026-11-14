@@ -4,7 +4,7 @@ lang: en
 order: 1
 name: SaaS MVP
 for: For founders and teams with a validated idea that needs a real product.
-from: 3200
+from: 2000
 billing: project
 includes:
   - One-page spec and data model

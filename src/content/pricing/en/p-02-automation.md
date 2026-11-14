@@ -4,7 +4,7 @@ lang: en
 order: 2
 name: Automation
 for: For teams on Google Workspace drowning in spreadsheets and manual steps.
-from: 600
+from: 300
 billing: project
 includes:
   - Process review and spec

@@ -4,7 +4,7 @@ lang: es
 order: 2
 name: Automatización
 for: Para equipos en Google Workspace ahogados en hojas de cálculo y pasos manuales.
-from: 600
+from: 300
 billing: project
 includes:
   - Revisión del proceso y especificación

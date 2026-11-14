@@ -4,7 +4,7 @@ lang: es
 order: 1
 name: SaaS MVP
 for: Para fundadores y equipos con una idea validada que necesita un producto real.
-from: 3200
+from: 2000
 billing: project
 includes:
   - Especificación de una página y modelo de datos
